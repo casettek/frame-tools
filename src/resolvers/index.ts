@@ -1,5 +1,5 @@
-import usersResolvers from './usersResolvers'
+import framesResolvers from "./frames";
 
-const resolvers = [usersResolvers];
+const resolvers = [framesResolvers];
 
-export default resolvers
+export default resolvers;

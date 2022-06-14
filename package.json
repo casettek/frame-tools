@@ -28,20 +28,25 @@
     "typescript": "^4.7.3"
   },
   "dependencies": {
+    "@graphql-tools/schema": "^8.3.14",
     "@nomiclabs/hardhat-ethers": "^2.0.6",
     "@nomiclabs/hardhat-etherscan": "^3.1.0",
     "@nomiclabs/hardhat-waffle": "^2.0.3",
     "apollo-server": "^2.15.1",
+    "apollo-server-core": "^3.8.2",
     "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
     "dotenv": "^16.0.1",
     "ethereum-waffle": "^3.4.4",
     "express": "^4.17.1",
+    "graphql-subscriptions": "^2.0.0",
+    "graphql-ws": "^5.9.0",
     "hardhat": "^2.9.9",
     "hardhat-contract-sizer": "^2.5.1",
     "hardhat-gas-reporter": "^1.0.8",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.9.24",
-    "solidity-coverage": "^0.7.21"
+    "solidity-coverage": "^0.7.21",
+    "ws": "^8.8.0"
   }
 }

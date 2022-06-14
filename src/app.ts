@@ -1,4 +1,11 @@
 import express from "express";
+
+import { createServer } from "http";
+import { ApolloServerPluginDrainHttpServer } from "apollo-server-core";
+// import { makeExecutableSchema } from '@graphql-tools/schema';
+import { Server } from "ws";
+import { useServer } from "graphql-ws/lib/use/ws";
+
 import { ApolloServer, makeExecutableSchema } from "apollo-server-express";
 import { GraphQLSchema } from "graphql";
 import jwt from "jsonwebtoken";
@@ -12,30 +19,62 @@ export async function startServer() {
   dotenv.config();
 
   const app = express();
+  const httpServer = createServer(app);
 
   const schemaGQL: GraphQLSchema = makeExecutableSchema({
     typeDefs: schema,
     resolvers: resolvers,
   });
 
+  // const server = new ApolloServer({
+  //   schema: schemaGQL,
+  //   csrfPrevention: true,
+  //   // context: ({ req }) => {
+  //   //   const token = req.headers["authorization"] || false;
+  //   //   if (token) {
+  //   //     try {
+  //   //       const user = jwt.verify(
+  //   //         token.replace("Bearer ", ""),
+  //   //         process.env.SECRET
+  //   //       );
+  //   //       return {
+  //   //         user,
+  //   //       };
+  //   //     } catch (error) {
+  //   //       console.log(error);
+  //   //     }
+  //   //   }
+  //   // },
+  //   playground: true,
+  // });
+
+  // Creating the WebSocket server
+  const wsServer = new Server({
+    server: httpServer,
+    path: "/graphql",
+  });
+
+  const serverCleanup = useServer({ schema: schemaGQL }, wsServer);
+
   const server = new ApolloServer({
     schema: schemaGQL,
-    context: ({ req }) => {
-      const token = req.headers["authorization"] || false;
-      if (token) {
-        try {
-          const user = jwt.verify(
-            token.replace("Bearer ", ""),
-            process.env.SECRET
-          );
-          return {
-            user,
-          };
-        } catch (error) {
-          console.log(error);
-        }
-      }
-    },
+    csrfPrevention: true,
+    plugins: [
+      // Proper shutdown for the HTTP server.
+      ApolloServerPluginDrainHttpServer({ httpServer }),
+
+      // // Proper shutdown for the WebSocket server.
+      // {
+      //   async serverWillStart() {
+      //     return {
+      //       async drainServer() {
+      //         await serverCleanup.dispose();
+      //       },
+      //     };
+      //   },
+      // },
+    ],
+    // @ts-ignore
     playground: true,
   });
 

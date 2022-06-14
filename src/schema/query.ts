@@ -1,21 +1,18 @@
-import {gql} from 'apollo-server';
-
+import { gql } from "apollo-server";
 
 //Schema
 const typeDefs = gql`
-
-    type Query {
-        #Users
-        getUser(input:String!): User
-
-    }
-    type Mutation {
-
-        #Users
-        newUser(input: UserInput): User
-        authUser(input: AuthInput): Token
-
-    }
+  type Query {
+    #Frames
+    getFrame: Frame
+  }
+  type Mutation {
+    #Frames
+    newFrame(source: String): Frame
+  }
+  type Subscription {
+    frameCreated: Frame
+  }
 `;
 
 export default typeDefs;
