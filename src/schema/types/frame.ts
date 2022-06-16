@@ -9,6 +9,11 @@ const typeDefs = gql`
   input FrameInput {
     source: String!
   }
+
+  type Import {
+    id: String!
+    html: String!
+  }
 `;
 
 export interface iFrame {
@@ -17,6 +22,11 @@ export interface iFrame {
 
 export interface iNewFrameInput {
   source: string;
+}
+
+export interface iImport {
+  id: string;
+  html: string;
 }
 
 export default typeDefs;

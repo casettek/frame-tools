@@ -5,6 +5,7 @@ const typeDefs = gql`
   type Query {
     #Frames
     getFrame: Frame
+    getImports(ids: [String]): [Import]
   }
   type Mutation {
     #Frames

@@ -10,6 +10,7 @@ import {
   constructRenderIndex,
   calcStoragePages,
 } from "./utils/web3";
+import { iImport } from "../../schema/types/frame";
 
 const RENDER_PAGE_SIZE = 4;
 let renderer: any = null;
@@ -30,10 +31,10 @@ type ImportDataMap = {
   [key: string]: ImportData;
 };
 
-const wrappers = {
+const wrappers: WrapperDataMap = {
   render: [
     '<!DOCTYPE html><html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/></head><body>',
-    "<div></div></body></html>",
+    "</body></html>",
   ],
   rawjs: ["<script>", "</script>"],
   b64jseval: ["<script>eval(atob('", "'));</script>"],
@@ -61,21 +62,24 @@ const imports: ImportDataMap = {
   },
 };
 
+export const getImportScripts = (importKeys: string[]): Array<iImport> =>
+  importKeys.map((ik) => {
+    const imp = imports[ik];
+    const { wrapper, data } = imp;
+    const wrapperArr: string[] = wrappers[wrapper];
+    return {
+      html: wrapperArr[0] + data + wrapperArr[1],
+      id: ik,
+    };
+  });
+
 export const renderFrameLocal = (
   importKeys: Array<string>,
   source: string
 ): string => {
   return (
     wrappers.render[0] +
-    importKeys
-      .map((ik) => {
-        const imp = imports[ik];
-        const { wrapper, data } = imp;
-        return wrapper[0] + data + wrapper[1];
-      })
-      .reduce((a, b) => {
-        return a + b;
-      }, "") +
+    getImportScripts(importKeys) +
     source +
     wrappers.render[1]
   );
@@ -181,4 +185,5 @@ export default {
   deploySource,
   renderFrame,
   renderTemplate,
+  getImportScripts,
 };
