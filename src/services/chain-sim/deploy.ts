@@ -56,7 +56,7 @@ const imports: ImportDataMap = {
     pages: calcStoragePages(processing.p5gzhex),
   },
   p5setup: {
-    data: "eval(atob(window._assets[0]));",
+    data: "eval(window._assets[0]);",
     wrapper: "rawjs",
     pages: 1,
   },
