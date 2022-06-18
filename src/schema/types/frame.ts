@@ -14,6 +14,11 @@ const typeDefs = gql`
     id: String!
     html: String!
   }
+
+  type Wrapper {
+    id: String!
+    html: [String]!
+  }
 `;
 
 export interface iFrame {
@@ -27,6 +32,11 @@ export interface iNewFrameInput {
 export interface iImport {
   id: string;
   html: string;
+}
+
+export interface iWrapper {
+  id: string;
+  html: string[];
 }
 
 export default typeDefs;

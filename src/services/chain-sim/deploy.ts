@@ -5,12 +5,13 @@ const toBytes = hre.ethers.utils.toUtf8Bytes;
 
 import base from "./assets/base";
 import processing from "./assets/processing";
+import d3 from "./assets/d3";
 import {
   staggerStore,
   constructRenderIndex,
   calcStoragePages,
 } from "./utils/web3";
-import { iImport } from "../../schema/types/frame";
+import { iImport, iWrapper } from "../../schema/types/frame";
 
 const RENDER_PAGE_SIZE = 4;
 let renderer: any = null;
@@ -60,6 +61,11 @@ const imports: ImportDataMap = {
     wrapper: "rawjs",
     pages: 1,
   },
+  d3topogzhex: {
+    data: d3.d3topogzhex,
+    wrapper: "gzhexjs",
+    pages: calcStoragePages(d3.d3topogzhex),
+  },
 };
 
 export const getImportScripts = (importKeys: string[]): Array<iImport> =>
@@ -70,6 +76,15 @@ export const getImportScripts = (importKeys: string[]): Array<iImport> =>
     return {
       html: wrapperArr[0] + data + wrapperArr[1],
       id: ik,
+    };
+  });
+
+export const getWrapperScripts = (wrapperKeys: string[]): Array<iWrapper> =>
+  wrapperKeys.map((wk) => {
+    const wrapperArr: string[] = wrappers[wk];
+    return {
+      html: wrapperArr,
+      id: wk,
     };
   });
 

@@ -6,6 +6,7 @@ const typeDefs = gql`
     #Frames
     getFrame: Frame
     getImports(ids: [String]): [Import]
+    getWrappers(ids: [String]): [Wrapper]
   }
   type Mutation {
     #Frames

@@ -5,8 +5,9 @@ import {
   renderFrame,
   renderFrameLocal,
   getImportScripts,
+  getWrapperScripts,
 } from "../services/chain-sim/deploy";
-import { iNewFrameInput, iFrame, iImport } from "../schema/types/frame";
+import { iFrame, iImport, iWrapper } from "../schema/types/frame";
 
 const pubsub = new PubSub();
 
@@ -26,10 +27,13 @@ const resolvers = {
       _: any,
       { ids }: { ids: string[] }
     ): Promise<Array<iImport>> => {
-      console.log("getImports resolver", ids);
-      const imports = getImportScripts(ids);
-      console.log("imports", imports);
-      return imports;
+      return getImportScripts(ids);
+    },
+    getWrappers: async (
+      _: any,
+      { ids }: { ids: string[] }
+    ): Promise<Array<iWrapper>> => {
+      return getWrapperScripts(ids);
     },
   },
   Mutation: {
