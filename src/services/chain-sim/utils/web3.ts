@@ -121,7 +121,6 @@ export const roughSizeOfObject = (object: any) => {
       }
     }
   }
-  console.log("bytes", bytes);
   return bytes;
 };
 
