@@ -12,7 +12,7 @@ async function main() {
 
   const app = await startServer();
 
-  app.listen({ port: 3000 }, (): void => {
+  app.listen({ port: process.env.PORT || 3000 }, (): void => {
     console.log(`\n🚀GraphQL is now running on http://localhost:3000/graphql `);
     // deployDefaults();
     // renderTemplate();
