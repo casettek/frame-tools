@@ -26,28 +26,6 @@ export async function startServer() {
     resolvers: resolvers,
   });
 
-  // const server = new ApolloServer({
-  //   schema: schemaGQL,
-  //   csrfPrevention: true,
-  //   // context: ({ req }) => {
-  //   //   const token = req.headers["authorization"] || false;
-  //   //   if (token) {
-  //   //     try {
-  //   //       const user = jwt.verify(
-  //   //         token.replace("Bearer ", ""),
-  //   //         process.env.SECRET
-  //   //       );
-  //   //       return {
-  //   //         user,
-  //   //       };
-  //   //     } catch (error) {
-  //   //       console.log(error);
-  //   //     }
-  //   //   }
-  //   // },
-  //   playground: true,
-  // });
-
   // Creating the WebSocket server
   const wsServer = new Server({
     server: httpServer,
