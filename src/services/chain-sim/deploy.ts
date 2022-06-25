@@ -6,6 +6,7 @@ const toBytes = hre.ethers.utils.toUtf8Bytes;
 import base from "./assets/base";
 import processing from "./assets/processing";
 import d3 from "./assets/d3";
+import three from "./assets/three";
 import {
   staggerStore,
   constructRenderIndex,
@@ -65,6 +66,11 @@ const imports: ImportDataMap = {
     data: d3.d3topogzhex,
     wrapper: "gzhexjs",
     pages: calcStoragePages(d3.d3topogzhex),
+  },
+  threegzhex: {
+    data: three.threegzhex,
+    wrapper: "gzhexjs",
+    pages: calcStoragePages(three.threegzhex),
   },
 };
 
