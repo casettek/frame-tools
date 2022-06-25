@@ -32,6 +32,7 @@
     "@nomiclabs/hardhat-ethers": "^2.0.6",
     "@nomiclabs/hardhat-etherscan": "^3.1.0",
     "@nomiclabs/hardhat-waffle": "^2.0.3",
+    "@types/graphql": "^14.5.0",
     "apollo-server": "^2.15.1",
     "apollo-server-core": "^3.8.2",
     "bcryptjs": "^2.4.3",
