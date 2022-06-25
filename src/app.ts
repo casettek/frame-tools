@@ -34,7 +34,7 @@ export async function startServer() {
 
   const serverCleanup = useServer({ schema: schemaGQL }, wsServer);
 
-  const server = new ApolloServer({
+  const server = new (ApolloServer as any)({
     schema: schemaGQL,
     csrfPrevention: true,
     plugins: [
