@@ -6,7 +6,8 @@ import { ApolloServerPluginDrainHttpServer } from "apollo-server-core";
 import { Server } from "ws";
 import { useServer } from "graphql-ws/lib/use/ws";
 
-import { ApolloServer, makeExecutableSchema } from "apollo-server-express";
+import { ApolloServer } from "apollo-server-express";
+import { makeExecutableSchema } from "@graphql-tools/schema";
 import { GraphQLSchema } from "graphql";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
@@ -57,6 +58,8 @@ export async function startServer() {
   });
 
   app.use("*", cors());
+
+  await server.start();
 
   server.applyMiddleware({ app, path: "/graphql" });
 
