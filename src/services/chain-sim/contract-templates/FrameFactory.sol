@@ -1,6 +1,23 @@
 //SPDX-License-Identifier: MIT
 pragma solidity ^0.8.12;
 
+interface FrameDataStore {
+    function getData(
+        string memory _key,
+        uint256 _startPage,
+        uint256 _endPage
+    ) external view returns (bytes memory);
+
+    function getMaxPageNumber(string memory _key)
+        external
+        view
+        returns (uint256);
+}
+
+interface FrameDataStoreFactory {
+    function createFrameDataStore() external returns (address);
+}
+
 contract CloneFactory {
   function createClone(address target) internal returns (address result) {
     bytes20 targetBytes = bytes20(target);
@@ -29,19 +46,6 @@ contract CloneFactory {
       )
     }
   }
-}
-
-interface FrameDataStore {
-    function getData(
-        string memory _key,
-        uint256 _startPage,
-        uint256 _endPage
-    ) external view returns (bytes memory);
-
-    function getMaxPageNumber(string memory _key)
-        external
-        view
-        returns (uint256);
 }
 
 contract Frame {
@@ -162,18 +166,22 @@ contract FrameFactory is CloneFactory {
 
     event FrameCreated(address newAddress);
 
-    constructor(address _libraryAddress) {
-        libraryAddress = _libraryAddress;
-    }
+    constructor() {}
+
+    function setLibraryAddress(address _libraryAddress) public  {
+      libraryAddress = _libraryAddress;
+  }
 
     function createFrame(
         address _coreDepStorage,
-        address _assetStorage,
+        FrameDataStoreFactory _frameDataStoreFactory,
         string[2][] calldata _deps,
         string[2][] calldata _assets,
         uint256[4][] calldata _renderIndex
     ) public  {
         address clone = createClone(libraryAddress);
+        address _assetStorage = _frameDataStoreFactory.createFrameDataStore();
+
         Frame(clone).init(_coreDepStorage, _assetStorage, _deps, _assets, _renderIndex);
         emit FrameCreated(clone);
     }
