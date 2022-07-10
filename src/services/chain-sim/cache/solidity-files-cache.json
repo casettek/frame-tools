@@ -1,9 +1,9 @@
 {
   "_format": "hh-sol-cache-2",
   "files": {
-    "/Users/andrewcassetti/Development/frame-backend/src/services/chain-sim/contracts/ContractDataStorage.sol": {
-      "lastModificationDate": 1655215165211,
-      "contentHash": "1054ec11353fa90b71a4335f143c5904",
+    "C:\\Users\\Andrew\\Development\\frame-backend\\src\\services\\chain-sim\\contracts\\ContractDataStorage.sol": {
+      "lastModificationDate": 1654195839775,
+      "contentHash": "2f650fc83520ba271ce64d50ea2afd05",
       "sourceName": "src/services/chain-sim/contracts/ContractDataStorage.sol",
       "solcConfig": {
         "version": "0.8.12",
@@ -36,8 +36,156 @@
         "ContractDataStorage"
       ]
     },
-    "/Users/andrewcassetti/Development/frame-backend/src/services/chain-sim/contracts/Render.sol": {
-      "lastModificationDate": 1655388726145,
+    "C:\\Users\\Andrew\\Development\\frame-backend\\src\\services\\chain-sim\\contracts\\Frame.sol": {
+      "lastModificationDate": 1657470959968,
+      "contentHash": "ce00846ffbb3483854353d5767feaaf8",
+      "sourceName": "src/services/chain-sim/contracts/Frame.sol",
+      "solcConfig": {
+        "version": "0.8.12",
+        "settings": {
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "./FrameDataStore.sol",
+        "./FrameDataStoreFactory.sol"
+      ],
+      "versionPragmas": [
+        "^0.8.12"
+      ],
+      "artifacts": [
+        "Frame"
+      ]
+    },
+    "C:\\Users\\Andrew\\Development\\frame-backend\\src\\services\\chain-sim\\contracts\\FrameFactory.sol": {
+      "lastModificationDate": 1657471044308,
+      "contentHash": "1845236514514605f54ec3d141fd2b08",
+      "sourceName": "src/services/chain-sim/contracts/FrameFactory.sol",
+      "solcConfig": {
+        "version": "0.8.12",
+        "settings": {
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "./Frame.sol",
+        "./CloneFactory.sol"
+      ],
+      "versionPragmas": [
+        "^0.8.12"
+      ],
+      "artifacts": [
+        "FrameFactory"
+      ]
+    },
+    "C:\\Users\\Andrew\\Development\\frame-backend\\src\\services\\chain-sim\\contracts\\FrameDataStore.sol": {
+      "lastModificationDate": 1657470071267,
+      "contentHash": "cd953fd281c9f37cfcd3501dd4207cac",
+      "sourceName": "src/services/chain-sim/contracts/FrameDataStore.sol",
+      "solcConfig": {
+        "version": "0.8.12",
+        "settings": {
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "^0.8.12"
+      ],
+      "artifacts": [
+        "FrameDataStore"
+      ]
+    },
+    "C:\\Users\\Andrew\\Development\\frame-backend\\src\\services\\chain-sim\\contracts\\FrameDataStoreFactory.sol": {
+      "lastModificationDate": 1657471012730,
+      "contentHash": "d13f185086de91bdfaa212b45aeb885c",
+      "sourceName": "src/services/chain-sim/contracts/FrameDataStoreFactory.sol",
+      "solcConfig": {
+        "version": "0.8.12",
+        "settings": {
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "./CloneFactory.sol"
+      ],
+      "versionPragmas": [
+        "^0.8.12"
+      ],
+      "artifacts": [
+        "FrameDataStoreFactory"
+      ]
+    },
+    "C:\\Users\\Andrew\\Development\\frame-backend\\src\\services\\chain-sim\\contracts\\Render.sol": {
+      "lastModificationDate": 1655307214882,
       "contentHash": "e47e5970d3de79a32f87aef487310e49",
       "sourceName": "src/services/chain-sim/contracts/Render.sol",
       "solcConfig": {
@@ -69,9 +217,9 @@
         "Renderer"
       ]
     },
-    "/Users/andrewcassetti/Development/frame-backend/src/services/chain-sim/contracts/Renderer.sol": {
-      "lastModificationDate": 1655215165211,
-      "contentHash": "02a8fd242f8e3a6275c3ec17bf6a4948",
+    "C:\\Users\\Andrew\\Development\\frame-backend\\src\\services\\chain-sim\\contracts\\Renderer.sol": {
+      "lastModificationDate": 1654366082043,
+      "contentHash": "e90218b30f13e37f06a82d1988989655",
       "sourceName": "src/services/chain-sim/contracts/Renderer.sol",
       "solcConfig": {
         "version": "0.8.12",
@@ -105,8 +253,8 @@
         "Renderer"
       ]
     },
-    "/Users/andrewcassetti/Development/frame-backend/src/services/chain-sim/contracts/Utils.sol": {
-      "lastModificationDate": 1655215165211,
+    "C:\\Users\\Andrew\\Development\\frame-backend\\src\\services\\chain-sim\\contracts\\Utils.sol": {
+      "lastModificationDate": 1652729821075,
       "contentHash": "b830fb626aeda9ca4a12cd513b5aa652",
       "sourceName": "src/services/chain-sim/contracts/Utils.sol",
       "solcConfig": {
@@ -138,6 +286,39 @@
       ],
       "artifacts": [
         "utils"
+      ]
+    },
+    "C:\\Users\\Andrew\\Development\\frame-backend\\src\\services\\chain-sim\\contracts\\CloneFactory.sol": {
+      "lastModificationDate": 1657470993266,
+      "contentHash": "a62efbbdf843a0c3a991af4f88ff6eac",
+      "sourceName": "src/services/chain-sim/contracts/CloneFactory.sol",
+      "solcConfig": {
+        "version": "0.8.12",
+        "settings": {
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [],
+      "artifacts": [
+        "CloneFactory"
       ]
     }
   }

@@ -107,8 +107,23 @@ export const renderFrameLocal = (
 };
 
 const deployStorage = async () => {
-  const Storage = await hre.ethers.getContractFactory("ContractDataStorage");
-  storage = await Storage.deploy();
+  const FrameDataStore = await hre.ethers.getContractFactory("FrameDataStore");
+  const frameDataStoreLib = await FrameDataStore.deploy();
+  console.log("frameDataStoreLib deployed at ", frameDataStoreLib.address);
+
+  const FrameDataStoreFactory = await hre.ethers.getContractFactory(
+    "FrameDataStoreFactory"
+  );
+  const frameDataStoreFactory = await FrameDataStoreFactory.deploy();
+  console.log(
+    "frameDataStoreFactory deployed at ",
+    frameDataStoreFactory.address
+  );
+  await frameDataStoreFactory.setLibraryAddress(frameDataStoreLib.address);
+  console.log("frameDataStoreFactory lib address set ");
+
+  // const Storage = await hre.ethers.getContractFactory("ContractDataStorage");
+  // storage = await Storage.deploy();
 };
 
 const deployGlobalImports = async (importsKeys: string[]) => {
@@ -193,12 +208,12 @@ export const renderFrame = async () => {
 
 export const deployDefaults = async () => {
   await deployStorage();
-  await deployGlobalImports(Object.keys(imports));
+  // await deployGlobalImports(Object.keys(imports));
 
-  // Session specific
-  await deploySource("");
-  await deployRenderer();
-  await configureChainPipeline();
+  // // Session specific
+  // await deploySource("");
+  // await deployRenderer();
+  // await configureChainPipeline();
 };
 
 export default {

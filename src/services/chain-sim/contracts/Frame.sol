@@ -1,22 +1,8 @@
 //SPDX-License-Identifier: MIT
 pragma solidity ^0.8.12;
 
-interface FrameDataStore {
-    function getData(
-        string memory _key,
-        uint256 _startPage,
-        uint256 _endPage
-    ) external view returns (bytes memory);
-
-    function getMaxPageNumber(string memory _key)
-        external
-        view
-        returns (uint256);
-}
-
-interface FrameDataStoreFactory {
-    function createFrameDataStore() external returns (address);
-}
+import './FrameDataStore.sol';
+import './FrameDataStoreFactory.sol';
 
 contract Frame {
     struct Asset {
