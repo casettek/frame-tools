@@ -1,7 +1,9 @@
 const hre = require("hardhat");
 const dot = require("dot");
 const fs = require("fs");
-const toBytes = hre.ethers.utils.toUtf8Bytes;
+const ethers = hre.ethers;
+const utils = hre.ethers.utils;
+const toBytes = utils.toUtf8Bytes;
 
 import base from "./assets/base";
 import processing from "./assets/processing";
@@ -17,6 +19,13 @@ import { iImport, iWrapper } from "../../schema/types/frame";
 const RENDER_PAGE_SIZE = 4;
 let renderer: any = null;
 let storage: any = null;
+
+let frameDataStoreLib: any = null;
+let frameDataStoreFactory: any = null;
+let frameLib: any = null;
+let frameFactory: any = null;
+let coreDepsDataStore: any = null;
+
 let renderString: string = "";
 
 type WrapperDataMap = {
@@ -106,44 +115,86 @@ export const renderFrameLocal = (
   );
 };
 
-const deployStorage = async () => {
+const deployDataStoreSetup = async () => {
+  // base storage libs
   const FrameDataStore = await hre.ethers.getContractFactory("FrameDataStore");
-  const frameDataStoreLib = await FrameDataStore.deploy();
+  frameDataStoreLib = await FrameDataStore.deploy();
   console.log("frameDataStoreLib deployed at ", frameDataStoreLib.address);
 
   const FrameDataStoreFactory = await hre.ethers.getContractFactory(
     "FrameDataStoreFactory"
   );
-  const frameDataStoreFactory = await FrameDataStoreFactory.deploy();
+  frameDataStoreFactory = await FrameDataStoreFactory.deploy();
   console.log(
     "frameDataStoreFactory deployed at ",
     frameDataStoreFactory.address
   );
   await frameDataStoreFactory.setLibraryAddress(frameDataStoreLib.address);
   console.log("frameDataStoreFactory lib address set ");
-
-  // const Storage = await hre.ethers.getContractFactory("ContractDataStorage");
-  // storage = await Storage.deploy();
 };
 
-const deployGlobalImports = async (importsKeys: string[]) => {
-  const availImports = Object.keys(imports);
-  const importsAreValid =
-    importsKeys.filter((i) => availImports.indexOf(i) > -1).length ===
-    importsKeys.length;
+const deployFrameSetup = async () => {
+  // base frame libs
+  const Frame = await hre.ethers.getContractFactory("Frame");
+  frameLib = await Frame.deploy();
+  console.log("frameLib deployed at ", frameLib.address);
 
-  // let renderIndexParams = [[], RENDER_PAGE_SIZE];
+  const FrameFactory = await hre.ethers.getContractFactory("FrameFactory");
+  frameFactory = await FrameFactory.deploy();
+  console.log("frameFactory deployed at ", frameFactory.address);
+  await frameFactory.setLibraryAddress(frameLib.address);
+  console.log("frameFactory lib address set ");
+};
 
-  if (importsAreValid) {
-    for (const ik of importsKeys) {
-      const pages = imports[ik].pages;
-      if (pages > 1) {
-        await staggerStore(storage, ik, imports[ik].data, imports[ik].pages);
-      } else {
-        await storage.saveData(ik, 0, toBytes(imports[ik].pages));
-      }
-    }
-  }
+const deployCoreDeps = async (importsKeys: string[]) => {
+  const FrameDataStore = await hre.ethers.getContractFactory("FrameDataStore");
+
+  const createCall = await frameDataStoreFactory.createFrameDataStore.call();
+  const createResult = await createCall.wait();
+
+  // console.log(frameDataStoreFactory);
+  // const interface = new ethers.utils.Interface(abi);
+  // console.log(
+  //   "newDataStore create result",
+  //   createResult
+  //   // await createResult.events[0].getTransactionReceipt()
+  //   // createResult.getTransactionReceipt()
+  // );
+
+  const newDataStoreAddress = createResult.logs[0]?.data.replace(
+    "000000000000000000000000",
+    ""
+  );
+
+  console.log("newDataStoreAddress", newDataStoreAddress);
+
+  const newDataStore = await FrameDataStore.attach(newDataStoreAddress);
+  await newDataStore.saveData("test", 0, toBytes("test"));
+
+  const testResult = await newDataStore.getData("test", 0, 0);
+  console.log("newDataStore", testResult);
+
+  // const newDataStore = await hre.ethers.getContractAt(newDataStoreAddress);
+
+  // console.log("newDataStore address", utils.getAddress(newDataStoreAddress));
+
+  // const availImports = Object.keys(imports);
+  // const importsAreValid =
+  //   importsKeys.filter((i) => availImports.indexOf(i) > -1).length ===
+  //   importsKeys.length;
+
+  // // let renderIndexParams = [[], RENDER_PAGE_SIZE];
+
+  // if (importsAreValid) {
+  //   for (const ik of importsKeys) {
+  //     const pages = imports[ik].pages;
+  //     if (pages > 1) {
+  //       await staggerStore(storage, ik, imports[ik].data, imports[ik].pages);
+  //     } else {
+  //       await storage.saveData(ik, 0, toBytes(imports[ik].pages));
+  //     }
+  //   }
+  // }
 };
 
 export const renderTemplate = async () => {
@@ -207,7 +258,9 @@ export const renderFrame = async () => {
 };
 
 export const deployDefaults = async () => {
-  await deployStorage();
+  await deployDataStoreSetup();
+  await deployFrameSetup();
+  await deployCoreDeps([]);
   // await deployGlobalImports(Object.keys(imports));
 
   // // Session specific
