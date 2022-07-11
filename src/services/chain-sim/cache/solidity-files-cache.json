@@ -37,8 +37,8 @@
       ]
     },
     "C:\\Users\\Andrew\\Development\\frame-backend\\src\\services\\chain-sim\\contracts\\Frame.sol": {
-      "lastModificationDate": 1657471085120,
-      "contentHash": "1fd9ea397823581551597750a3b779e3",
+      "lastModificationDate": 1657569077163,
+      "contentHash": "187d58847de04f29f9f0c9e6c0ae7f19",
       "sourceName": "src/services/chain-sim/contracts/Frame.sol",
       "solcConfig": {
         "version": "0.8.12",
@@ -113,8 +113,8 @@
       ]
     },
     "C:\\Users\\Andrew\\Development\\frame-backend\\src\\services\\chain-sim\\contracts\\FrameDataStore.sol": {
-      "lastModificationDate": 1657470071267,
-      "contentHash": "cd953fd281c9f37cfcd3501dd4207cac",
+      "lastModificationDate": 1657568992028,
+      "contentHash": "c17dbbe09e9d8384c0100a382f058e39",
       "sourceName": "src/services/chain-sim/contracts/FrameDataStore.sol",
       "solcConfig": {
         "version": "0.8.12",

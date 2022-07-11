@@ -254,7 +254,7 @@ const deployNewFrame = async () => {
   // const as = await frame.assetStorage();
   // console.log("newFrameAddress", frame.address, lib, as);
 
-  const renderWrapper = await coreDepsDataStore.getData("renderWrapper", 0, 1);
+  const renderWrapper = await frame.renderWrapper();
   console.log("renderWrapper", renderWrapper);
 };
 

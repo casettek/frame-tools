@@ -66,6 +66,10 @@ contract Frame {
         renderPagesCount = _index.length;
     }
 
+    function renderWrapper() public view returns (string memory) {
+        return string(coreDepStorage.getData("renderWrapper", 0, 0));
+    }
+
     function renderPage(uint256 _rpage) public view returns (string memory) {
         // [startAsset, endAsset, startAssetPage, endAssetPage]
         uint256[4] memory indexItem = renderIndex[_rpage];
