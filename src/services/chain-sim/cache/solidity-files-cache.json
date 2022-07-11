@@ -75,8 +75,8 @@
       ]
     },
     "C:\\Users\\Andrew\\Development\\frame-backend\\src\\services\\chain-sim\\contracts\\FrameFactory.sol": {
-      "lastModificationDate": 1657471102470,
-      "contentHash": "7713d988fb043793ccfb2a95bef36b8f",
+      "lastModificationDate": 1657563195671,
+      "contentHash": "3d029535dfc4b047b0631a1e48deed49",
       "sourceName": "src/services/chain-sim/contracts/FrameFactory.sol",
       "solcConfig": {
         "version": "0.8.12",

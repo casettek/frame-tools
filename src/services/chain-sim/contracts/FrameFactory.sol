@@ -21,11 +21,13 @@ contract FrameFactory is CloneFactory {
         string[2][] calldata _deps,
         string[2][] calldata _assets,
         uint256[4][] calldata _renderIndex
-    ) public  {
+    ) public returns (address)  {
         address clone = createClone(libraryAddress);
         address _assetStorage = _frameDataStoreFactory.createFrameDataStore();
 
         Frame(clone).init(_coreDepStorage, _assetStorage, _deps, _assets, _renderIndex);
         emit FrameCreated(clone);
+        
+        return clone;
     }
 }

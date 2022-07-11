@@ -26,6 +26,8 @@ let frameLib: any = null;
 let frameFactory: any = null;
 let coreDepsDataStore: any = null;
 
+let frame: any = null;
+
 let renderString: string = "";
 
 type WrapperDataMap = {
@@ -146,55 +148,62 @@ const deployFrameSetup = async () => {
   console.log("frameFactory lib address set ");
 };
 
-const deployCoreDeps = async (importsKeys: string[]) => {
+const deployCoreDeps = async (
+  importsKeys: string[],
+  wrappersKeys: string[]
+) => {
   const FrameDataStore = await hre.ethers.getContractFactory("FrameDataStore");
+  // const Frame = await hre.ethers.getContractFactory("Frame");
 
   const createCall = await frameDataStoreFactory.createFrameDataStore.call();
   const createResult = await createCall.wait();
-
-  // console.log(frameDataStoreFactory);
-  // const interface = new ethers.utils.Interface(abi);
-  // console.log(
-  //   "newDataStore create result",
-  //   createResult
-  //   // await createResult.events[0].getTransactionReceipt()
-  //   // createResult.getTransactionReceipt()
-  // );
-
-  const newDataStoreAddress = createResult.logs[0]?.data.replace(
+  const newStoreAddress = createResult.logs[0]?.data.replace(
     "000000000000000000000000",
     ""
   );
+  console.log("newStoreAddress", newStoreAddress);
+  coreDepsDataStore = await FrameDataStore.attach(newStoreAddress);
+  // await newDataStore.saveData("test", 0, toBytes("test"));
+  // const testResult = await newDataStore.getData("test", 0, 0);
+  // console.log("newDataStore", testResult);
 
-  console.log("newDataStoreAddress", newDataStoreAddress);
+  const availImports = Object.keys(imports);
+  const importsAreValid =
+    importsKeys.filter((i) => availImports.indexOf(i) > -1).length ===
+    importsKeys.length;
 
-  const newDataStore = await FrameDataStore.attach(newDataStoreAddress);
-  await newDataStore.saveData("test", 0, toBytes("test"));
+  console.log(importsAreValid);
 
-  const testResult = await newDataStore.getData("test", 0, 0);
-  console.log("newDataStore", testResult);
+  // let renderIndexParams = [[], RENDER_PAGE_SIZE];
 
-  // const newDataStore = await hre.ethers.getContractAt(newDataStoreAddress);
+  if (importsAreValid) {
+    for (const ik of importsKeys) {
+      const pages = imports[ik].pages;
+      if (pages > 1) {
+        await staggerStore(
+          coreDepsDataStore,
+          ik,
+          imports[ik].data,
+          imports[ik].pages
+        );
+      } else {
+        await coreDepsDataStore.saveData(ik, 0, toBytes(imports[ik].pages));
+      }
+    }
+  }
 
-  // console.log("newDataStore address", utils.getAddress(newDataStoreAddress));
-
-  // const availImports = Object.keys(imports);
-  // const importsAreValid =
-  //   importsKeys.filter((i) => availImports.indexOf(i) > -1).length ===
-  //   importsKeys.length;
-
-  // // let renderIndexParams = [[], RENDER_PAGE_SIZE];
-
-  // if (importsAreValid) {
-  //   for (const ik of importsKeys) {
-  //     const pages = imports[ik].pages;
-  //     if (pages > 1) {
-  //       await staggerStore(storage, ik, imports[ik].data, imports[ik].pages);
-  //     } else {
-  //       await storage.saveData(ik, 0, toBytes(imports[ik].pages));
-  //     }
-  //   }
-  // }
+  for (const wk of wrappersKeys) {
+    await coreDepsDataStore.saveData(
+      wk + "Wrapper",
+      0,
+      toBytes(wrappers[wk][0])
+    );
+    await coreDepsDataStore.saveData(
+      wk + "Wrapper",
+      1,
+      toBytes(wrappers[wk][1])
+    );
+  }
 };
 
 export const renderTemplate = async () => {
@@ -223,10 +232,30 @@ export const deploySource = async (source: string) => {
   await storage.saveData("draw", 0, toBytes(source));
 };
 
-const deployRenderer = async () => {
-  const Renderer = await hre.ethers.getContractFactory("Renderer");
-  renderer = await Renderer.deploy();
-  await renderer.deployed();
+const deployNewFrame = async () => {
+  const Frame = await hre.ethers.getContractFactory("Frame");
+
+  const createCall = await frameFactory.createFrame(
+    coreDepsDataStore.address,
+    frameDataStoreFactory.address,
+    [],
+    [],
+    []
+  );
+  const createResult = await createCall.wait();
+  const newFrameAddress = createResult.logs[1]?.data.replace(
+    "000000000000000000000000",
+    ""
+  );
+  console.log("frame createResult", newFrameAddress, createResult.logs);
+  frame = await Frame.attach(newFrameAddress);
+
+  // const lib = await frameDataStoreFactory.libraryAddress();
+  // const as = await frame.assetStorage();
+  // console.log("newFrameAddress", frame.address, lib, as);
+
+  const renderWrapper = await coreDepsDataStore.getData("renderWrapper", 0, 1);
+  console.log("renderWrapper", renderWrapper);
 };
 
 const configureChainPipeline = async () => {
@@ -247,12 +276,14 @@ const configureChainPipeline = async () => {
 
 export const renderFrame = async () => {
   let renderString = "";
-  const renderPages = await renderer.renderPagesCount();
+  const renderPages = await frame.renderPagesCount();
 
   for (let i = 0; i < renderPages; i++) {
     console.log("fetching page", i);
-    renderString = renderString + (await renderer.renderPage(i));
+    renderString = renderString + (await frame.renderPage(i));
   }
+
+  console.log("renderString", renderString);
 
   return renderString;
 };
@@ -260,12 +291,13 @@ export const renderFrame = async () => {
 export const deployDefaults = async () => {
   await deployDataStoreSetup();
   await deployFrameSetup();
-  await deployCoreDeps([]);
-  // await deployGlobalImports(Object.keys(imports));
+  await deployCoreDeps(Object.keys(imports), Object.keys(wrappers));
 
   // // Session specific
   // await deploySource("");
-  // await deployRenderer();
+  await deployNewFrame();
+  // await renderFrame();
+
   // await configureChainPipeline();
 };
 
