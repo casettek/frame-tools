@@ -292,6 +292,12 @@ export const deployNewFrame = async (
     );
     const frDataStore = await FrameDataStore.attach(await frame.assetStorage());
 
+    console.log(
+      "frDataStoreAddress",
+      frDataStore.address,
+      await frame.coreDepStorage()
+    );
+
     for (let i = 0; i < assets.length; i++) {
       const asset = assets[i];
       const key = asset[1];
@@ -346,7 +352,7 @@ export const deployDefaults = async () => {
   await deployFrameSetup();
   await deployCoreDeps(
     // libs
-    ["compressorGlobalB64", "p5gzhex"],
+    ["compressorGlobalB64"],
     // wrappers
     ["render", "b64jseval", "gzhexjs", "rawjs"]
   );
@@ -368,7 +374,7 @@ export const deployDefaults = async () => {
       ["rawjs", "draw", "console.log('draw');"],
       ["rawjs", "draw2", "console.log('draw2');"],
     ],
-    false
+    true
   );
   await renderFrame();
 };
