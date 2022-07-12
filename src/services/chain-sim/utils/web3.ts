@@ -52,8 +52,6 @@ export const constructRenderIndex = (
       []
     );
 
-  console.log(assetPages);
-
   let assetCursor = 0;
   let pageCursor = 0;
   let pagesTraversedCounter = 0;

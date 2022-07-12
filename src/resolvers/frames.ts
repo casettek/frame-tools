@@ -1,8 +1,6 @@
 import dotenv from "dotenv";
 import { PubSub } from "graphql-subscriptions";
 import {
-  deploySource,
-  renderFrame,
   renderFrameLocal,
   getImportScripts,
   getWrapperScripts,

@@ -117,7 +117,7 @@ export const renderFrameLocal = (
   );
 };
 
-const deployDataStoreSetup = async () => {
+export const deployDataStoreSetup = async () => {
   // base storage libs
   const FrameDataStore = await hre.ethers.getContractFactory("FrameDataStore");
   frameDataStoreLib = await FrameDataStore.deploy();
@@ -135,7 +135,7 @@ const deployDataStoreSetup = async () => {
   console.log("frameDataStoreFactory lib address set ");
 };
 
-const deployFrameSetup = async () => {
+export const deployFrameSetup = async () => {
   // base frame libs
   const Frame = await hre.ethers.getContractFactory("Frame");
   frameLib = await Frame.deploy();
@@ -148,12 +148,32 @@ const deployFrameSetup = async () => {
   console.log("frameFactory lib address set ");
 };
 
-const deployCoreDeps = async (
+export const renderTemplate = async () => {
+  const fileText = fs
+    .readFileSync(__dirname + "/contract-templates/Render.sol")
+    .toString();
+  console.log(fileText);
+  const template = dot.template(fileText);
+  const result = template({ renderWrapper: "['RENDER_WRAPPER']" });
+  console.log(result);
+
+  const writeResult = fs.writeFileSync(
+    __dirname + "/contracts/Render.sol",
+    result,
+    {
+      encoding: "utf8",
+      flag: "w",
+    }
+  );
+
+  console.log(writeResult);
+};
+
+export const deployCoreDeps = async (
   importsKeys: string[],
   wrappersKeys: string[]
 ) => {
   const FrameDataStore = await hre.ethers.getContractFactory("FrameDataStore");
-  // const Frame = await hre.ethers.getContractFactory("Frame");
 
   const createCall = await frameDataStoreFactory.createFrameDataStore.call();
   const createResult = await createCall.wait();
@@ -161,20 +181,13 @@ const deployCoreDeps = async (
     "000000000000000000000000",
     ""
   );
-  console.log("newStoreAddress", newStoreAddress);
+
   coreDepsDataStore = await FrameDataStore.attach(newStoreAddress);
-  // await newDataStore.saveData("test", 0, toBytes("test"));
-  // const testResult = await newDataStore.getData("test", 0, 0);
-  // console.log("newDataStore", testResult);
 
   const availImports = Object.keys(imports);
   const importsAreValid =
     importsKeys.filter((i) => availImports.indexOf(i) > -1).length ===
     importsKeys.length;
-
-  console.log(importsAreValid);
-
-  // let renderIndexParams = [[], RENDER_PAGE_SIZE];
 
   if (importsAreValid) {
     for (const ik of importsKeys) {
@@ -206,84 +219,53 @@ const deployCoreDeps = async (
   }
 };
 
-export const renderTemplate = async () => {
-  const fileText = fs
-    .readFileSync(__dirname + "/contract-templates/Render.sol")
-    .toString();
-  console.log(fileText);
-  const template = dot.template(fileText);
-  const result = template({ renderWrapper: "['RENDER_WRAPPER']" });
-  console.log(result);
-
-  const writeResult = fs.writeFileSync(
-    __dirname + "/contracts/Render.sol",
-    result,
-    {
-      encoding: "utf8",
-      flag: "w",
-    }
-  );
-
-  console.log(writeResult);
-};
-
-export const deploySource = async (source: string) => {
-  console.log("deploySource", source);
-  await storage.saveData("draw", 0, toBytes(source));
-};
-
-const deployNewFrame = async () => {
+export const deployNewFrame = async (
+  deps: string[][],
+  assets: string[][],
+  renderIndex: number[][]
+) => {
   const Frame = await hre.ethers.getContractFactory("Frame");
-
   const createCall = await frameFactory.createFrame(
     coreDepsDataStore.address,
     frameDataStoreFactory.address,
-    [],
-    [],
-    []
+    deps,
+    assets,
+    renderIndex
   );
   const createResult = await createCall.wait();
   const newFrameAddress = createResult.logs[1]?.data.replace(
     "000000000000000000000000",
     ""
   );
-  console.log("frame createResult", newFrameAddress, createResult.logs);
   frame = await Frame.attach(newFrameAddress);
-
-  // const lib = await frameDataStoreFactory.libraryAddress();
-  // const as = await frame.assetStorage();
-  // console.log("newFrameAddress", frame.address, lib, as);
-
-  const renderWrapper = await frame.renderWrapper();
-  console.log("renderWrapper", renderWrapper);
-};
-
-const configureChainPipeline = async () => {
-  // Set storage
-  await renderer.setAssetStorage(storage.address);
-  console.log("Render storage set to:", storage.address);
-  const { compressorGlobalB64, p5gzhex } = imports;
-
-  const renderIndexLocal = constructRenderIndex(
-    [compressorGlobalB64.pages, p5gzhex.pages, 1, 1],
-    RENDER_PAGE_SIZE
-  );
-  console.log("renderIndexLocal", renderIndexLocal);
-
-  await renderer.setAssets();
-  await renderer.setRenderIndex(renderIndexLocal);
 };
 
 export const renderFrame = async () => {
-  let renderString = "";
-  const renderPages = await frame.renderPagesCount();
+  // const frAssetStorage = await frame.assetStorage();
+  const FrameDataStore = await hre.ethers.getContractFactory("FrameDataStore");
+  const frCoreDepsStorage = await FrameDataStore.attach(
+    await frame.coreDepStorage()
+  );
 
-  for (let i = 0; i < renderPages; i++) {
-    console.log("fetching page", i);
-    renderString = renderString + (await frame.renderPage(i));
+  const test1 = await frCoreDepsStorage.getMaxPageNumber("compressorGlobalB64");
+  const test2 = await frCoreDepsStorage.getMaxPageNumber("p5gzhex");
+  const test3 = await frCoreDepsStorage.getMaxPageNumber("gzhexjsWrapper");
+  const test4 = await frCoreDepsStorage.getMaxPageNumber("renderWrapper");
+
+  console.log("renderframe storage test", test1, test2, test3, test4);
+
+  let renderString = "";
+  const pages = await frame.renderPagesCount();
+  const assetsCount = await frame.assetsCount();
+  const depsCount = await frame.depsCount();
+
+  for (let i = 0; i <= pages; i++) {
+    const result = await frame.renderPage(i);
+    console.log("fetching page", i, result, result.length);
+    renderString = renderString + result;
   }
 
-  console.log("renderString", renderString);
+  console.log("renderFrame", pages, depsCount, assetsCount);
 
   return renderString;
 };
@@ -291,19 +273,34 @@ export const renderFrame = async () => {
 export const deployDefaults = async () => {
   await deployDataStoreSetup();
   await deployFrameSetup();
-  await deployCoreDeps(Object.keys(imports), Object.keys(wrappers));
+  await deployCoreDeps(
+    // libs
+    ["compressorGlobalB64"],
+    // wrappers
+    ["render", "b64jseval", "gzhexjs"]
+  );
 
-  // // Session specific
-  // await deploySource("");
-  await deployNewFrame();
-  // await renderFrame();
+  const { compressorGlobalB64, p5gzhex } = imports;
+  const renderIndexLocal = constructRenderIndex(
+    [compressorGlobalB64.pages],
+    RENDER_PAGE_SIZE
+  );
 
-  // await configureChainPipeline();
+  console.log("renderIndexLocal", renderIndexLocal);
+
+  await deployNewFrame(
+    [
+      [compressorGlobalB64.wrapper, "compressorGlobalB64"],
+      // ["p5gzhex", p5gzhex.wrapper],
+    ],
+    [],
+    renderIndexLocal
+  );
+  await renderFrame();
 };
 
 export default {
   deployDefaults,
-  deploySource,
   renderFrame,
   renderTemplate,
   getImportScripts,

@@ -17,6 +17,7 @@ contract Frame {
     uint256 public depsCount;
 
     mapping(uint256 => Asset) public assetList;
+    uint256 public assetsCount;
 
     uint256 public renderPagesCount;
     mapping(uint256 => uint256[4]) public renderIndex;
@@ -39,14 +40,15 @@ contract Frame {
 
     function setDeps(string[2][] calldata _deps) public {
         for (uint256 dx; dx < _deps.length; dx++) {
-            depsList[dx] = Asset(_deps[dx][0], _deps[dx][1]);
+            depsList[dx] = Asset({ assetType: _deps[dx][0], key: _deps[dx][1] });
             depsCount++;
         }
     }
 
     function setAssets(string[2][] calldata _assets) public {
         for (uint256 ax; ax < _assets.length; ax++) {
-            assetList[ax] = Asset(_assets[ax][0], _assets[ax][1]);
+            assetList[ax] = Asset({ assetType: _assets[ax][0], key: _assets[ax][1] });
+            assetsCount++;
         }
     }
 
@@ -79,36 +81,66 @@ contract Frame {
         uint256 endAtPage = indexItem[3];
         string memory result = "";
 
+        // result = string.concat(
+        //             result, 
+        //             string(
+        //                 abi.encodePacked(
+        //                     coreDepStorage.getData(
+        //                         "b64jsevalWrapper", 1, 1)
+        //                     )
+        //                 )
+        //             );
+
         for (uint256 idx = startAtAsset; idx < endAtAsset + 1; idx++) {
-            bool idxIsDep = idx + 1 <= depsCount;
-            FrameDataStore idxStorage = idxIsDep ? coreDepStorage : assetStorage;
-            Asset memory idxAsset = idxIsDep ? depsList[idx] : assetList[idx];
+            // bool idxIsDep = idx + 1 <= depsCount;
+            // FrameDataStore idxStorage = idxIsDep ? coreDepStorage : assetStorage;
+            // Asset memory idxAsset = idxIsDep ? depsList[idx] : assetList[idx];
+
+            FrameDataStore idxStorage = coreDepStorage;
+            Asset memory idxAsset = depsList[idx];
 
             uint256 startPage = idx == startAtAsset ? startAtPage : 0;
             uint256 endPage = idx == endAtAsset
                 ? endAtPage
                 : idxStorage.getMaxPageNumber(idxAsset.key);
 
-            // If starting at zero, include first part of an asset's wrapper
-            if (startPage == 0) {
-                result = string.concat(result, string(coreDepStorage.getData(string.concat(idxAsset.assetType, "Wrapper"), 0, 0)));
-            }
+            // // If starting at zero, include first part of an asset's wrapper
+            // if (startPage == 0) {
+            //     result = string.concat(
+            //         result, 
+            //         string(
+            //             abi.encodePacked(
+            //                 coreDepStorage.getData(
+            //                     string.concat(idxAsset.assetType, "Wrapper"), 0, 0)
+            //                 )
+            //             )
+            //         );
+            // }
 
-            result = string.concat(
-                result,
-                string(
-                    abi.encodePacked(
-                        coreDepStorage.getData(idxAsset.key, startPage, endPage)
-                    )
-                )
-            );
+            // result = string.concat(
+            //     result,
+            //     string(
+            //         abi.encodePacked(
+            //             coreDepStorage.getData(idxAsset.key, startPage, endPage)
+            //         )
+            //     )
+            // );
 
-            // If needed, include last part of an asset's wrapper
-            bool endingEarly = idx == endAtAsset &&
-                endAtPage != idxStorage.getMaxPageNumber(idxAsset.key);
-            if (!endingEarly) {
-                result = string.concat(result, string(coreDepStorage.getData(string.concat(idxAsset.assetType, "Wrapper"), 1, 1)));
-            }
+            // // If needed, include last part of an asset's wrapper
+            // bool endingEarly = idx == endAtAsset &&
+            //     endAtPage != idxStorage.getMaxPageNumber(idxAsset.key);
+
+            // if (!endingEarly) {
+            //     result = string.concat(
+            //         result, 
+            //         string(
+            //             abi.encodePacked(
+            //                 coreDepStorage.getData(
+            //                     string.concat(idxAsset.assetType, "Wrapper"), 1, 1)
+            //                 )
+            //             )
+            //         );
+            // }
         }
 
         if (_rpage == 0) {

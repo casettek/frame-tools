@@ -143,19 +143,13 @@ contract FrameDataStore {
         return _contractDataPages[_key].maxPageNumber;
     }
 
-    // _endPage < 0 goes to the last page
+    // _endPage = 0 goes to the last page
     function getData(
         string memory _key,
         uint256 _startPage,
         uint256 _endPage
     ) public view returns (bytes memory) {
-        // bool endPageNeg = _endPage < 0;
-
         // Get the total size
-        // uint256 totalSize = endPageNeg
-        //     ? getSizeBetweenPages(_key, _startPage, _endPage)
-        //     : getSizeOfPages(_key);
-
         uint256 totalSize = getSizeBetweenPages(_key, _startPage, _endPage);
 
         // Create a region large enough for all of the data
@@ -167,10 +161,11 @@ contract FrameDataStore {
         // uint256 endPageNumber = endPageNeg
         //     ? _endPage
         //     : _cdPages.maxPageNumber;
+        uint256 endPageNumber = _endPage;
 
         // For each page, pull and compile
         uint256 currentPointer = 32;
-        for (uint256 idx = _startPage; idx <= _endPage; idx++) {
+        for (uint256 idx = _startPage; idx <= endPageNumber; idx++) {
             ContractData storage dataPage = _cdPages.pages[idx];
             address dataContract = dataPage.rawContract;
             uint256 size = uint256(dataPage.size);
