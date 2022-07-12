@@ -117,14 +117,14 @@ contract Frame {
                     );
             }
 
-            // result = string.concat(
-            //     result,
-            //     string(
-            //         abi.encodePacked(
-            //             coreDepStorage.getData(idxAsset.key, startPage, endPage)
-            //         )
-            //     )
-            // );
+            result = string.concat(
+                result,
+                string(
+                    abi.encodePacked(
+                        coreDepStorage.getData(idxAsset.key, startPage, endPage)
+                    )
+                )
+            );
 
             // If needed, include last part of an asset's wrapper
             bool endingEarly = idx == endAtAsset &&
