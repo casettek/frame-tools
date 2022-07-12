@@ -200,7 +200,7 @@ export const deployCoreDeps = async (
           imports[ik].pages
         );
       } else {
-        await coreDepsDataStore.saveData(ik, 0, toBytes(imports[ik].pages));
+        await coreDepsDataStore.saveData(ik, 0, toBytes(imports[ik].data));
       }
     }
   }
@@ -219,17 +219,31 @@ export const deployCoreDeps = async (
   }
 };
 
-export const deployNewFrame = async (
-  deps: string[][],
-  assets: string[][],
-  renderIndex: number[][]
-) => {
+export const deployNewFrame = async (deps: string[][], assets: string[][]) => {
+  // Construct renderIndex
+  const depsPages: number[] = deps.map((d) => imports[d[1]].pages);
+  const assetsPages: number[] = assets.map((a) => calcStoragePages(a[2]));
+  const renderIndex: number[][] = constructRenderIndex(
+    depsPages.concat(assetsPages),
+    RENDER_PAGE_SIZE
+  );
+  const assetsMinusData = assets.map((a) => [a[0], a[1]]);
+
+  console.log(
+    "renderIndex",
+    depsPages,
+    assetsPages,
+    depsPages.concat(assetsPages),
+    renderIndex
+  );
+
+  // Deploy new frame with single source
   const Frame = await hre.ethers.getContractFactory("Frame");
   const createCall = await frameFactory.createFrame(
     coreDepsDataStore.address,
     frameDataStoreFactory.address,
     deps,
-    assets,
+    assetsMinusData,
     renderIndex
   );
   const createResult = await createCall.wait();
@@ -238,26 +252,41 @@ export const deployNewFrame = async (
     ""
   );
   frame = await Frame.attach(newFrameAddress);
+
+  // Store Assets to frame
+  const FrameDataStore = await hre.ethers.getContractFactory("FrameDataStore");
+  const frDataStore = await FrameDataStore.attach(await frame.coreDepStorage());
+
+  for (let i = 0; i < assets.length; i++) {
+    const asset = assets[i];
+    const key = asset[1];
+    const data = asset[2];
+    const pages = assetsPages[i];
+    if (pages > 1) {
+      await staggerStore(frDataStore, key, data, pages);
+    } else {
+      await frDataStore.saveData(key, 0, toBytes(data));
+    }
+  }
 };
 
 export const renderFrame = async () => {
   // const frAssetStorage = await frame.assetStorage();
-  const FrameDataStore = await hre.ethers.getContractFactory("FrameDataStore");
-  const frCoreDepsStorage = await FrameDataStore.attach(
-    await frame.coreDepStorage()
-  );
+  // const FrameDataStore = await hre.ethers.getContractFactory("FrameDataStore");
+  // const frCoreDepsStorage = await FrameDataStore.attach(
+  //   await frame.coreDepStorage()
+  // );
+  // const test1 = await frCoreDepsStorage.getMaxPageNumber("compressorGlobalB64");
+  // const test2 = await frCoreDepsStorage.getMaxPageNumber("p5gzhex");
+  // const test3 = await frCoreDepsStorage.getMaxPageNumber("gzhexjsWrapper");
+  // const test4 = await frCoreDepsStorage.getMaxPageNumber("renderWrapper");
 
-  const test1 = await frCoreDepsStorage.getMaxPageNumber("compressorGlobalB64");
-  const test2 = await frCoreDepsStorage.getMaxPageNumber("p5gzhex");
-  const test3 = await frCoreDepsStorage.getMaxPageNumber("gzhexjsWrapper");
-  const test4 = await frCoreDepsStorage.getMaxPageNumber("renderWrapper");
-
-  console.log("renderframe storage test", test1, test2, test3, test4);
+  // console.log("renderframe storage test", test1, test2, test3, test4);
 
   let renderString = "";
   const pages = await frame.renderPagesCount();
-  const assetsCount = await frame.assetsCount();
-  const depsCount = await frame.depsCount();
+  // const assetsCount = await frame.assetsCount();
+  // const depsCount = await frame.depsCount();
 
   for (let i = 0; i < pages; i++) {
     const result = await frame.renderPage(i);
@@ -265,7 +294,7 @@ export const renderFrame = async () => {
     renderString = renderString + result;
   }
 
-  console.log("renderFrame", pages, depsCount, assetsCount);
+  // console.log("renderFrame", pages, depsCount, assetsCount);
 
   return renderString;
 };
@@ -277,24 +306,26 @@ export const deployDefaults = async () => {
     // libs
     ["compressorGlobalB64", "p5gzhex"],
     // wrappers
-    ["render", "b64jseval", "gzhexjs"]
+    ["render", "b64jseval", "gzhexjs", "rawjs"]
   );
 
   const { compressorGlobalB64, p5gzhex } = imports;
-  const renderIndexLocal = constructRenderIndex(
-    [compressorGlobalB64.pages, p5gzhex.pages],
-    RENDER_PAGE_SIZE
-  );
+  // const renderIndexLocal = constructRenderIndex(
+  //   [compressorGlobalB64.pages, p5gzhex.pages],
+  //   RENDER_PAGE_SIZE
+  // );
 
-  console.log("renderIndexLocal", renderIndexLocal);
+  // console.log("renderIndexLocal", renderIndexLocal);
 
   await deployNewFrame(
     [
       [compressorGlobalB64.wrapper, "compressorGlobalB64"],
-      [p5gzhex.wrapper, "p5gzhex"],
+      // [p5gzhex.wrapper, "p5gzhex"],
     ],
-    [],
-    renderIndexLocal
+    [
+      ["rawjs", "draw", "console.log('draw');"],
+      ["rawjs", "draw2", "console.log('draw2');"],
+    ]
   );
   await renderFrame();
 };

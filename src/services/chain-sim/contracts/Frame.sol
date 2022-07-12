@@ -81,23 +81,10 @@ contract Frame {
         uint256 endAtPage = indexItem[3];
         string memory result = "";
 
-        // result = string.concat(
-        //             result, 
-        //             string(
-        //                 abi.encodePacked(
-        //                     coreDepStorage.getData(
-        //                         "b64jsevalWrapper", 1, 1)
-        //                     )
-        //                 )
-        //             );
-
         for (uint256 idx = startAtAsset; idx < endAtAsset + 1; idx++) {
-            // bool idxIsDep = idx + 1 <= depsCount;
-            // FrameDataStore idxStorage = idxIsDep ? coreDepStorage : assetStorage;
-            // Asset memory idxAsset = idxIsDep ? depsList[idx] : assetList[idx];
-
-            FrameDataStore idxStorage = coreDepStorage;
-            Asset memory idxAsset = depsList[idx];
+            bool idxIsDep = idx + 1 <= depsCount;
+            FrameDataStore idxStorage = idxIsDep ? coreDepStorage : assetStorage;
+            Asset memory idxAsset = idxIsDep ? depsList[idx] : assetList[idx - depsCount];
 
             uint256 startPage = idx == startAtAsset ? startAtPage : 0;
             uint256 endPage = idx == endAtAsset
