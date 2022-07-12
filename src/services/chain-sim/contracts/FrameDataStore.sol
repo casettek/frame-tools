@@ -18,7 +18,8 @@ contract FrameDataStore {
 
     mapping(address => bool) internal _controllers;
 
-    constructor() {}
+    constructor() {
+    }
 
     function saveData(
         string memory _key,

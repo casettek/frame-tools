@@ -35,8 +35,8 @@
       ]
     },
     "/Users/andrewcassetti/Development/frame-backend/src/services/chain-sim/contracts/FrameFactory.sol": {
-      "lastModificationDate": 1657644519687,
-      "contentHash": "3d029535dfc4b047b0631a1e48deed49",
+      "lastModificationDate": 1657649422347,
+      "contentHash": "1f2ef44dde8ae715657fa0bce254e17d",
       "sourceName": "src/services/chain-sim/contracts/FrameFactory.sol",
       "solcConfig": {
         "version": "0.8.12",
@@ -62,6 +62,7 @@
         }
       },
       "imports": [
+        "./FrameDataStore.sol",
         "./Frame.sol",
         "./CloneFactory.sol"
       ],
@@ -73,8 +74,8 @@
       ]
     },
     "/Users/andrewcassetti/Development/frame-backend/src/services/chain-sim/contracts/Frame.sol": {
-      "lastModificationDate": 1657647465660,
-      "contentHash": "f986ad976fe195b040effe2799f1a5df",
+      "lastModificationDate": 1657653693168,
+      "contentHash": "7fa07ae6e9a1e13620bc19caef43262b",
       "sourceName": "src/services/chain-sim/contracts/Frame.sol",
       "solcConfig": {
         "version": "0.8.12",
@@ -111,8 +112,8 @@
       ]
     },
     "/Users/andrewcassetti/Development/frame-backend/src/services/chain-sim/contracts/FrameDataStore.sol": {
-      "lastModificationDate": 1657644519686,
-      "contentHash": "da9547a8b6e321e7010991d800acc6e9",
+      "lastModificationDate": 1657653302693,
+      "contentHash": "18806482f5604a298ca54f67043ba172",
       "sourceName": "src/services/chain-sim/contracts/FrameDataStore.sol",
       "solcConfig": {
         "version": "0.8.12",

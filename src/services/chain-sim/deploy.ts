@@ -219,7 +219,11 @@ export const deployCoreDeps = async (
   }
 };
 
-export const deployNewFrame = async (deps: string[][], assets: string[][]) => {
+export const deployNewFrame = async (
+  deps: string[][],
+  assets: string[][],
+  deployAtomic: boolean
+) => {
   // Construct renderIndex
   const depsPages: number[] = deps.map((d) => imports[d[1]].pages);
   const assetsPages: number[] = assets.map((a) => calcStoragePages(a[2]));
@@ -228,51 +232,89 @@ export const deployNewFrame = async (deps: string[][], assets: string[][]) => {
     RENDER_PAGE_SIZE
   );
   const assetsMinusData = assets.map((a) => [a[0], a[1]]);
-
-  console.log(
-    "renderIndex",
-    depsPages,
-    assetsPages,
-    depsPages.concat(assetsPages),
-    renderIndex
-  );
+  const assetsData = assets.map((a) => toBytes(a[2]));
 
   // Deploy new frame with single source
   const Frame = await hre.ethers.getContractFactory("Frame");
-  const createCall = await frameFactory.createFrame(
-    coreDepsDataStore.address,
-    frameDataStoreFactory.address,
-    deps,
-    assetsMinusData,
-    renderIndex
-  );
-  const createResult = await createCall.wait();
-  const newFrameAddress = createResult.logs[1]?.data.replace(
-    "000000000000000000000000",
-    ""
-  );
-  frame = await Frame.attach(newFrameAddress);
 
-  // Store Assets to frame
-  const FrameDataStore = await hre.ethers.getContractFactory("FrameDataStore");
-  const frDataStore = await FrameDataStore.attach(await frame.coreDepStorage());
+  if (deployAtomic) {
+    const createCall = await frameFactory.createFrameWithSources(
+      coreDepsDataStore.address,
+      frameDataStoreFactory.address,
+      deps,
+      assetsMinusData,
+      assetsData,
+      renderIndex
+    );
+    const createResult = await createCall.wait();
+    console.log(
+      "createFrameWithSources",
+      coreDepsDataStore.address,
+      frameDataStoreFactory.address,
+      deps,
+      assetsMinusData,
+      assetsData,
+      renderIndex
+    );
 
-  for (let i = 0; i < assets.length; i++) {
-    const asset = assets[i];
-    const key = asset[1];
-    const data = asset[2];
-    const pages = assetsPages[i];
-    if (pages > 1) {
-      await staggerStore(frDataStore, key, data, pages);
-    } else {
-      await frDataStore.saveData(key, 0, toBytes(data));
+    const newFrameAddress = createResult.logs[1]?.data.replace(
+      "000000000000000000000000",
+      ""
+    );
+    frame = await Frame.attach(newFrameAddress);
+  } else {
+    console.log(
+      "createFrame",
+      coreDepsDataStore.address,
+      frameDataStoreFactory.address,
+      deps,
+      assetsMinusData,
+      renderIndex
+    );
+
+    const createCall = await frameFactory.createFrame(
+      coreDepsDataStore.address,
+      frameDataStoreFactory.address,
+      deps,
+      assetsMinusData,
+      renderIndex
+    );
+    const createResult = await createCall.wait();
+    const newFrameAddress = createResult.logs[1]?.data.replace(
+      "000000000000000000000000",
+      ""
+    );
+    frame = await Frame.attach(newFrameAddress);
+
+    // Store Assets to frame
+    const FrameDataStore = await hre.ethers.getContractFactory(
+      "FrameDataStore"
+    );
+    const frDataStore = await FrameDataStore.attach(await frame.assetStorage());
+
+    for (let i = 0; i < assets.length; i++) {
+      const asset = assets[i];
+      const key = asset[1];
+      const data = asset[2];
+      const pages = assetsPages[i];
+      if (pages > 1) {
+        await staggerStore(frDataStore, key, data, pages);
+      } else {
+        await frDataStore.saveData(key, 0, toBytes(data));
+      }
     }
   }
 };
 
 export const renderFrame = async () => {
   // const frAssetStorage = await frame.assetStorage();
-  // const FrameDataStore = await hre.ethers.getContractFactory("FrameDataStore");
+  const FrameDataStore = await hre.ethers.getContractFactory("FrameDataStore");
+  const frAssetStorage = await FrameDataStore.attach(
+    await frame.assetStorage()
+  );
+  const test1 = await frAssetStorage.getData("draw", 0, 0);
+  console.log("tests", test1);
+
   // const frCoreDepsStorage = await FrameDataStore.attach(
   //   await frame.coreDepStorage()
   // );
@@ -294,7 +336,7 @@ export const renderFrame = async () => {
     renderString = renderString + result;
   }
 
-  // console.log("renderFrame", pages, depsCount, assetsCount);
+  // console.log("renderFrame", renderString);
 
   return renderString;
 };
@@ -325,7 +367,8 @@ export const deployDefaults = async () => {
     [
       ["rawjs", "draw", "console.log('draw');"],
       ["rawjs", "draw2", "console.log('draw2');"],
-    ]
+    ],
+    false
   );
   await renderFrame();
 };
