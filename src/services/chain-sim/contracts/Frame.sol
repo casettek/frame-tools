@@ -104,18 +104,18 @@ contract Frame {
                 ? endAtPage
                 : idxStorage.getMaxPageNumber(idxAsset.key);
 
-            // // If starting at zero, include first part of an asset's wrapper
-            // if (startPage == 0) {
-            //     result = string.concat(
-            //         result, 
-            //         string(
-            //             abi.encodePacked(
-            //                 coreDepStorage.getData(
-            //                     string.concat(idxAsset.assetType, "Wrapper"), 0, 0)
-            //                 )
-            //             )
-            //         );
-            // }
+            // If starting at zero, include first part of an asset's wrapper
+            if (startPage == 0) {
+                result = string.concat(
+                    result, 
+                    string(
+                        abi.encodePacked(
+                            coreDepStorage.getData(
+                                string.concat(idxAsset.assetType, "Wrapper"), 0, 0)
+                            )
+                        )
+                    );
+            }
 
             // result = string.concat(
             //     result,
@@ -126,27 +126,29 @@ contract Frame {
             //     )
             // );
 
-            // // If needed, include last part of an asset's wrapper
-            // bool endingEarly = idx == endAtAsset &&
-            //     endAtPage != idxStorage.getMaxPageNumber(idxAsset.key);
+            // If needed, include last part of an asset's wrapper
+            bool endingEarly = idx == endAtAsset &&
+                endAtPage != idxStorage.getMaxPageNumber(idxAsset.key);
 
-            // if (!endingEarly) {
-            //     result = string.concat(
-            //         result, 
-            //         string(
-            //             abi.encodePacked(
-            //                 coreDepStorage.getData(
-            //                     string.concat(idxAsset.assetType, "Wrapper"), 1, 1)
-            //                 )
-            //             )
-            //         );
-            // }
+            if (!endingEarly) {
+                result = string.concat(
+                    result, 
+                    string(
+                        abi.encodePacked(
+                            coreDepStorage.getData(
+                                string.concat(idxAsset.assetType, "Wrapper"), 1, 1)
+                            )
+                        )
+                    );
+            }
         }
 
         if (_rpage == 0) {
-            return string.concat(string(coreDepStorage.getData("renderWrapper", 0, 0)), result);
-        } else if (_rpage == renderPagesCount) {
-            return string.concat(result, string(coreDepStorage.getData("renderWrapper", 1, 1)));
+            result = string.concat(string(coreDepStorage.getData("renderWrapper", 0, 0)), result);
+        }
+        
+        if (_rpage == (renderPagesCount - 1)) {
+            result = string.concat(result, string(coreDepStorage.getData("renderWrapper", 1, 1)));
         }
 
         return result;

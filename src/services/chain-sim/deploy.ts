@@ -259,9 +259,9 @@ export const renderFrame = async () => {
   const assetsCount = await frame.assetsCount();
   const depsCount = await frame.depsCount();
 
-  for (let i = 0; i <= pages; i++) {
+  for (let i = 0; i < pages; i++) {
     const result = await frame.renderPage(i);
-    console.log("fetching page", i, result, result.length);
+    console.log("fetching page", i, result);
     renderString = renderString + result;
   }
 
@@ -275,14 +275,14 @@ export const deployDefaults = async () => {
   await deployFrameSetup();
   await deployCoreDeps(
     // libs
-    ["compressorGlobalB64"],
+    ["compressorGlobalB64", "p5gzhex"],
     // wrappers
     ["render", "b64jseval", "gzhexjs"]
   );
 
   const { compressorGlobalB64, p5gzhex } = imports;
   const renderIndexLocal = constructRenderIndex(
-    [compressorGlobalB64.pages],
+    [compressorGlobalB64.pages, p5gzhex.pages],
     RENDER_PAGE_SIZE
   );
 
@@ -291,7 +291,7 @@ export const deployDefaults = async () => {
   await deployNewFrame(
     [
       [compressorGlobalB64.wrapper, "compressorGlobalB64"],
-      // ["p5gzhex", p5gzhex.wrapper],
+      [p5gzhex.wrapper, "p5gzhex"],
     ],
     [],
     renderIndexLocal
