@@ -145,7 +145,7 @@ export const deployFrameSetup = async () => {
   frameFactory = await FrameFactory.deploy();
   console.log("frameFactory deployed at ", frameFactory.address);
   await frameFactory.setLibraryAddress(frameLib.address);
-  console.log("frameFactory lib address set ");
+  console.log("frameFactory lib address set");
 };
 
 export const renderTemplate = async () => {
@@ -206,16 +206,20 @@ export const deployCoreDeps = async (
   }
 
   for (const wk of wrappersKeys) {
-    await coreDepsDataStore.saveData(
-      wk + "Wrapper",
-      0,
-      toBytes(wrappers[wk][0])
-    );
-    await coreDepsDataStore.saveData(
-      wk + "Wrapper",
-      1,
-      toBytes(wrappers[wk][1])
-    );
+    console.log(wk + "Wrapper", " 0");
+    console.log(Buffer.from(toBytes(wrappers[wk][0])).toString("hex"));
+    console.log(wk + "Wrapper", " 1");
+    console.log(Buffer.from(toBytes(wrappers[wk][1])).toString("hex"));
+    // await coreDepsDataStore.saveData(
+    //   wk + "Wrapper",
+    //   0,
+    //   toBytes(wrappers[wk][0])
+    // );
+    // await coreDepsDataStore.saveData(
+    //   wk + "Wrapper",
+    //   1,
+    //   toBytes(wrappers[wk][1])
+    // );
   }
 };
 
@@ -247,15 +251,20 @@ export const deployNewFrame = async (
       renderIndex
     );
     const createResult = await createCall.wait();
-    console.log(
-      "createFrameWithSources",
-      coreDepsDataStore.address,
-      frameDataStoreFactory.address,
-      deps,
-      assetsMinusData,
-      assetsData,
-      renderIndex
-    );
+    // console.log(
+    //   "createFrameWithSources",
+    //   coreDepsDataStore.address,
+    //   frameDataStoreFactory.address,
+    //   deps,
+    //   assetsMinusData,
+    //   assetsData,
+    //   renderIndex
+    // );
+    // console.log("createFrameWithSources result", createResult);
+    // console.log(
+    //   "tx cost",
+    //   createResult.effectiveGasPrice.mul(createResult.gasUsed)
+    // );
 
     const newFrameAddress = createResult.logs[1]?.data.replace(
       "000000000000000000000000",
@@ -263,14 +272,14 @@ export const deployNewFrame = async (
     );
     frame = await Frame.attach(newFrameAddress);
   } else {
-    console.log(
-      "createFrame",
-      coreDepsDataStore.address,
-      frameDataStoreFactory.address,
-      deps,
-      assetsMinusData,
-      renderIndex
-    );
+    // console.log(
+    //   "createFrame",
+    //   coreDepsDataStore.address,
+    //   frameDataStoreFactory.address,
+    //   deps,
+    //   assetsMinusData,
+    //   renderIndex
+    // );
 
     const createCall = await frameFactory.createFrame(
       coreDepsDataStore.address,
@@ -313,13 +322,12 @@ export const deployNewFrame = async (
 };
 
 export const renderFrame = async () => {
-  // const frAssetStorage = await frame.assetStorage();
-  const FrameDataStore = await hre.ethers.getContractFactory("FrameDataStore");
-  const frAssetStorage = await FrameDataStore.attach(
-    await frame.assetStorage()
-  );
-  const test1 = await frAssetStorage.getData("draw", 0, 0);
-  console.log("tests", test1);
+  // const FrameDataStore = await hre.ethers.getContractFactory("FrameDataStore");
+  // const frAssetStorage = await FrameDataStore.attach(
+  //   await frame.assetStorage()
+  // );
+  // const test1 = await frAssetStorage.getData("draw", 0, 0);
+  // console.log("tests", test1);
 
   // const frCoreDepsStorage = await FrameDataStore.attach(
   //   await frame.coreDepStorage()
@@ -338,7 +346,7 @@ export const renderFrame = async () => {
 
   for (let i = 0; i < pages; i++) {
     const result = await frame.renderPage(i);
-    console.log("fetching page", i, result);
+    // console.log("fetching page", i, result);
     renderString = renderString + result;
   }
 
@@ -372,7 +380,7 @@ export const deployDefaults = async () => {
     ],
     [
       ["rawjs", "draw", "console.log('draw');"],
-      ["rawjs", "draw2", "console.log('draw2');"],
+      // ["rawjs", "draw2", "console.log('draw2');"],
     ],
     true
   );

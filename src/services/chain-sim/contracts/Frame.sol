@@ -4,7 +4,6 @@ pragma solidity ^0.8.12;
 import './FrameDataStore.sol';
 import './FrameDataStoreFactory.sol';
 
-
 contract Frame {
     struct Asset {
         string assetType;
