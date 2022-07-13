@@ -238,6 +238,10 @@ export const deployNewFrame = async (
   const assetsMinusData = assets.map((a) => [a[0], a[1]]);
   const assetsData = assets.map((a) => toBytes(a[2]));
 
+  console.log(renderIndex);
+  console.log(assetsMinusData);
+  console.log(assetsData.map((ad) => Buffer.from(ad).toString("hex")));
+
   // Deploy new frame with single source
   const Frame = await hre.ethers.getContractFactory("Frame");
 
@@ -375,7 +379,7 @@ export const deployDefaults = async () => {
 
   await deployNewFrame(
     [
-      [compressorGlobalB64.wrapper, "compressorGlobalB64"],
+      // [compressorGlobalB64.wrapper, "compressorGlobalB64"],
       // [p5gzhex.wrapper, "p5gzhex"],
     ],
     [
