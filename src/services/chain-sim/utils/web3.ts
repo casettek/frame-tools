@@ -1,5 +1,6 @@
 const hre = require("hardhat");
 export const toBytes = hre.ethers.utils.toUtf8Bytes;
+export const hexlify = hre.ethers.utils.hexlify;
 
 export const chunkSubstr = (str: string, size: number) => {
   const numChunks = Math.ceil(str.length / size);
@@ -24,8 +25,14 @@ export const staggerStore = async (
   );
 
   for (let i = 0; i < stringChunks.length; i++) {
+    if (i > 29 && i < 40) {
+      console.log(`${key} page ${i}:`);
+      console.log(hexlify(toBytes(stringChunks[i])));
+      console.log("");
+    }
+
     await contract.saveData(key, i, toBytes(stringChunks[i]));
-    console.log(`Stored ${key} page ${i}`);
+    // console.log(`Stored ${key} page ${i}`);
   }
 };
 

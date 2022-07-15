@@ -364,7 +364,10 @@ export const deployDefaults = async () => {
   await deployFrameSetup();
   await deployCoreDeps(
     // libs
-    ["compressorGlobalB64"],
+    [
+      // "compressorGlobalB64",
+      "p5gzhex",
+    ],
     // wrappers
     ["render", "b64jseval", "gzhexjs", "rawjs"]
   );
@@ -377,18 +380,18 @@ export const deployDefaults = async () => {
 
   // console.log("renderIndexLocal", renderIndexLocal);
 
-  await deployNewFrame(
-    [
-      // [compressorGlobalB64.wrapper, "compressorGlobalB64"],
-      // [p5gzhex.wrapper, "p5gzhex"],
-    ],
-    [
-      ["rawjs", "draw", "console.log('draw');"],
-      // ["rawjs", "draw2", "console.log('draw2');"],
-    ],
-    true
-  );
-  await renderFrame();
+  // await deployNewFrame(
+  //   [
+  //     // [compressorGlobalB64.wrapper, "compressorGlobalB64"],
+  //     // [p5gzhex.wrapper, "p5gzhex"],
+  //   ],
+  //   [
+  //     ["rawjs", "draw", "console.log('draw');"],
+  //     // ["rawjs", "draw2", "console.log('draw2');"],
+  //   ],
+  //   true
+  // );
+  // await renderFrame();
 };
 
 export default {
