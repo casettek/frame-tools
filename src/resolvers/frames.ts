@@ -15,10 +15,7 @@ dotenv.config();
 const resolvers = {
   Query: {
     getFrame: async (_: any): Promise<iFrame> => {
-      const frame = renderFrameLocal(
-        ["compressorGlobalB64", "p5gzhex", "p5setup"],
-        ""
-      );
+      const frame = renderFrameLocal(["gz-utils@1.0.0", "p5@1.4.2"], "");
       return { html: frame };
     },
     getImports: async (

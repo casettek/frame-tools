@@ -45,42 +45,44 @@ type ImportDataMap = {
 };
 
 const wrappers: WrapperDataMap = {
-  render: [
+  "html-wrap@1.0.0": [
     '<!DOCTYPE html><html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/></head><body style="margin: 0px;">',
     "</body></html>",
   ],
-  rawjs: ["<script>", "</script>"],
-  b64jseval: ["<script>eval(atob('", "'));</script>"],
-  gzhexjs: [
-    "<script>window._assets = (window._assets||[]).concat(window.fflate.strFromU8(window.fflate.decompressSync(window.hexStringToArrayBuffer('",
-    "'))));</script>",
+  "js-wrap@1.0.0": ['<script type="text/javascript">', "</script>"],
+  "b64js-wrap@1.0.0": [
+    '<script type="text/javascript">eval(atob("',
+    '"));</script>',
   ],
+  "hexgzjs-wrap@1.0.0": [
+    '<script type="text/javascript">eval(window.fflate.strFromU8(window.fflate.decompressSync(window.hexStringToArrayBuffer("',
+    '"))));</script>',
+  ],
+  // "hexgzjs-wrap@1.0.0": [
+  //   '<script type="text/javascript">window._assets = (window._assets||[]).concat(window.fflate.strFromU8(window.fflate.decompressSync(window.hexStringToArrayBuffer("',
+  //   "'))));</script>",
+  // ],
 };
 
 const imports: ImportDataMap = {
-  compressorGlobalB64: {
-    data: base.compressorGlobalB64,
-    wrapper: "b64jseval",
-    pages: calcStoragePages(base.compressorGlobalB64),
+  "gz-utils@1.0.0": {
+    data: base.gzutilsb64,
+    wrapper: "b64js-wrap@1.0.0",
+    pages: calcStoragePages(base.gzutilsb64),
   },
-  p5gzhex: {
+  "p5@1.4.2": {
     data: processing.p5gzhex,
-    wrapper: "gzhexjs",
+    wrapper: "hexgzjs-wrap@1.0.0",
     pages: calcStoragePages(processing.p5gzhex),
   },
-  p5setup: {
-    data: "eval(window._assets[0]);",
-    wrapper: "rawjs",
-    pages: 1,
-  },
-  d3topogzhex: {
+  "d3@3.0.0": {
     data: d3.d3topogzhex,
-    wrapper: "gzhexjs",
+    wrapper: "hexgzjs-wrap@1.0.0",
     pages: calcStoragePages(d3.d3topogzhex),
   },
-  threegzhex: {
+  "three@0.142.0": {
     data: three.threegzhex,
-    wrapper: "gzhexjs",
+    wrapper: "hexgzjs-wrap@1.0.0",
     pages: calcStoragePages(three.threegzhex),
   },
 };
@@ -88,6 +90,7 @@ const imports: ImportDataMap = {
 export const getImportScripts = (importKeys: string[]): Array<iImport> =>
   importKeys.map((ik) => {
     const imp = imports[ik];
+    console.log("getImports", ik);
     const { wrapper, data } = imp;
     const wrapperArr: string[] = wrappers[wrapper];
     return {
@@ -221,6 +224,7 @@ export const deployCoreDeps = async (
     //   toBytes(wrappers[wk][1])
     // );
   }
+  return;
 };
 
 export const deployNewFrame = async (
