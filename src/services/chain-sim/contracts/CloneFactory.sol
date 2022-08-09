@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
 contract CloneFactory {
   function createClone(address target) internal returns (address result) {
     bytes20 targetBytes = bytes20(target);
