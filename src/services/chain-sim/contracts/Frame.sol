@@ -1,10 +1,27 @@
 //SPDX-License-Identifier: MIT
 pragma solidity ^0.8.12;
 
-import './FrameDataStore.sol';
-import './FrameDataStoreFactory.sol';
+import "./Ownable.sol";
 
-contract Frame {
+interface FrameDataStore {
+    function getData(
+        string memory _key,
+        uint256 _startPage,
+        uint256 _endPage
+    ) external view returns (bytes memory);
+
+    function getMaxPageNumber(string memory _key)
+        external
+        view
+        returns (uint256);
+
+    function getAllDataFromPage(
+        string memory _key,
+        uint256 _startPage
+    ) external view returns (bytes memory);
+}
+
+contract Frame is Ownable {
     struct Asset {
         string assetType;
         string key;
@@ -22,6 +39,8 @@ contract Frame {
     uint256 public renderPagesCount;
     mapping(uint256 => uint256[4]) public renderIndex;
 
+    bool initSuccess = false;
+
     constructor() {}
 
     function init(
@@ -30,37 +49,43 @@ contract Frame {
         string[2][] calldata _deps,
         string[2][] calldata _assets,
         uint256[4][] calldata _renderIndex
-    ) public {
-        setCoreDepStorage(FrameDataStore(_coreDepStorage));
-        setAssetStorage(FrameDataStore(_assetStorage));
-        setDeps(_deps);
-        setAssets(_assets);
-        setRenderIndex(_renderIndex);
+    ) public onlyOwner {
+        require(!initSuccess, "Frame: Can't re-init contract");
+
+        _setCoreDepStorage(FrameDataStore(_coreDepStorage));
+        _setAssetStorage(FrameDataStore(_assetStorage));
+        _setDeps(_deps);
+        _setAssets(_assets);
+        _setRenderIndex(_renderIndex);
+
+        initSuccess = true;
     }
 
-    function setDeps(string[2][] calldata _deps) public {
+    // Internal 
+
+    function _setDeps(string[2][] calldata _deps) internal {
         for (uint256 dx; dx < _deps.length; dx++) {
             depsList[dx] = Asset({ assetType: _deps[dx][0], key: _deps[dx][1] });
             depsCount++;
         }
     }
 
-    function setAssets(string[2][] calldata _assets) public {
+    function _setAssets(string[2][] calldata _assets) internal {
         for (uint256 ax; ax < _assets.length; ax++) {
             assetList[ax] = Asset({ assetType: _assets[ax][0], key: _assets[ax][1] });
             assetsCount++;
         }
     }
 
-    function setCoreDepStorage(FrameDataStore _storage) public {
+    function _setCoreDepStorage(FrameDataStore _storage) internal {
         coreDepStorage = _storage;
     }
 
-    function setAssetStorage(FrameDataStore _storage) public {
+    function _setAssetStorage(FrameDataStore _storage) internal {
         assetStorage = _storage;
     }
 
-    function setRenderIndex(uint256[4][] calldata _index) public {
+    function _setRenderIndex(uint256[4][] calldata _index) internal {
         for (uint256 idx; idx < _index.length; idx++) {
             renderPagesCount++;
             renderIndex[idx] = _index[idx];
@@ -68,12 +93,14 @@ contract Frame {
         renderPagesCount = _index.length;
     }
 
+    // Read-only
+
     function renderWrapper() public view returns (string memory) {
-        return string(coreDepStorage.getData("renderWrapper", 0, 0));
+        return string(coreDepStorage.getAllDataFromPage("renderWrapper", 0));
     }
 
     function renderPage(uint256 _rpage) public view returns (string memory) {
-        // [startAsset, endAsset, startAssetPage, endAssetPage]
+        // Index item format: [startAsset, endAsset, startAssetPage, endAssetPage]
         uint256[4] memory indexItem = renderIndex[_rpage];
         uint256 startAtAsset = indexItem[0];
         uint256 endAtAsset = indexItem[1];

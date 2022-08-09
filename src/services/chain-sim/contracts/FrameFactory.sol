@@ -1,9 +1,25 @@
 //SPDX-License-Identifier: MIT
 pragma solidity ^0.8.12;
 
-import './FrameDataStore.sol';
-import './Frame.sol';
-import './CloneFactory.sol';
+import "./CloneFactory.sol";
+
+interface FrameDataStore {
+    function saveData(string memory _key, uint128 _pageNumber, bytes memory _b) external;
+}
+
+interface FrameDataStoreFactory {
+    function createFrameDataStore() external returns (address);
+}
+
+interface Frame {
+    function init(
+        address _coreDepStorage,
+        address _assetStorage,
+        string[2][] calldata _deps,
+        string[2][] calldata _assets,
+        uint256[4][] calldata _renderIndex
+    ) external;
+}
 
 contract FrameFactory is CloneFactory {
     address public libraryAddress;
@@ -32,7 +48,7 @@ contract FrameFactory is CloneFactory {
         return clone;
     }
 
-    // Must be single pages
+    // Must be single page source for now. This will limit the size of source that can be used.
     function createFrameWithSources(
         address _coreDepStorage,
         FrameDataStoreFactory _frameDataStoreFactory,
