@@ -1,8 +1,6 @@
 //SPDX-License-Identifier: MIT
 pragma solidity ^0.8.12;
 
-import "./Ownable.sol";
-
 interface FrameDataStore {
     function getData(
         string memory _key,
@@ -21,9 +19,11 @@ interface FrameDataStore {
     ) external view returns (bytes memory);
 }
 
-contract Frame is Ownable {
+contract Frame {
+    string name = "";
+
     struct Asset {
-        string assetType;
+        string wrapperKey;
         string key;
     }
 
@@ -49,7 +49,7 @@ contract Frame is Ownable {
         string[2][] calldata _deps,
         string[2][] calldata _assets,
         uint256[4][] calldata _renderIndex
-    ) public onlyOwner {
+    ) public {
         require(!initSuccess, "Frame: Can't re-init contract");
 
         _setCoreDepStorage(FrameDataStore(_coreDepStorage));
@@ -61,18 +61,23 @@ contract Frame is Ownable {
         initSuccess = true;
     }
 
+    function setName(string memory _name) public {
+        require(bytes(name).length < 3, "Frame: Name already set");
+        name = _name;
+    }
+
     // Internal 
 
     function _setDeps(string[2][] calldata _deps) internal {
         for (uint256 dx; dx < _deps.length; dx++) {
-            depsList[dx] = Asset({ assetType: _deps[dx][0], key: _deps[dx][1] });
+            depsList[dx] = Asset({ wrapperKey: _deps[dx][0], key: _deps[dx][1] });
             depsCount++;
         }
     }
 
     function _setAssets(string[2][] calldata _assets) internal {
         for (uint256 ax; ax < _assets.length; ax++) {
-            assetList[ax] = Asset({ assetType: _assets[ax][0], key: _assets[ax][1] });
+            assetList[ax] = Asset({ wrapperKey: _assets[ax][0], key: _assets[ax][1] });
             assetsCount++;
         }
     }
@@ -96,7 +101,7 @@ contract Frame is Ownable {
     // Read-only
 
     function renderWrapper() public view returns (string memory) {
-        return string(coreDepStorage.getAllDataFromPage("renderWrapper", 0));
+        return string(coreDepStorage.getAllDataFromPage("html-wrap@1.0.0", 0));
     }
 
     function renderPage(uint256 _rpage) public view returns (string memory) {
@@ -125,11 +130,10 @@ contract Frame is Ownable {
                     result, 
                     string(
                         abi.encodePacked(
-                            coreDepStorage.getData(
-                                string.concat(idxAsset.assetType, "Wrapper"), 0, 0)
-                            )
+                            coreDepStorage.getData(idxAsset.wrapperKey, 0, 0)
                         )
-                    );
+                    )
+                );
             }
 
             result = string.concat(
@@ -151,19 +155,20 @@ contract Frame is Ownable {
                     string(
                         abi.encodePacked(
                             coreDepStorage.getData(
-                                string.concat(idxAsset.assetType, "Wrapper"), 1, 1)
+                                idxAsset.wrapperKey, 1, 1
                             )
                         )
-                    );
+                    )
+                );
             }
         }
 
         if (_rpage == 0) {
-            result = string.concat(string(coreDepStorage.getData("renderWrapper", 0, 0)), result);
+            result = string.concat(string(coreDepStorage.getData("html-wrap@1.0.0", 0, 0)), result);
         }
         
         if (_rpage == (renderPagesCount - 1)) {
-            result = string.concat(result, string(coreDepStorage.getData("renderWrapper", 1, 1)));
+            result = string.concat(result, string(coreDepStorage.getData("html-wrap@1.0.0", 1, 1)));
         }
 
         return result;

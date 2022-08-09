@@ -1,9 +1,7 @@
 //SPDX-License-Identifier: MIT
 pragma solidity ^0.8.12;
 
-import "./Ownable.sol";
-
-contract FrameDataStore is Ownable {
+contract FrameDataStore {
     struct ContractData {
         address rawContract;
         uint128 size;
@@ -20,6 +18,8 @@ contract FrameDataStore is Ownable {
 
     mapping(address => bool) internal _controllers;
 
+    bool isLocked = false;
+
     constructor() {
     }
 
@@ -27,7 +27,7 @@ contract FrameDataStore is Ownable {
         string memory _key,
         uint128 _pageNumber,
         bytes memory _b
-    ) public onlyOwner {
+    ) public {
         require(
             _b.length < 24576,
             "Storage: Exceeded 24,576 bytes max contract size"
@@ -36,6 +36,11 @@ contract FrameDataStore is Ownable {
         require(
             !hasKey(_key) || getMaxPageNumber(_key) < _pageNumber, 
             "Storage: Cannot overwrite page for key"
+        );
+
+        require(
+            !isLocked, 
+            "Storage: Contract locked"
         );
 
         // Create the header for the contract data
@@ -172,5 +177,10 @@ contract FrameDataStore is Ownable {
 
     function hasKey(string memory _key) public view returns (bool) {
         return _contractDataPages[_key].exists;
+    }
+
+    function lock() public {
+        require(!isLocked, "Storage: Contract already locked");
+        isLocked = true;
     }
 }
