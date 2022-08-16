@@ -20,12 +20,13 @@ interface FrameDataStore {
 }
 
 contract Frame {
-    string name = "";
-
     struct Asset {
         string wrapperKey;
         string key;
     }
+
+    string public name = "";
+    bool public initSuccess = false;
 
     FrameDataStore public coreDepStorage;
     FrameDataStore public assetStorage;
@@ -38,8 +39,6 @@ contract Frame {
 
     uint256 public renderPagesCount;
     mapping(uint256 => uint256[4]) public renderIndex;
-
-    bool initSuccess = false;
 
     constructor() {}
 
@@ -99,10 +98,6 @@ contract Frame {
     }
 
     // Read-only
-
-    function renderWrapper() public view returns (string memory) {
-        return string(coreDepStorage.getAllDataFromPage("html-wrap@1.0.0", 0));
-    }
 
     function renderPage(uint256 _rpage) public view returns (string memory) {
         // Index item format: [startAsset, endAsset, startAssetPage, endAssetPage]

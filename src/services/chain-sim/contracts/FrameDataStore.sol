@@ -18,7 +18,10 @@ contract FrameDataStore {
 
     mapping(address => bool) internal _controllers;
 
-    bool isLocked = false;
+    bool public isLocked = false;
+
+    string public name;
+    string public version;
 
     constructor() {
     }
@@ -30,17 +33,17 @@ contract FrameDataStore {
     ) public {
         require(
             _b.length < 24576,
-            "Storage: Exceeded 24,576 bytes max contract size"
+            "FrameDataStore: Exceeded 24,576 bytes max contract size"
         );
 
         require(
             !hasKey(_key) || getMaxPageNumber(_key) < _pageNumber, 
-            "Storage: Cannot overwrite page for key"
+            "FrameDataStore: Cannot overwrite page for key"
         );
 
         require(
             !isLocked, 
-            "Storage: Contract locked"
+            "FrameDataStore: Contract locked"
         );
 
         // Create the header for the contract data
@@ -99,6 +102,16 @@ contract FrameDataStore {
             _size,
             _offset
         );
+    }
+
+    function setName(string memory _name) public {
+        require(bytes(name).length < 3, "FrameDataStore: Name already set");
+        name = _name;
+    }
+
+    function setVersion(string memory _version) public {
+        require(bytes(version).length < 3, "FrameDataStore: Version already set");
+        version = _version;
     }
 
     function getSizeBetweenPages(
@@ -180,7 +193,7 @@ contract FrameDataStore {
     }
 
     function lock() public {
-        require(!isLocked, "Storage: Contract already locked");
+        require(!isLocked, "FrameDataStore: Contract already locked");
         isLocked = true;
     }
 }

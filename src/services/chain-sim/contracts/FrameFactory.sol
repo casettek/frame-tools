@@ -9,7 +9,7 @@ interface FrameDataStore {
 }
 
 interface FrameDataStoreFactory {
-    function createFrameDataStore() external returns (address);
+    function createFrameDataStore(string memory _name, string memory _version) external returns (address);
 }
 
 interface Frame {
@@ -32,7 +32,7 @@ contract FrameFactory is CloneFactory {
     constructor() {}
 
     function setLibraryAddress(address _libraryAddress) public  {
-        require(libraryAddress == address(0), "Frame Factory: Library already set");
+        require(libraryAddress == address(0), "FrameFactory: Library already set");
         libraryAddress = _libraryAddress;
     }
 
@@ -44,11 +44,11 @@ contract FrameFactory is CloneFactory {
         uint256[4][] calldata _renderIndex,
         string calldata _name
     ) public returns (address)  {
-        // Create frame contract and data store contract
+        // Create new frame contract and data store contract
         address clone = createClone(libraryAddress);
-        address _assetStorage = _frameDataStoreFactory.createFrameDataStore();
+        address _assetStorage = _frameDataStoreFactory.createFrameDataStore(string.concat(_name, " ", "Source"), "1.0.0");
 
-        // Init without source or name
+        // Init frame
         Frame(clone).init(
             _coreDepStorage, 
             _assetStorage, 
@@ -57,13 +57,13 @@ contract FrameFactory is CloneFactory {
             _renderIndex
         );
 
-        // Set name and save source to new data store
+        // Set frame name and save source to newly created data store
         Frame(clone).setName(_name);
         for (uint256 adx = 0; adx < _assetsData.length; adx++) {
           FrameDataStore(_assetStorage).saveData(string(_depsAndAssets[1][adx][1]), 0, _assetsData[adx]);
         }
         
-        // Lock frame's storage
+        // Lock newly created data store
         FrameDataStore(_assetStorage).lock();
 
         emit FrameCreated(clone);
