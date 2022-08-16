@@ -45,44 +45,40 @@ type ImportDataMap = {
 };
 
 const wrappers: WrapperDataMap = {
-  "html-wrap@1.0.0": [
+  "html-wrap@0.0.1": [
     '<!DOCTYPE html><html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/></head><body style="margin: 0px;">',
     "</body></html>",
   ],
-  "js-wrap@1.0.0": ['<script type="text/javascript">', "</script>"],
-  "b64js-wrap@1.0.0": [
+  "js-wrap@0.0.1": ['<script type="text/javascript">', "</script>"],
+  "b64js-wrap@0.0.1": [
     '<script type="text/javascript">eval(atob("',
     '"));</script>',
   ],
-  "hexgzjs-wrap@1.0.0": [
+  "hexgzjs-wrap@0.0.1": [
     '<script type="text/javascript">eval(window.fflate.strFromU8(window.fflate.decompressSync(window.hexStringToArrayBuffer("',
     '"))));</script>',
   ],
-  // "hexgzjs-wrap@1.0.0": [
-  //   '<script type="text/javascript">window._assets = (window._assets||[]).concat(window.fflate.strFromU8(window.fflate.decompressSync(window.hexStringToArrayBuffer("',
-  //   "'))));</script>",
-  // ],
 };
 
 const imports: ImportDataMap = {
-  "gz-utils@1.0.0": {
+  "gz-utils@0.0.1": {
     data: base.gzutilsb64,
-    wrapper: "b64js-wrap@1.0.0",
+    wrapper: "b64js-wrap@0.0.1",
     pages: calcStoragePages(base.gzutilsb64),
   },
   "p5@1.4.2": {
     data: processing.p5gzhex,
-    wrapper: "hexgzjs-wrap@1.0.0",
+    wrapper: "hexgzjs-wrap@0.0.1",
     pages: calcStoragePages(processing.p5gzhex),
   },
   "d3@3.0.0": {
     data: d3.d3topogzhex,
-    wrapper: "hexgzjs-wrap@1.0.0",
+    wrapper: "hexgzjs-wrap@0.0.1",
     pages: calcStoragePages(d3.d3topogzhex),
   },
   "three@0.142.0": {
     data: three.threegzhex,
-    wrapper: "hexgzjs-wrap@1.0.0",
+    wrapper: "hexgzjs-wrap@0.0.1",
     pages: calcStoragePages(three.threegzhex),
   },
 };
