@@ -55,7 +55,7 @@ const wrappers: WrapperDataMap = {
     '"));</script>',
   ],
   "hexgzjs-wrap@1.0.0": [
-    '<script type="text/javascript">eval(window.gzutils.fflate.strFromU8(window.gzutils.fflate.decompressSync(window.gzutils.hexToU8("',
+    '<script type="text/javascript">eval(window.fflate.strFromU8(window.fflate.decompressSync(window.hexStringToArrayBuffer("',
     '"))));</script>',
   ],
 };
