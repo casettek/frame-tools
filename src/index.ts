@@ -3,7 +3,10 @@ import {
   deployDefaults,
   renderTemplate,
   renderFrameLocal,
+  imports,
 } from "./services/chain-sim/deploy";
+
+import { logLibData } from "./services/chain-sim/utils/web3";
 
 import connectDB from "./config/db";
 
@@ -19,6 +22,10 @@ async function main() {
     );
     // deployDefaults();
     // renderTemplate();
+
+    const key = "p5@1.4.2";
+    const imp = imports[key];
+    logLibData(key, imp.data, imp.pages);
   });
 }
 main();

@@ -60,7 +60,7 @@ const wrappers: WrapperDataMap = {
   ],
 };
 
-const imports: ImportDataMap = {
+export const imports: ImportDataMap = {
   "gz-utils@1.0.0": {
     data: base.gzutilsb64,
     wrapper: "b64js-wrap@1.0.0",
@@ -80,6 +80,11 @@ const imports: ImportDataMap = {
     data: three.threegzhex,
     wrapper: "hexgzjs-wrap@1.0.0",
     pages: calcStoragePages(three.threegzhex),
+  },
+  "detect-provider@1.2.0": {
+    data: base["detect-provider"],
+    wrapper: "hexgzjs-wrap@1.0.0",
+    pages: 1,
   },
 };
 

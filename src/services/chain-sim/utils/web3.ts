@@ -31,7 +31,30 @@ export const staggerStore = async (
       console.log("");
     }
 
-    await contract.saveData(key, i, toBytes(stringChunks[i]));
+    // await contract.saveData(key, i, toBytes(stringChunks[i]));
+    // console.log(`Stored ${key} page ${i}`);
+  }
+};
+
+export const logLibData = async (
+  key: string,
+  dataString: string,
+  chunks: number
+) => {
+  const stringChunks = chunkSubstr(
+    dataString,
+    Math.ceil(dataString.length / chunks)
+  );
+  console.log(stringChunks.length);
+
+  for (let i = 0; i < stringChunks.length; i++) {
+    if (i > 35 && i <= 40) {
+      console.log(`${key} page ${i}:`);
+      console.log(hexlify(toBytes(stringChunks[i])));
+      console.log("");
+    }
+
+    // await contract.saveData(key, i, toBytes(stringChunks[i]));
     // console.log(`Stored ${key} page ${i}`);
   }
 };
