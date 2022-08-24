@@ -23,7 +23,7 @@ async function main() {
     // deployDefaults();
     // renderTemplate();
 
-    const key = "p5@1.4.2";
+    const key = "tone@14.8.40";
     const imp = imports[key];
     logLibData(key, imp.data, imp.pages);
   });

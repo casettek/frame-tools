@@ -25,7 +25,7 @@ export const staggerStore = async (
   );
 
   for (let i = 0; i < stringChunks.length; i++) {
-    if (i > 29 && i < 40) {
+    if (i > -1 && i < 5) {
       console.log(`${key} page ${i}:`);
       console.log(hexlify(toBytes(stringChunks[i])));
       console.log("");
@@ -45,10 +45,11 @@ export const logLibData = async (
     dataString,
     Math.ceil(dataString.length / chunks)
   );
+
   console.log(stringChunks.length);
 
   for (let i = 0; i < stringChunks.length; i++) {
-    if (i > 35 && i <= 40) {
+    if (i > 10 && i <= 15) {
       console.log(`${key} page ${i}:`);
       console.log(hexlify(toBytes(stringChunks[i])));
       console.log("");

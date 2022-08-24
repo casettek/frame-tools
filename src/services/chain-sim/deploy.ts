@@ -86,6 +86,21 @@ export const imports: ImportDataMap = {
     wrapper: "hexgzjs-wrap@1.0.0",
     pages: 1,
   },
+  "htm@3.1.1": {
+    data: base["htm"],
+    wrapper: "hexgzjs-wrap@1.0.0",
+    pages: 1,
+  },
+  "preact@10.10.6": {
+    data: base["preact"],
+    wrapper: "hexgzjs-wrap@1.0.0",
+    pages: 1,
+  },
+  "tone@14.8.40": {
+    data: base["tone"],
+    wrapper: "hexgzjs-wrap@1.0.0",
+    pages: calcStoragePages(base.tone),
+  },
 };
 
 export const getImportScripts = (importKeys: string[]): Array<iImport> =>
