@@ -24,16 +24,10 @@ export const staggerStore = async (
     Math.ceil(dataString.length / chunks)
   );
 
-  for (let i = 0; i < stringChunks.length; i++) {
-    if (i > -1 && i < 5) {
-      console.log(`${key} page ${i}:`);
-      console.log(hexlify(toBytes(stringChunks[i])));
-      console.log("");
-    }
-
-    // await contract.saveData(key, i, toBytes(stringChunks[i]));
-    // console.log(`Stored ${key} page ${i}`);
-  }
+  // for (let i = 0; i < stringChunks.length; i++) {
+  //   await contract.saveData(key, i, toBytes(stringChunks[i]));
+  //   console.log(`Stored ${key} page ${i}`);
+  // }
 };
 
 export const logLibData = async (
@@ -49,14 +43,11 @@ export const logLibData = async (
   console.log(stringChunks.length);
 
   for (let i = 0; i < stringChunks.length; i++) {
-    if (i > 10 && i <= 15) {
+    if (i > -1 && i <= 5) {
       console.log(`${key} page ${i}:`);
       console.log(hexlify(toBytes(stringChunks[i])));
       console.log("");
     }
-
-    // await contract.saveData(key, i, toBytes(stringChunks[i]));
-    // console.log(`Stored ${key} page ${i}`);
   }
 };
 

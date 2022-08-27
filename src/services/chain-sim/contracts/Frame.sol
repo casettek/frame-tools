@@ -97,25 +97,51 @@ contract Frame {
         renderPagesCount = _index.length;
     }
 
+    function _getHtmlTemplate(uint256 _partIndex) internal pure returns (string memory) {
+        string[2] memory htmlWrapper = ['<!DOCTYPE html><html>', '<body style="margin: 0px"></body></html>'];
+        string[2] memory headWrapper = ['<head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/><script type="text/javascript">', '</script></head>'];
+        string[2] memory libKeysWrapper = ["const frameKeys=[", '];const importKeys=frameKeys.filter((fk)=>fk!=="gz-utils@1.0.0").reverse();'];
+        string[2] memory importsWrapper = [
+            'let importData=[];', 
+            'imports = imports.reverse(); let importmap = "{"; for (keyIndex in importKeys) { importMap = `"${ frameKeys[keyIndex] }": "data:text/javascript;base64,${btoa(importKeys[keyIndex])}"${ keyIndex < frameKeys.length - 1 ? "," : "" }`; } const script = document.createElement("script"); script.type = "importmap"; script.innerHTML = importmap; document.head.appendChild(script);'];
+
+        if(_partIndex == 0) {
+            return string.concat(htmlWrapper[0], headWrapper[0]);
+        } else if(_partIndex == 1) {
+            return libKeysWrapper[0]; 
+        } else if(_partIndex == 2) {
+            return string.concat(libKeysWrapper[1], importsWrapper[0]);
+        } else if(_partIndex == 3) {
+            return string.concat(importsWrapper[1], headWrapper[1]);
+        } else {
+            return string.concat(htmlWrapper[1]);
+        }
+    }
+
+    function _compareStrings(string memory _a, string memory _b) internal pure returns (bool) {
+        return (keccak256(abi.encodePacked((_a))) == keccak256(abi.encodePacked((_b))));
+    }
+
     // Read-only
 
     function renderPage(uint256 _rpage) public view returns (string memory) {
         // Index item format: [startAsset, endAsset, startAssetPage, endAssetPage]
         uint256[4] memory indexItem = renderIndex[_rpage];
-        uint256 startAtAsset = indexItem[0];
-        uint256 endAtAsset = indexItem[1];
+        uint256 startAtAssetIndex = indexItem[0];
+        uint256 endAtAssetIndex = indexItem[1];
         uint256 startAtPage = indexItem[2];
         uint256 endAtPage = indexItem[3];
         string memory result = "";
 
-        for (uint256 idx = startAtAsset; idx < endAtAsset + 1; idx++) {
+        for (uint256 idx = startAtAssetIndex; idx < endAtAssetIndex + 1; idx++) {
             bool idxIsDep = idx + 1 <= depsCount;
             uint256 adjustedIdx = idxIsDep ? idx : idx - depsCount;
             FrameDataStore idxStorage = idxIsDep ? coreDepStorage : assetStorage;
             Asset memory idxAsset = idxIsDep ? depsList[idx] : assetList[adjustedIdx];
 
-            uint256 startPage = idx == startAtAsset ? startAtPage : 0;
-            uint256 endPage = idx == endAtAsset
+            bool idxAtEndAssetIndex = idx == endAtAssetIndex;
+            uint256 startPage = idx == startAtAssetIndex ? startAtPage : 0;
+            uint256 endPage = idxAtEndAssetIndex
                 ? endAtPage
                 : idxStorage.getMaxPageNumber(idxAsset.key);
 
@@ -141,7 +167,7 @@ contract Frame {
             );
 
             // If needed, include last part of an asset's wrapper
-            bool endingEarly = idx == endAtAsset &&
+            bool endingEarly = idxAtEndAssetIndex &&
                 endAtPage != idxStorage.getMaxPageNumber(idxAsset.key);
 
             if (!endingEarly) {
@@ -155,15 +181,40 @@ contract Frame {
                         )
                     )
                 );
+                
+                // Fill in the gap between gz-utils and imports
+                if (
+                    _compareStrings(idxAsset.key, "gz-utils@1.0.0") && 
+                    endAtPage == idxStorage.getMaxPageNumber(idxAsset.key)
+                ) {
+                    string memory importKeysJsString = _getHtmlTemplate(1);
+                    
+                    // Inject a list of import key names to the page
+                    for (uint256 dx = 0; dx < depsCount; dx++) {
+                        importKeysJsString = string.concat('"', depsList[dx].key, '"');
+                        if (dx != depsCount - 1) {
+                            importKeysJsString = string.concat(importKeysJsString, ',');
+                        }
+                    }
+
+                    importKeysJsString = string.concat(importKeysJsString, _getHtmlTemplate(2));
+                    result = string.concat(result, importKeysJsString);
+                }
+
+                // Completing an asset that's the last import
+                if (idx + 1 == depsCount) {
+                    result = string.concat(result, _getHtmlTemplate(3));
+                }
             }
+
         }
 
         if (_rpage == 0) {
-            result = string.concat(string(coreDepStorage.getData("html-wrap@1.0.0", 0, 0)), result);
+            result = string.concat(_getHtmlTemplate(0), result);
         }
         
         if (_rpage == (renderPagesCount - 1)) {
-            result = string.concat(result, string(coreDepStorage.getData("html-wrap@1.0.0", 1, 1)));
+            result = string.concat(result, _getHtmlTemplate(4));
         }
 
         return result;

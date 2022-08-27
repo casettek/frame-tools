@@ -20,10 +20,8 @@ async function main() {
     console.log(
       `\n🚀GraphQL is now running on http://localhost:${port}/graphql `
     );
-    // deployDefaults();
-    // renderTemplate();
 
-    const key = "tone@14.8.40";
+    const key = "three@0.142.0";
     const imp = imports[key];
     logLibData(key, imp.data, imp.pages);
   });
