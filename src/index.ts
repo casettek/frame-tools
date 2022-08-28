@@ -3,6 +3,7 @@ import {
   deployDefaults,
   renderTemplate,
   renderFrameLocal,
+  renderLogs,
   imports,
 } from "./services/chain-sim/deploy";
 
@@ -21,9 +22,11 @@ async function main() {
       `\n🚀GraphQL is now running on http://localhost:${port}/graphql `
     );
 
-    const key = "three@0.142.0";
+    const key = "gz-utils@1.0.0";
     const imp = imports[key];
-    logLibData(key, imp.data, imp.pages);
+    let logs = logLibData(key, imp.data, imp.pages);
+    // console.log(logs);
+    renderLogs(logs);
   });
 }
 main();

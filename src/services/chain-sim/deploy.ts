@@ -45,19 +45,19 @@ type ImportDataMap = {
 };
 
 const wrappers: WrapperDataMap = {
-  "html-wrap@1.0.0": [
-    '<!DOCTYPE html><html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/></head><body style="margin: 0px;">',
-    "</body></html>",
+  "js-script-wrap@1.0.0": ['<script type="text/javascript">', "</script>"],
+  // [0x3C73637269707420747970653D22746578742F6A617661736372697074223E, 0x3C2F7363726970743E]
+  "js-module-wrap@1.0.0": ['<script type="module">', "</script>"],
+  // [0x3C73637269707420747970653D226D6F64756C65223E, 0x3C2F7363726970743E]
+  "b64-js-wrap@1.0.0": ['eval(atob("', '"));'],
+  // [0x6576616C2861746F622822, 0x2229293B]
+  "b64-importmap-js-wrap@1.0.0": ['importData.push(atob("', '"));'],
+  // [0x6576616C2861746F622822, 0x2229293B]
+  "hex-gz-importmap-js-wrap@1.0.0": [
+    'importData.push(window.fflate.strFromU8(window.fflate.decompressSync(window.hexStringToArrayBuffer("',
+    '"))));',
   ],
-  "js-wrap@1.0.0": ['<script type="text/javascript">', "</script>"],
-  "b64js-wrap@1.0.0": [
-    '<script type="text/javascript">eval(atob("',
-    '"));</script>',
-  ],
-  "hexgzjs-wrap@1.0.0": [
-    '<script type="text/javascript">eval(window.fflate.strFromU8(window.fflate.decompressSync(window.hexStringToArrayBuffer("',
-    '"))));</script>',
-  ],
+  // [0x696D706F7274446174612E707573682877696E646F772E66666C6174652E73747246726F6D55382877696E646F772E66666C6174652E6465636F6D707265737353796E632877696E646F772E686578537472696E67546F41727261794275666665722822, 0x222929293B]
 };
 
 export const imports: ImportDataMap = {
@@ -186,6 +186,17 @@ export const renderTemplate = async () => {
   );
 
   console.log(writeResult);
+};
+
+export const renderLogs = async (logs: any) => {
+  const writeResult = fs.writeFileSync(
+    __dirname + "/logs/logs.json",
+    Buffer.from(JSON.stringify(logs), "utf-8"),
+    {
+      encoding: "utf8",
+      flag: "w",
+    }
+  );
 };
 
 export const deployCoreDeps = async (

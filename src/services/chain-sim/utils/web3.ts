@@ -30,11 +30,7 @@ export const staggerStore = async (
   // }
 };
 
-export const logLibData = async (
-  key: string,
-  dataString: string,
-  chunks: number
-) => {
+export const logLibData = (key: string, dataString: string, chunks: number) => {
   const stringChunks = chunkSubstr(
     dataString,
     Math.ceil(dataString.length / chunks)
@@ -42,13 +38,17 @@ export const logLibData = async (
 
   console.log(stringChunks.length);
 
+  let result: any = {};
   for (let i = 0; i < stringChunks.length; i++) {
     if (i > -1 && i <= 5) {
-      console.log(`${key} page ${i}:`);
-      console.log(hexlify(toBytes(stringChunks[i])));
-      console.log("");
+      // console.log(`${key} page ${i}:`);
+      // console.log(hexlify(toBytes(stringChunks[i])));
+      // console.log("");
     }
+
+    result[(key + "_" + i) as string] = hexlify(toBytes(stringChunks[i]));
   }
+  return result;
 };
 
 export const constructRenderIndex = (

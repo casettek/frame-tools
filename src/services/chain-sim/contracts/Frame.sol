@@ -40,6 +40,14 @@ contract Frame {
     uint256 public renderPagesCount;
     mapping(uint256 => uint256[4]) public renderIndex;
 
+    string[2] public htmlWrapper = ['<!DOCTYPE html><html>', '</html>'];
+    string[2] public headWrapper = ['<head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/><script type="text/javascript">', '</script></head>'];
+    string[2] public bodyWrapper = ['<body style="margin: 0px">', '</body>'];
+    string[2] public libKeysWrapper = ["const frameKeys=[", '];const importKeys=frameKeys.filter((fk)=>fk!=="gz-utils@1.0.0").reverse();'];
+    string[2] public importMapWrapper = [
+        'let importData=[];', 
+        'imports = imports.reverse(); let importmap = "{"; for (keyIndex in importKeys) { importMap = `"${ frameKeys[keyIndex] }": "data:text/javascript;base64,${btoa(importKeys[keyIndex])}"${ keyIndex < frameKeys.length - 1 ? "," : "" }`; } const script = document.createElement("script"); script.type = "importmap"; script.innerHTML = importmap; document.head.appendChild(script);'];
+
     constructor() {}
 
     function init(
@@ -97,29 +105,30 @@ contract Frame {
         renderPagesCount = _index.length;
     }
 
-    function _getHtmlTemplate(uint256 _partIndex) internal pure returns (string memory) {
-        string[2] memory htmlWrapper = ['<!DOCTYPE html><html>', '<body style="margin: 0px"></body></html>'];
-        string[2] memory headWrapper = ['<head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/><script type="text/javascript">', '</script></head>'];
-        string[2] memory libKeysWrapper = ["const frameKeys=[", '];const importKeys=frameKeys.filter((fk)=>fk!=="gz-utils@1.0.0").reverse();'];
-        string[2] memory importsWrapper = [
-            'let importData=[];', 
-            'imports = imports.reverse(); let importmap = "{"; for (keyIndex in importKeys) { importMap = `"${ frameKeys[keyIndex] }": "data:text/javascript;base64,${btoa(importKeys[keyIndex])}"${ keyIndex < frameKeys.length - 1 ? "," : "" }`; } const script = document.createElement("script"); script.type = "importmap"; script.innerHTML = importmap; document.head.appendChild(script);'];
-
-        if(_partIndex == 0) {
-            return string.concat(htmlWrapper[0], headWrapper[0]);
-        } else if(_partIndex == 1) {
-            return libKeysWrapper[0]; 
-        } else if(_partIndex == 2) {
-            return string.concat(libKeysWrapper[1], importsWrapper[0]);
-        } else if(_partIndex == 3) {
-            return string.concat(importsWrapper[1], headWrapper[1]);
-        } else {
-            return string.concat(htmlWrapper[1]);
-        }
-    }
-
     function _compareStrings(string memory _a, string memory _b) internal pure returns (bool) {
         return (keccak256(abi.encodePacked((_a))) == keccak256(abi.encodePacked((_b))));
+    }
+
+    function _contains(string memory what, string memory where) internal pure returns (bool) {
+        bytes memory whatBytes = bytes (what);
+        bytes memory whereBytes = bytes (where);
+
+        require(whereBytes.length >= whatBytes.length);
+
+        bool found = false;
+        for (uint i = 0; i <= whereBytes.length - whatBytes.length; i++) {
+            bool flag = true;
+            for (uint j = 0; j < whatBytes.length; j++)
+                if (whereBytes [i + j] != whatBytes [j]) {
+                    flag = false;
+                    break;
+                }
+            if (flag) {
+                found = true;
+                break;
+            }
+        }
+        return found;
     }
 
     // Read-only
@@ -133,15 +142,18 @@ contract Frame {
         uint256 endAtPage = indexItem[3];
         string memory result = "";
 
-        for (uint256 idx = startAtAssetIndex; idx < endAtAssetIndex + 1; idx++) {
-            bool idxIsDep = idx + 1 <= depsCount;
-            uint256 adjustedIdx = idxIsDep ? idx : idx - depsCount;
-            FrameDataStore idxStorage = idxIsDep ? coreDepStorage : assetStorage;
-            Asset memory idxAsset = idxIsDep ? depsList[idx] : assetList[adjustedIdx];
+        // Iterate over assets in the index item
+        for (uint256 idx = startAtAssetIndex; idx <= endAtAssetIndex; idx++) {
+            bool isIdxDep = idx + 1 <= depsCount;
 
-            bool idxAtEndAssetIndex = idx == endAtAssetIndex;
+            // Adjust local index backwards if moving on to asset storage 
+            uint256 adjustedIdx = isIdxDep ? idx : idx - depsCount;
+            FrameDataStore idxStorage = isIdxDep ? coreDepStorage : assetStorage;
+            Asset memory idxAsset = isIdxDep ? depsList[idx] : assetList[adjustedIdx];
+
+            bool isIdxAtEndAssetIndex = idx == endAtAssetIndex;
             uint256 startPage = idx == startAtAssetIndex ? startAtPage : 0;
-            uint256 endPage = idxAtEndAssetIndex
+            uint256 endPage = isIdxAtEndAssetIndex
                 ? endAtPage
                 : idxStorage.getMaxPageNumber(idxAsset.key);
 
@@ -156,7 +168,8 @@ contract Frame {
                     )
                 );
             }
-
+            
+            // Fill data from asset page range
             result = string.concat(
                 result,
                 string(
@@ -164,13 +177,15 @@ contract Frame {
                         idxStorage.getData(idxAsset.key, startPage, endPage)
                     )
                 )
-            );
+            );            
+
+            // Will not get the last page of the asset
+            bool willCompleteAsset = endAtPage == idxStorage.getMaxPageNumber(idxAsset.key);
+            bool isIdxLastDep = isIdxDep && idx == depsCount - 1;
+            bool isGzUtils = _compareStrings(idxAsset.key, "gz-utils@1.0.0");
 
             // If needed, include last part of an asset's wrapper
-            bool endingEarly = idxAtEndAssetIndex &&
-                endAtPage != idxStorage.getMaxPageNumber(idxAsset.key);
-
-            if (!endingEarly) {
+            if (willCompleteAsset) {
                 result = string.concat(
                     result, 
                     string(
@@ -181,13 +196,10 @@ contract Frame {
                         )
                     )
                 );
-                
-                // Fill in the gap between gz-utils and imports
-                if (
-                    _compareStrings(idxAsset.key, "gz-utils@1.0.0") && 
-                    endAtPage == idxStorage.getMaxPageNumber(idxAsset.key)
-                ) {
-                    string memory importKeysJsString = _getHtmlTemplate(1);
+
+                // Finishing gz-utils, with a import map asset next
+                if (isGzUtils && !isIdxLastDep && _contains("importmap", depsList[idx + 1].wrapperKey)) {
+                    string memory importKeysJsString = libKeysWrapper[0];
                     
                     // Inject a list of import key names to the page
                     for (uint256 dx = 0; dx < depsCount; dx++) {
@@ -197,24 +209,28 @@ contract Frame {
                         }
                     }
 
-                    importKeysJsString = string.concat(importKeysJsString, _getHtmlTemplate(2));
-                    result = string.concat(result, importKeysJsString);
-                }
-
-                // Completing an asset that's the last import
-                if (idx + 1 == depsCount) {
-                    result = string.concat(result, _getHtmlTemplate(3));
+                    importKeysJsString = string.concat(importKeysJsString, string.concat(libKeysWrapper[1], importMapWrapper[0]));
+                } 
+                
+                // Finishing deps
+                if (isIdxLastDep) {
+                    if(_contains("importmap", idxAsset.wrapperKey)){
+                        result = string.concat(result, string.concat(importMapWrapper[1], headWrapper[1]), bodyWrapper[0]);
+                    } else {
+                        result = string.concat(result, headWrapper[1], bodyWrapper[0]);
+                    }
+                    
                 }
             }
 
         }
 
         if (_rpage == 0) {
-            result = string.concat(_getHtmlTemplate(0), result);
+            result = string.concat(string.concat(htmlWrapper[0], headWrapper[0]), result);
         }
         
         if (_rpage == (renderPagesCount - 1)) {
-            result = string.concat(result, _getHtmlTemplate(4));
+            result = string.concat(result, string.concat(bodyWrapper[1], htmlWrapper[1]));
         }
 
         return result;
