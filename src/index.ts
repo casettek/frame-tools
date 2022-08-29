@@ -22,7 +22,7 @@ async function main() {
       `\n🚀GraphQL is now running on http://localhost:${port}/graphql `
     );
 
-    const key = "gz-utils@1.0.0";
+    const key = "frame-utils@1.0.0";
     const imp = imports[key];
     let logs = logLibData(key, imp.data, imp.pages);
     // console.log(logs);

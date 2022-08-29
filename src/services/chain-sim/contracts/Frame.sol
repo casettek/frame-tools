@@ -43,10 +43,10 @@ contract Frame {
     string[2] public htmlWrapper = ['<!DOCTYPE html><html>', '</html>'];
     string[2] public headWrapper = ['<head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/><script type="text/javascript">', '</script></head>'];
     string[2] public bodyWrapper = ['<body style="margin: 0px">', '</body>'];
-    string[2] public libKeysWrapper = ["const frameKeys=[", '];const importKeys=frameKeys.filter((fk)=>fk!=="gz-utils@1.0.0").reverse();'];
+    string[2] public libKeysWrapper = ["const fks=[", '];const iks = fks.filter((fk) => !fk.includes("frame-utils"));'];
     string[2] public importMapWrapper = [
-        'let importData=[];', 
-        'imports = imports.reverse(); let importmap = "{"; for (keyIndex in importKeys) { importMap = `"${ frameKeys[keyIndex] }": "data:text/javascript;base64,${btoa(importKeys[keyIndex])}"${ keyIndex < frameKeys.length - 1 ? "," : "" }`; } const script = document.createElement("script"); script.type = "importmap"; script.innerHTML = importmap; document.head.appendChild(script);'];
+        'let idata = [];', 
+        'let imap = `{ "imports": { `; for (ki in iks) { imap = imap + `"${ iks[ki].split("@")[0] }": "data:text/javascript;base64,${btoa(idata[ki])}"${ ki < (iks.length - 1) ? "," : "" }`; } imap = imap + "} }"; const s = document.createElement("script"); s.type = "importmap"; s.innerHTML = imap; document.head.appendChild(s);'];
 
     constructor() {}
 
@@ -182,7 +182,7 @@ contract Frame {
             // Will not get the last page of the asset
             bool willCompleteAsset = endAtPage == idxStorage.getMaxPageNumber(idxAsset.key);
             bool isIdxLastDep = isIdxDep && idx == depsCount - 1;
-            bool isGzUtils = _compareStrings(idxAsset.key, "gz-utils@1.0.0");
+            bool isGzUtils = _contains("frame-utils", idxAsset.key);
 
             // If needed, include last part of an asset's wrapper
             if (willCompleteAsset) {

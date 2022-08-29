@@ -45,23 +45,44 @@ type ImportDataMap = {
 };
 
 const wrappers: WrapperDataMap = {
+  "html-wrap@1.0.0": ["<!DOCTYPE html><html>", "</html>"],
+  // [0x3c21444f43545950452068746d6c3e3c68746d6c3e, 0x3c2f68746d6c3e]
+  "head-html-wrap@1.0.0": [
+    '<head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/><script type="text/javascript">',
+    "</script></head>",
+  ],
+  // [0x3c686561643e3c6d65746120687474702d65717569763d22436f6e74656e742d547970652220636f6e74656e743d22746578742f68746d6c3b20636861727365743d5554462d38222f3e3c73637269707420747970653d22746578742f6a617661736372697074223e, 0x3c2f7363726970743e3c2f686561643e]
+  "body-html-wrap@1.0.0": ['<body style="margin: 0px">', "</body>"],
+  // [0x3c626f6479207374796c653d226d617267696e3a20307078223e, 0x3c2f626f64793e]
+  "import-keys-js-wrap@1.0.0": [
+    "const fks=[",
+    '];const iks = fks.filter((fk) => !fk.includes("frame-utils"));',
+  ],
+  // [0x636f6e737420666b733d5b, 0x5d3b636f6e737420696b73203d20666b732e66696c7465722828666b29203d3e2021666b2e696e636c7564657328226672616d652d7574696c732229293b]
+  "importmap-init-js-wrap@1.0.0": [
+    "let idata = [];",
+    'let imap = `{ "imports": { `; for (ki in iks) { imap = imap + `"${ iks[ki].split("@")[0] }": "data:text/javascript;base64,${btoa(idata[ki])}"${ ki < (iks.length - 1) ? "," : "" }`; } imap = imap + "} }"; const s = document.createElement("script"); s.type = "importmap"; s.innerHTML = imap; document.head.appendChild(s);',
+  ],
+  // [0x6c6574206964617461203d205b5d3b, 0x6c657420696d6170203d20607b2022696d706f727473223a207b20603b20666f7220286b6920696e20696b7329207b20696d6170203d20696d6170202b206022247b20696b735b6b695d2e73706c697428224022295b305d207d223a2022646174613a746578742f6a6176617363726970743b6261736536342c247b62746f612869646174615b6b695d297d22247b206b69203c2028696b732e6c656e677468202d203129203f20222c22203a202222207d603b207d20696d6170203d20696d6170202b20227d207d223b20636f6e73742073203d20646f63756d656e742e637265617465456c656d656e74282273637269707422293b20732e74797065203d2022696d706f72746d6170223b20732e696e6e657248544d4c203d20696d61703b20646f63756d656e742e686561642e617070656e644368696c642873293b]
+
+  /* -- */
   "js-script-wrap@1.0.0": ['<script type="text/javascript">', "</script>"],
   // [0x3C73637269707420747970653D22746578742F6A617661736372697074223E, 0x3C2F7363726970743E]
   "js-module-wrap@1.0.0": ['<script type="module">', "</script>"],
   // [0x3C73637269707420747970653D226D6F64756C65223E, 0x3C2F7363726970743E]
   "b64-js-wrap@1.0.0": ['eval(atob("', '"));'],
   // [0x6576616C2861746F622822, 0x2229293B]
-  "b64-importmap-js-wrap@1.0.0": ['importData.push(atob("', '"));'],
-  // [0x6576616C2861746F622822, 0x2229293B]
+  "b64-importmap-js-wrap@1.0.0": ['idata.push(atob("', '"));'],
+  // [0x69646174612e707573682861746f622822, 0x2229293b]
   "hex-gz-importmap-js-wrap@1.0.0": [
-    'importData.push(window.fflate.strFromU8(window.fflate.decompressSync(window.hexStringToArrayBuffer("',
+    'idata.push(window.fflate.strFromU8(window.fflate.decompressSync(window.hexStringToArrayBuffer("',
     '"))));',
   ],
-  // [0x696D706F7274446174612E707573682877696E646F772E66666C6174652E73747246726F6D55382877696E646F772E66666C6174652E6465636F6D707265737353796E632877696E646F772E686578537472696E67546F41727261794275666665722822, 0x222929293B]
+  // [0x69646174612e707573682877696e646f772e66666c6174652e73747246726f6d55382877696e646f772e66666c6174652e6465636f6d707265737353796e632877696e646f772e686578537472696e67546f41727261794275666665722822, 0x22292929293b]
 };
 
 export const imports: ImportDataMap = {
-  "gz-utils@1.0.0": {
+  "frame-utils@1.0.0": {
     data: base.gzutilsb64,
     wrapper: "b64js-wrap@1.0.0",
     pages: calcStoragePages(base.gzutilsb64),
