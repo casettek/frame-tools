@@ -100,6 +100,12 @@ export const imports: ImportDataMap = {
     wrapper: "b64-gz-importmap-js-wrap@1.0.0",
     pages: calcStoragePages(base.tone),
   },
+  "three@0.77.0": {
+    data: three["threeb64"],
+    // data: "[[tone@14.8.40]]",
+    wrapper: "b64-gz-importmap-js-wrap@1.0.0",
+    pages: calcStoragePages(three["threeb64"]),
+  },
 };
 
 export const getImportScripts = (importKeys: string[]): Array<iImport> =>
@@ -304,7 +310,7 @@ export const deployDefaults = async () => {
   await deployFrameSetup();
   await deployCoreDeps(
     // libs
-    ["frame-utils@1.0.0", "htm-preact@3.1.1", "tone@14.8.40"],
+    ["frame-utils@1.0.0", "htm-preact@3.1.1", "tone@14.8.40", "three@0.77.0"],
     // wrappers
     [
       "html-wrap@1.0.0",
@@ -323,13 +329,23 @@ export const deployDefaults = async () => {
       [imports["frame-utils@1.0.0"].wrapper, "frame-utils@1.0.0"],
       [imports["htm-preact@3.1.1"].wrapper, "htm-preact@3.1.1"],
       [imports["tone@14.8.40"].wrapper, "tone@14.8.40"],
+      [imports["three@0.77.0"].wrapper, "three@0.77.0"],
     ],
-    [["js-module-wrap@1.0.0", "_source", "console.log('test');"]],
+    [
+      [
+        "js-module-wrap@1.0.0",
+        "_source",
+        // "import * as hp from 'htm-preact'; import * as THREE from 'three'; console.log(hp, THREE); ",
+        "import 'three';",
+        "",
+      ],
+    ],
     constructRenderIndex(
       [
         imports["frame-utils@1.0.0"].pages,
         imports["htm-preact@3.1.1"].pages,
         imports["tone@14.8.40"].pages,
+        imports["three@0.77.0"].pages,
         1,
       ],
       RENDER_PAGE_SIZE

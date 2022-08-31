@@ -115,8 +115,8 @@
       ]
     },
     "/Users/andrewcassetti/Development/frame-backend/src/services/chain-sim/contracts/Frame.sol": {
-      "lastModificationDate": 1661970476755,
-      "contentHash": "31f7c17280f3f249eaddad60eba7960a",
+      "lastModificationDate": 1661970544673,
+      "contentHash": "5e8e7584ac94936dd6cccf15d66d36d7",
       "sourceName": "src/services/chain-sim/contracts/Frame.sol",
       "solcConfig": {
         "version": "0.8.12",
