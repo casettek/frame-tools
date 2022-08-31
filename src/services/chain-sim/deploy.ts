@@ -84,49 +84,22 @@ const wrappers: WrapperDataMap = {
 export const imports: ImportDataMap = {
   "frame-utils@1.0.0": {
     data: base.gzutilsb64,
-    wrapper: "b64js-wrap@1.0.0",
+    // data: "[[frame-utils@1.0.0]]",
+    wrapper: "b64-js-wrap@1.0.0",
     pages: calcStoragePages(base.gzutilsb64),
   },
-  "preact@10.10.6": {
-    data: base["preact"],
+  "htm-preact@3.1.1": {
+    data: base["htmPreact"],
+    // data: "[[preact@10.10.6]]",
     wrapper: "b64-gz-importmap-js-wrap@1.0.0",
-    pages: calcStoragePages(base["preact"]),
+    pages: calcStoragePages(base["htmPreact"]),
   },
   "tone@14.8.40": {
     data: base["tone"],
-    wrapper: "hexgzjs-wrap@1.0.0",
+    // data: "[[tone@14.8.40]]",
+    wrapper: "b64-gz-importmap-js-wrap@1.0.0",
     pages: calcStoragePages(base.tone),
   },
-  // "p5@1.4.2": {
-  //   data: processing.p5gzhex,
-  //   wrapper: "b64-gz-importmap-js-wrap@1.0.0",
-  //   pages: calcStoragePages(processing.p5gzhex),
-  // },
-  // "d3@3.0.0": {
-  //   data: d3.d3topogzhex,
-  //   wrapper: "b64-gz-importmap-js-wrap@1.0.0",
-  //   pages: calcStoragePages(d3.d3topogzhex),
-  // },
-  // "three@0.142.0": {
-  //   data: three.threegzhex,
-  //   wrapper: "b64-gz-importmap-js-wrap@1.0.0",
-  //   pages: calcStoragePages(three.threegzhex),
-  // },
-  // "detect-provider@1.2.0": {
-  //   data: base["detect-provider"],
-  //   wrapper: "b64-gz-importmap-js-wrap@1.0.0",
-  //   pages: 1,
-  // },
-  // "htm@3.1.1": {
-  //   data: base["htm"],
-  //   wrapper: "hexgzjs-wrap@1.0.0",
-  //   pages: 1,
-  // },
-  // "htm-preact@3.1.1": {
-  //   data: base["htmPreact"],
-  //   wrapper: "hexgzjs-wrap@1.0.0",
-  //   pages: calcStoragePages(base["htmPreact"]),
-  // },
 };
 
 export const getImportScripts = (importKeys: string[]): Array<iImport> =>
@@ -270,32 +243,32 @@ export const deployCoreDeps = async (
     await coreDepsDataStore.saveData(wk, 0, toBytes(wrappers[wk][0]));
     await coreDepsDataStore.saveData(wk, 1, toBytes(wrappers[wk][1]));
   }
+  // console.log(
+  //   "done storing deps",
+  //   coreDepsDataStore.address,
+  //   wrappersKeys[0],
+  //   await coreDepsDataStore.getData(wrappersKeys[0], 0, 1)
+  // );
   return;
 };
 
 export const deployNewFrame = async (
   deps: string[][],
-  assets: string[][]
+  assets: string[][],
+  renderIndex: number[][]
   // deployAtomic: boolean
 ) => {
   // Construct renderIndex
   const depsPages: number[] = deps.map((d) => imports[d[1]].pages);
   const assetsPages: number[] = assets.map((a) => calcStoragePages(a[2]));
-  const renderIndex: number[][] = constructRenderIndex(
-    depsPages.concat(assetsPages),
-    RENDER_PAGE_SIZE
-  );
   const assetsMinusData = assets.map((a) => [a[0], a[1]]);
   const assetsData = assets.map((a) => toBytes(a[2]));
 
-  // console.log(renderIndex);
-  // console.log(assetsMinusData);
-  // console.log(assetsData.map((ad) => Buffer.from(ad).toString("hex")));
+  console.log("deploying new frame", [deps, assetsMinusData], renderIndex);
 
   // Deploy new frame with single source
   const Frame = await hre.ethers.getContractFactory("Frame");
 
-  // if (deployAtomic) {
   const createCall = await frameFactory.createFrameWithSource(
     coreDepsDataStore.address,
     frameDataStoreFactory.address,
@@ -311,87 +284,17 @@ export const deployNewFrame = async (
     ""
   );
   frame = await Frame.attach(newFrameAddress);
-  // } else {
-  //   // console.log(
-  //   //   "createFrame",
-  //   //   coreDepsDataStore.address,
-  //   //   frameDataStoreFactory.address,
-  //   //   deps,
-  //   //   assetsMinusData,
-  //   //   renderIndex
-  //   // );
-
-  //   const createCall = await frameFactory.createFrame(
-  //     coreDepsDataStore.address,
-  //     frameDataStoreFactory.address,
-  //     deps,
-  //     assetsMinusData,
-  //     renderIndex
-  //   );
-  //   const createResult = await createCall.wait();
-  //   const newFrameAddress = createResult.logs[1]?.data.replace(
-  //     "000000000000000000000000",
-  //     ""
-  //   );
-  //   frame = await Frame.attach(newFrameAddress);
-
-  //   // Store Assets to frame
-  //   const FrameDataStore = await hre.ethers.getContractFactory(
-  //     "FrameDataStore"
-  //   );
-  //   const frDataStore = await FrameDataStore.attach(await frame.assetStorage());
-
-  //   console.log(
-  //     "frDataStoreAddress",
-  //     frDataStore.address,
-  //     await frame.coreDepStorage()
-  //   );
-
-  //   for (let i = 0; i < assets.length; i++) {
-  //     const asset = assets[i];
-  //     const key = asset[1];
-  //     const data = asset[2];
-  //     const pages = assetsPages[i];
-  //     console.log("storing ", key);
-  //     if (pages > 1) {
-  //       await staggerStore(frDataStore, key, data, pages);
-  //     } else {
-  //       await frDataStore.saveData(key, 0, toBytes(data));
-  //     }
-  //   }
-  // }
 };
 
 export const renderFrame = async () => {
-  // const FrameDataStore = await hre.ethers.getContractFactory("FrameDataStore");
-  // const frAssetStorage = await FrameDataStore.attach(
-  //   await frame.assetStorage()
-  // );
-  // const test1 = await frAssetStorage.getData("draw", 0, 0);
-  // console.log("tests", test1);
-
-  // const frCoreDepsStorage = await FrameDataStore.attach(
-  //   await frame.coreDepStorage()
-  // );
-  // const test1 = await frCoreDepsStorage.getMaxPageNumber("compressorGlobalB64");
-  // const test2 = await frCoreDepsStorage.getMaxPageNumber("p5gzhex");
-  // const test3 = await frCoreDepsStorage.getMaxPageNumber("gzhexjsWrapper");
-  // const test4 = await frCoreDepsStorage.getMaxPageNumber("renderWrapper");
-
-  // console.log("renderframe storage test", test1, test2, test3, test4);
-
   let renderString = "";
   const pages = await frame.renderPagesCount();
-  // const assetsCount = await frame.assetsCount();
-  // const depsCount = await frame.depsCount();
 
   for (let i = 0; i < pages; i++) {
     const result = await frame.renderPage(i);
     // console.log("fetching page", i, result);
     renderString = renderString + result;
   }
-
-  // console.log("renderFrame", renderString);
 
   return renderString;
 };
@@ -401,7 +304,7 @@ export const deployDefaults = async () => {
   await deployFrameSetup();
   await deployCoreDeps(
     // libs
-    ["frame-utils@1.0.0", "preact@10.10.6", "tone@14.8.40"],
+    ["frame-utils@1.0.0", "htm-preact@3.1.1", "tone@14.8.40"],
     // wrappers
     [
       "html-wrap@1.0.0",
@@ -415,37 +318,22 @@ export const deployDefaults = async () => {
     ]
   );
 
-  // const { compressorGlobalB64, p5gzhex } = imports;
-  const renderIndexLocal = constructRenderIndex(
-    [
-      imports["frame-utils@1.0.0"].pages,
-      imports["preact@10.10.6"].pages,
-      imports["tone@14.8.40"].pages,
-    ],
-    RENDER_PAGE_SIZE
-  );
-
-  console.log("renderIndexLocal", renderIndexLocal);
-
-  // await deployNewFrame(
-  //   [
-  //     // [compressorGlobalB64.wrapper, "compressorGlobalB64"],
-  //     // [p5gzhex.wrapper, "p5gzhex"],
-  //   ],
-  //   [
-  //     ["rawjs", "draw", "console.log('draw');"],
-  //     // ["rawjs", "draw2", "console.log('draw2');"],
-  //   ],
-  //   true
-  // );
-  // await renderFrame();
   await deployNewFrame(
     [
       [imports["frame-utils@1.0.0"].wrapper, "frame-utils@1.0.0"],
-      [imports["preact@10.10.6"].wrapper, "preact@10.10.6"],
+      [imports["htm-preact@3.1.1"].wrapper, "htm-preact@3.1.1"],
       [imports["tone@14.8.40"].wrapper, "tone@14.8.40"],
     ],
-    [["js-module-wrap@1.0.0", "_source", "console.log('test');"]]
+    [["js-module-wrap@1.0.0", "_source", "console.log('test');"]],
+    constructRenderIndex(
+      [
+        imports["frame-utils@1.0.0"].pages,
+        imports["htm-preact@3.1.1"].pages,
+        imports["tone@14.8.40"].pages,
+        1,
+      ],
+      RENDER_PAGE_SIZE
+    )
   );
 };
 

@@ -24,10 +24,10 @@ export const staggerStore = async (
     Math.ceil(dataString.length / chunks)
   );
 
-  // for (let i = 0; i < stringChunks.length; i++) {
-  //   await contract.saveData(key, i, toBytes(stringChunks[i]));
-  //   console.log(`Stored ${key} page ${i}`);
-  // }
+  for (let i = 0; i < stringChunks.length; i++) {
+    await contract.saveData(key, i, toBytes(stringChunks[i]));
+    console.log(`Stored ${key} page ${i}`);
+  }
 };
 
 export const logLibData = (key: string, dataString: string, chunks: number) => {
@@ -52,7 +52,7 @@ export const logLibData = (key: string, dataString: string, chunks: number) => {
 };
 
 export const constructRenderIndex = (
-  assetPageSizes: Array<number>,
+  assetPageSizes: number[],
   maxRenderPageSize: number
 ) => {
   const renderIndex = [];

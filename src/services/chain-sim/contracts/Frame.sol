@@ -101,32 +101,8 @@ contract Frame {
         return (keccak256(abi.encodePacked((_a))) == keccak256(abi.encodePacked((_b))));
     }
 
-    // function _contains(string memory what, string memory where) internal pure returns (bool) {
-    //     bytes memory whatBytes = bytes (what);
-    //     bytes memory whereBytes = bytes (where);
-
-    //     if (whereBytes.length >= whatBytes.length) {
-    //         return false;
-    //     }
-
-    //     bool found = false;
-    //     for (uint i = 0; i <= whereBytes.length - whatBytes.length; i++) {
-    //         bool flag = true;
-    //         for (uint j = 0; j < whatBytes.length; j++)
-    //             if (whereBytes [i + j] != whatBytes [j]) {
-    //                 flag = false;
-    //                 break;
-    //             }
-    //         if (flag) {
-    //             found = true;
-    //             break;
-    //         }
-    //     }
-    //     return found;
-    // }
-
     function _isImportmapWrapperString(string memory _a) internal pure returns (bool) {
-        return _compareStrings(_a, "b64-gz-importmap-js-wrap3");
+        return _compareStrings(_a, "b64-gz-importmap-js-wrap@1.0.0");
     }
 
     function _isAssetDep(uint256 _index) internal view returns (bool) {
@@ -172,10 +148,6 @@ contract Frame {
     // Read-only
 
     function renderPage(uint256 _rpage) public view returns (string memory) {
-        if(_rpage >= renderPagesCount) {
-            return "";
-        }
-
         // Index item format: [startAsset, endAsset, startAssetPage, endAssetPage]
         uint256[4] memory indexItem = renderIndex[_rpage];
         uint256 startAtAssetIndex = indexItem[0];
@@ -184,104 +156,109 @@ contract Frame {
         uint256 endAtPage = indexItem[3];
         string memory result = "";
 
-        // if (startAtAssetIndex == endAtAssetIndex) {
-        //     bool isDep = _isAssetDep(startAtAssetIndex);
-        //     uint256 adjustedIndex = isDep ? startAtAssetIndex : startAtAssetIndex - depsCount;
-        //     IFrameDataStore store = isDep ? coreDepStorage : assetStorage;
-        //     Asset memory asset = isDep ? depsList[adjustedIndex] : assetList[adjustedIndex];
-        //     string memory newStuff = _getAssetWithWrapperString(store, coreDepStorage, asset, startAtPage, endAtPage);
-        //     result = string.concat(result, newStuff);
-        // } else {
-            // Iterate over assets in the index item
-            for (uint256 idx = startAtAssetIndex; idx <= endAtAssetIndex; idx++) {
-                bool isIdxDep = _isAssetDep(idx);
+        // Iterate over assets in the index item
+        for (uint256 idx = startAtAssetIndex; idx < endAtAssetIndex + 1; idx++) {
+            bool isIdxDep = _isAssetDep(idx);
 
-                // Adjust local index backwards if moving on to asset storage 
-                uint256 adjustedIdx = isIdxDep ? idx : idx - depsCount;
-                IFrameDataStore idxStorage = isIdxDep ? coreDepStorage : assetStorage;
-                Asset memory idxAsset = isIdxDep ? depsList[idx] : assetList[adjustedIdx];
+            // Adjust local index backwards if moving on to asset storage 
+            uint256 adjustedIdx = isIdxDep ? idx : idx - depsCount;
+            IFrameDataStore idxStorage = isIdxDep ? coreDepStorage : assetStorage;
+            Asset memory idxAsset = isIdxDep ? depsList[idx] : assetList[adjustedIdx];
 
-                bool isIdxAtEndAssetIndex = idx == endAtAssetIndex;
-                uint256 startPage = idx == startAtAssetIndex ? startAtPage : 0;
-                uint256 endPage = isIdxAtEndAssetIndex
-                    ? endAtPage
-                    : idxStorage.getMaxPageNumber(idxAsset.key);
+            bool isIdxAtEndAssetIndex = idx == endAtAssetIndex;
+            uint256 startPage = idx == startAtAssetIndex ? startAtPage : 0;
+            uint256 endPage = isIdxAtEndAssetIndex
+                ? endAtPage
+                : idxStorage.getMaxPageNumber(idxAsset.key);
 
-                string memory newStuff = _getAssetWithWrapperString(idxStorage, coreDepStorage, idxAsset, startPage, endPage);
-                result = string.concat(result, newStuff);
+            string memory newStuff = _getAssetWithWrapperString(idxStorage, coreDepStorage, idxAsset, startPage, endPage);
+            result = string.concat(result, newStuff);
 
-                // Finishing gz-utils, with an import map asset next
-                bool isIdxLastDep = isIdxDep && idx == depsCount - 1;
-                bool isGzUtils = _compareStrings("frame-utils@1.0.0", idxAsset.key);
-                bool hasCompletedAsset = endPage == idxStorage.getMaxPageNumber(idxAsset.key);
+            // Finishing gz-utils, with an import map asset next
+            bool isIdxLastDep = isIdxDep && idx == (depsCount - 1);
+            // bool isGzUtils = _compareStrings("frame-utils@1.0.0", idxAsset.key);
+            bool hasCompletedAsset = endPage == idxStorage.getMaxPageNumber(idxAsset.key);
 
-                if (isGzUtils && hasCompletedAsset && !isIdxLastDep && _isImportmapWrapperString(depsList[idx + 1].wrapperKey)) {
-                    string memory importKeysJsString = string(
+            if (_compareStrings("frame-utils@1.0.0", idxAsset.key) && hasCompletedAsset) {
+              if (isIdxLastDep) {
+                result = string.concat(
+                    result, 
+                    string(
                         abi.encodePacked(
-                            coreDepStorage.getData("import-keys-js-wrap@1.0.0", 0, 0)
+                            coreDepStorage.getData("head-html-wrap@1.0.0", 1, 1),
+                            coreDepStorage.getData("body-html-wrap@1.0.0", 0, 0)
                         )
-                    );
-                    
-                    // Inject a list of import key names to the page
-                    for (uint256 dx = 0; dx < depsCount; dx++) {
-                        importKeysJsString = string.concat(
-                            string.concat(importKeysJsString, '"'), 
-                            string.concat(depsList[dx].key, '"')
-                        );
+                    )
+                );
+              } else {
+                if (_isImportmapWrapperString(depsList[idx + 1].wrapperKey)) {
+                  string memory importKeysJsString = string(
+                      abi.encodePacked(
+                          coreDepStorage.getData("import-keys-js-wrap@1.0.0", 0, 0)
+                      )
+                  );
 
-                        if (dx != depsCount - 1) {
-                            importKeysJsString = string.concat(importKeysJsString, ',');
-                        }
-                    }
+                  // Inject a list of import key names to the page
+                  for (uint256 dx = 0; dx < depsCount; dx++) {
+                      importKeysJsString = string.concat(
+                          string.concat(importKeysJsString, '"'), 
+                          string.concat(depsList[dx].key, '"')
+                      );
 
-                    importKeysJsString = string.concat(
-                        string.concat(
-                            importKeysJsString, 
-                            string(
-                                abi.encodePacked(
-                                    coreDepStorage.getData("import-keys-js-wrap@1.0.0", 1, 1)
-                                )
-                            )
-                        ),
+                      if (dx != depsCount - 1) {
+                          importKeysJsString = string.concat(importKeysJsString, ',');
+                      }
+                  }
+
+                  importKeysJsString = string.concat(
+                      string.concat(
+                          importKeysJsString, 
+                          string(
+                              abi.encodePacked(
+                                  coreDepStorage.getData("import-keys-js-wrap@1.0.0", 1, 1)
+                              )
+                          )
+                      ),
+                      string(
+                          abi.encodePacked(
+                              coreDepStorage.getData("importmap-init-js-wrap@1.0.0", 0, 0)
+                          )
+                      )
+                  );
+
+                  result = string.concat(result, importKeysJsString);
+                }
+              }
+            }
+            
+            // Finishing deps
+            if (isIdxLastDep && hasCompletedAsset) {
+                if(_isImportmapWrapperString(idxAsset.wrapperKey)){
+                    result = string.concat(
+                        result, 
                         string(
                             abi.encodePacked(
-                                coreDepStorage.getData("importmap-init-js-wrap@1.0.0", 0, 0)
+                                coreDepStorage.getData("importmap-init-js-wrap@1.0.0", 1, 1),
+                                coreDepStorage.getData("head-html-wrap@1.0.0", 1, 1),
+                                coreDepStorage.getData("body-html-wrap@1.0.0", 0, 0)
                             )
                         )
                     );
-
-                    result = string.concat(result, importKeysJsString);
-                } 
-                
-                // Finishing deps
-                if (isIdxLastDep && hasCompletedAsset) {
-                    if(_isImportmapWrapperString(idxAsset.wrapperKey)){
-                        result = string.concat(
-                            result, 
-                            string(
-                                abi.encodePacked(
-                                    coreDepStorage.getData("importmap-init-js-wrap@1.0.0", 1, 1),
-                                    coreDepStorage.getData("head-html-wrap@1.0.0", 1, 1),
-                                    coreDepStorage.getData("body-html-wrap@1.0.0", 0, 0)
-                                )
+                } else {
+                    result = string.concat(
+                        result, 
+                        string(
+                            abi.encodePacked(
+                                coreDepStorage.getData("head-html-wrap@1.0.0", 1, 1),
+                                coreDepStorage.getData("body-html-wrap@1.0.0", 0, 0)
                             )
-                        );
-                    } else {
-                        result = string.concat(
-                            result, 
-                            string(
-                                abi.encodePacked(
-                                    coreDepStorage.getData("head-html-wrap@1.0.0", 1, 1),
-                                    coreDepStorage.getData("body-html-wrap@1.0.0", 0, 0)
-                                )
-                            )
-                        );
-                    }
-                    
+                        )
+                    );
                 }
-
+                
             }
-        // }
+
+        }
 
         if (_rpage == 0) {
             result = string.concat(
