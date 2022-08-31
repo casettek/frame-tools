@@ -37,8 +37,8 @@
       ]
     },
     "C:\\Users\\Andrew\\Development\\frame-backend\\src\\services\\chain-sim\\contracts\\FrameFactory.sol": {
-      "lastModificationDate": 1661016907907,
-      "contentHash": "eebc7a017c3cb0751c2cf5355e52aca2",
+      "lastModificationDate": 1661957951050,
+      "contentHash": "a6acf0b278bdb219f81a5811edb9bf3f",
       "sourceName": "src/services/chain-sim/contracts/FrameFactory.sol",
       "solcConfig": {
         "version": "0.8.12",
@@ -70,10 +70,10 @@
         "^0.8.12"
       ],
       "artifacts": [
-        "Frame",
-        "FrameDataStore",
-        "FrameDataStoreFactory",
-        "FrameFactory"
+        "FrameFactory",
+        "IFrame",
+        "IFrameDataStore",
+        "IFrameDataStoreFactory"
       ]
     },
     "C:\\Users\\Andrew\\Development\\frame-backend\\src\\services\\chain-sim\\contracts\\FrameDataStore.sol": {
@@ -112,8 +112,8 @@
       ]
     },
     "C:\\Users\\Andrew\\Development\\frame-backend\\src\\services\\chain-sim\\contracts\\Frame.sol": {
-      "lastModificationDate": 1661708778051,
-      "contentHash": "1993dcb9dd4a7d6066c3f9c15cfd267e",
+      "lastModificationDate": 1661957903494,
+      "contentHash": "ae501060eed4167a968144a59a2198da",
       "sourceName": "src/services/chain-sim/contracts/Frame.sol",
       "solcConfig": {
         "version": "0.8.12",
@@ -144,12 +144,12 @@
       ],
       "artifacts": [
         "Frame",
-        "FrameDataStore"
+        "IFrameDataStore"
       ]
     },
     "C:\\Users\\Andrew\\Development\\frame-backend\\src\\services\\chain-sim\\contracts\\FrameDataStoreFactory.sol": {
-      "lastModificationDate": 1661016907899,
-      "contentHash": "84dfc65d0becd27bc94184bdc18e7a3d",
+      "lastModificationDate": 1661957866497,
+      "contentHash": "38caae0c706ef0ac70ced770c3d0fe7f",
       "sourceName": "src/services/chain-sim/contracts/FrameDataStoreFactory.sol",
       "solcConfig": {
         "version": "0.8.12",
@@ -181,8 +181,8 @@
         "^0.8.12"
       ],
       "artifacts": [
-        "FrameDataStore",
-        "FrameDataStoreFactory"
+        "FrameDataStoreFactory",
+        "IFrameDataStore"
       ]
     },
     "C:\\Users\\Andrew\\Development\\frame-backend\\src\\services\\chain-sim\\contracts\\misc\\ContractDataStorage.sol": {

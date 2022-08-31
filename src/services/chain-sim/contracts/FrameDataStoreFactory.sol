@@ -3,7 +3,7 @@ pragma solidity ^0.8.12;
 
 import "./CloneFactory.sol";
 
-interface FrameDataStore {
+interface IFrameDataStore {
   function setName(string memory _name) external;
   function setVersion(string memory _version) external;
 }
@@ -23,8 +23,8 @@ contract FrameDataStoreFactory is CloneFactory {
   function createFrameDataStore(string memory _name, string memory _version) public returns (address)  {
     address clone = createClone(libraryAddress);
 
-    FrameDataStore(clone).setName(_name);
-    FrameDataStore(clone).setVersion(_version);
+    IFrameDataStore(clone).setName(_name);
+    IFrameDataStore(clone).setVersion(_version);
 
     emit FrameDataStoreCreated(clone);
     return clone;
