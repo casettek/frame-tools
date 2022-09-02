@@ -1,4 +1,4 @@
-import libData from "./assets/libs";
+import { importIds, wrapperIds, importData, wrappers } from "./assets/libs";
 import {
   staggerStore,
   constructRenderIndex,
@@ -11,7 +11,6 @@ const dot = require("dot");
 const fs = require("fs");
 const utils = hre.ethers.utils;
 const toBytes = utils.toUtf8Bytes;
-
 const RENDER_PAGE_SIZE = 4;
 
 let frameDataStoreLib: any = null;
@@ -19,7 +18,6 @@ let frameDataStoreFactory: any = null;
 let frameLib: any = null;
 let frameFactory: any = null;
 let coreDepsDataStore: any = null;
-
 let frame: any = null;
 
 type WrapperDataMap = {
@@ -36,73 +34,49 @@ type ImportDataMap = {
   [key: string]: ImportData;
 };
 
-export const importIds = {
-  fflate: "fflate.umd.js@0.7.3",
-  htmPreact: "htm-preact.module.js@3.1.1",
-  three: "three.module.js@0.144.0",
-  p5: "p5.module.js@1.4.2",
-  tone: "tone.module.js@14.7.77",
-};
-
 const { fflate, htmPreact, three, p5, tone } = importIds;
-
-const wrappers: WrapperDataMap = {
-  "html-wrap.html@1.0.0": ["<!DOCTYPE html><html>", "</html>"],
-  "head-wrap.html@1.0.0": [
-    '<head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/><script type="text/javascript">',
-    "</script></head>",
-  ],
-  "body-wrap.html@1.0.0": ['<body style="margin: 0px">', "</body>"],
-  "import-keys-wrap.js@1.0.0": [
-    "const fks=[",
-    '];const iks=fks.filter((fk)=>!fk.includes("' + fflate + '"));',
-  ],
-  "importmap-init-wrap.js@1.0.0": [
-    "let idata=[];",
-    'let imap=`{"imports":{`;for(ki in iks){imap=imap+`"${iks[ki].split(".")[0]}":"data:text/javascript;base64,${btoa(unescape(encodeURIComponent(idata[ki])))}"${ki<(iks.length-1)?",":""}`;}imap=imap+"}}";const s=document.createElement("script");s.type="importmap";s.innerHTML=imap;document.head.appendChild(s);',
-  ],
-  "js-script-wrap.html@1.0.0": ['<script type="text/javascript">', "</script>"],
-  "js-module-wrap.html@1.0.0": ['<script type="module">', "</script>"],
-  "b64-wrap.js@1.0.0": ['eval(atob("', '"));'],
-  "b64-importmap-wrap.js@1.0.0": ['idata.push(atob("', '"));'],
-  "b64-gz-importmap-wrap.js@1.0.0": [
-    'idata.push(window.fflate.strFromU8(window.fflate.decompressSync(Uint8Array.from(atob("',
-    '"),(c)=>c.charCodeAt(0)))));',
-  ],
-};
+const {
+  htmlWrap,
+  headWrap,
+  bodyWrap,
+  importKeysWrap,
+  importmapInitWrap,
+  jsModuleWrap,
+  b64Wrap,
+  b64GzImportmapWrap,
+} = wrapperIds;
 
 export const imports: ImportDataMap = {
   [fflate]: {
-    data: libData[fflate],
-    wrapper: "b64-wrap.js@1.0.0",
-    pages: calcStoragePages(libData[fflate]),
+    data: importData[fflate],
+    wrapper: b64Wrap,
+    pages: calcStoragePages(importData[fflate]),
   },
   [htmPreact]: {
-    data: libData[htmPreact],
-    wrapper: "b64-gz-importmap-wrap.js@1.0.0",
-    pages: calcStoragePages(libData[htmPreact]),
+    data: importData[htmPreact],
+    wrapper: b64GzImportmapWrap,
+    pages: calcStoragePages(importData[htmPreact]),
   },
   [tone]: {
-    data: libData[tone],
-    wrapper: "b64-gz-importmap-wrap.js@1.0.0",
-    pages: calcStoragePages(libData[tone]),
+    data: importData[tone],
+    wrapper: b64GzImportmapWrap,
+    pages: calcStoragePages(importData[tone]),
   },
   [three]: {
-    data: libData[three],
-    wrapper: "b64-gz-importmap-wrap.js@1.0.0",
-    pages: calcStoragePages(libData[three]),
+    data: importData[three],
+    wrapper: b64GzImportmapWrap,
+    pages: calcStoragePages(importData[three]),
   },
   [p5]: {
-    data: libData[p5],
-    wrapper: "b64-gz-importmap-wrap.js@1.0.0",
-    pages: calcStoragePages(libData[p5]),
+    data: importData[p5],
+    wrapper: b64GzImportmapWrap,
+    pages: calcStoragePages(importData[p5]),
   },
 };
 
 export const getImportScripts = (importKeys: string[]): Array<iImport> =>
   importKeys.map((ik) => {
     const imp = imports[ik];
-    console.log("getImports", ik);
     const { wrapper, data } = imp;
     const wrapperArr: string[] = wrappers[wrapper];
     return {
@@ -240,12 +214,6 @@ export const deployCoreDeps = async (
     await coreDepsDataStore.saveData(wk, 0, toBytes(wrappers[wk][0]));
     await coreDepsDataStore.saveData(wk, 1, toBytes(wrappers[wk][1]));
   }
-  // console.log(
-  //   "done storing deps",
-  //   coreDepsDataStore.address,
-  //   wrappersKeys[0],
-  //   await coreDepsDataStore.getData(wrappersKeys[0], 0, 1)
-  // );
   return;
 };
 
@@ -299,23 +267,17 @@ export const deployDefaults = async () => {
   await deployFrameSetup();
   await deployCoreDeps(
     // all the libs
-    [
-      "fflate.umd.js@0.7.3",
-      "htm-preact.module.js@3.1.1",
-      "tone.module.js@14.7.77",
-      "three.module.js@0.144.0",
-      "p5.module.js@1.4.2",
-    ],
+    [fflate, htmPreact, tone, three, p5],
     // all the wrappers
     [
-      "html-wrap.html@1.0.0",
-      "head-wrap.html@1.0.0",
-      "body-wrap.html@1.0.0",
-      "import-keys-wrap.js@1.0.0",
-      "importmap-init-wrap.js@1.0.0",
-      "js-module-wrap.html@1.0.0",
-      "b64-wrap.js@1.0.0",
-      "b64-gz-importmap-wrap.js@1.0.0",
+      htmlWrap,
+      headWrap,
+      bodyWrap,
+      importKeysWrap,
+      importmapInitWrap,
+      jsModuleWrap,
+      b64Wrap,
+      b64GzImportmapWrap,
     ]
   );
 
@@ -329,7 +291,7 @@ export const deployDefaults = async () => {
     ],
     [
       [
-        "js-module-wrap.html@1.0.0",
+        jsModuleWrap,
         "_source",
         fs.readFileSync(__dirname + "/test/source.js").toString(),
       ],

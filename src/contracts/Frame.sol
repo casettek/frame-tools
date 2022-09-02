@@ -178,7 +178,7 @@ contract Frame {
             bool isIdxLastDep = isIdxDep && idx == (depsCount - 1);
             bool hasCompletedAsset = endPage == idxStorage.getMaxPageNumber(idxAsset.key);
 
-            if (_compareStrings("fflate.umd.js@0.7.3", idxAsset.key) && hasCompletedAsset) {
+            if (_compareStrings("fflate.umd.js.b64@0.7.3", idxAsset.key) && hasCompletedAsset) {
               if (isIdxLastDep) {
                 result = string.concat(
                     result, 
