@@ -1,5 +1,3 @@
-import framesResolvers from "./frames";
-
-const resolvers = [framesResolvers];
+const resolvers: any[] = [];
 
 export default resolvers;

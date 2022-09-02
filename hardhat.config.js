@@ -38,9 +38,9 @@ module.exports = {
     apiKey: process.env.ETHERSCAN_API_KEY,
   },
   paths: {
-    sources: "./src/services/chain-sim/contracts",
-    tests: "./src/services/chain-sim/test",
-    cache: "./src/services/chain-sim/cache",
-    artifacts: "./src/services/chain-sim/artifacts",
+    sources: "./src/contracts",
+    tests: "./src/test",
+    cache: "./src/cache",
+    artifacts: "./src/artifacts",
   },
 };

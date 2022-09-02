@@ -4,8 +4,8 @@ import {
   deployNewFrame,
   renderFrame,
   renderLogs,
-} from "./services/chain-sim/deploy";
-import { logLibData } from "./services/chain-sim/utils/web3";
+} from "./frame";
+import { logLibData } from "./utils/web3";
 
 import connectDB from "./config/db";
 
