@@ -293,7 +293,7 @@ export const deployDefaults = async () => {
       [
         jsModuleWrap,
         "_source",
-        fs.readFileSync(__dirname + "/test/source.js").toString(),
+        fs.readFileSync(__dirname + "/test/test.js").toString(),
       ],
     ],
     constructRenderIndex(

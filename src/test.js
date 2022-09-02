@@ -1,8 +1,4 @@
-import {
-  deployDefaults,
-  // renderTemplate,
-  // renderFrameLocal,
-} from "./services/chain-sim/deploy";
+import { deployDefaults } from "./frame";
 
 async function main() {
   deployDefaults();
