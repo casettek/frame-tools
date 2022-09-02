@@ -284,10 +284,10 @@ export const deployDefaults = async () => {
   await deployNewFrame(
     [
       [imports[fflate].wrapper, fflate],
-      [imports[htmPreact].wrapper, htmPreact],
-      [imports[three].wrapper, three],
+      // [imports[htmPreact].wrapper, htmPreact],
+      // [imports[three].wrapper, three],
       [imports[p5].wrapper, p5],
-      [imports[tone].wrapper, tone],
+      // [imports[tone].wrapper, tone],
     ],
     [
       [
@@ -299,10 +299,10 @@ export const deployDefaults = async () => {
     constructRenderIndex(
       [
         imports[fflate].pages,
-        imports[htmPreact].pages,
-        imports[three].pages,
+        // imports[htmPreact].pages,
+        // imports[three].pages,
         imports[p5].pages,
-        imports[tone].pages,
+        // imports[tone].pages,
         1,
       ],
       RENDER_PAGE_SIZE
