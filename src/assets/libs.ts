@@ -8,8 +8,6 @@ export const importIds = {
   tone: "tone.module.js.gz.b64@14.7.77",
 };
 
-const { fflate, htmPreact, three, p5, tone } = importIds;
-
 export const wrapperIds = {
   htmlWrap: "html-wrap.html@1.0.0",
   headWrap: "head-wrap.html@1.0.0",
@@ -22,6 +20,8 @@ export const wrapperIds = {
   b64ImportmapWrap: "b64-importmap-wrap.js@1.0.0",
   b64GzImportmapWrap: "b64-gz-importmap-wrap.js@1.0.0",
 };
+
+const { fflate, htmPreact, three, p5, tone } = importIds;
 
 const {
   htmlWrap,

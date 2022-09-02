@@ -158,9 +158,9 @@ export const renderTemplate = async () => {
   console.log(writeResult);
 };
 
-export const renderLogs = async (logs: any) => {
-  const writeResult = fs.writeFileSync(
-    __dirname + "/logs/logs.json",
+export const writeLogs = async (logs: any, fileName: string) => {
+  fs.writeFileSync(
+    __dirname + "/logs/" + fileName,
     Buffer.from(JSON.stringify(logs), "utf-8"),
     {
       encoding: "utf8",

@@ -1,11 +1,7 @@
 import { startServer } from "./app";
-import {
-  deployDefaults,
-  deployNewFrame,
-  renderFrame,
-  renderLogs,
-} from "./frame";
-import { logLibData } from "./utils/web3";
+import { deployDefaults, renderFrame, writeLogs, imports } from "./frame";
+import { getLibDataLogs, getWrapperDataLogs } from "./utils/web3";
+import { wrappers } from "./assets/libs";
 
 import connectDB from "./config/db";
 
@@ -25,16 +21,18 @@ async function main() {
       `\n🚀GraphQL is now running on http://localhost:${port}/graphql `
     );
 
-    deployDefaults();
+    Object.keys(wrappers).map((wk) => {
+      writeLogs(getWrapperDataLogs(wk, wrappers[wk]), wk + ".json");
+    });
 
-    // // LOGS
-    // // const key = "htm-preact@3.1.1";
-    // // const key = "frame-utils@1.0.0";
-    // const key = "tone@14.8.40";
-    // const imp = imports[key];
-    // let logs = logLibData(key, imp.data, imp.pages);
-    // // console.log(logs);
-    // renderLogs(logs);
+    Object.keys(imports).map((ik) => {
+      writeLogs(
+        getLibDataLogs(ik, imports[ik].data, imports[ik].pages),
+        ik + ".json"
+      );
+    });
+
+    deployDefaults();
   });
 }
 main();
