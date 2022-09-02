@@ -1,6 +1,6 @@
-import * as imp1 from "htm-preact";
-// import "p5.module.js";
-// import * as imp3 from "three";
-// import * as imp4 from "tone.module.js";
+import * as htm from "htm-preact";
+import * as THREE from "three";
+import p5 from "p5";
+import * as tone from "tone";
 
-console.log(imp1);
+console.log(htm, THREE, p5, tone);

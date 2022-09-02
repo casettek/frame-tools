@@ -36,6 +36,16 @@ type ImportDataMap = {
   [key: string]: ImportData;
 };
 
+export const importIds = {
+  fflate: "fflate.umd.js@0.7.3",
+  htmPreact: "htm-preact.module.js@3.1.1",
+  three: "three.module.js@0.144.0",
+  p5: "p5.module.js@1.4.2",
+  tone: "tone.module.js@14.7.77",
+};
+
+const { fflate, htmPreact, three, p5, tone } = importIds;
+
 const wrappers: WrapperDataMap = {
   "html-wrap.html@1.0.0": ["<!DOCTYPE html><html>", "</html>"],
   "head-wrap.html@1.0.0": [
@@ -45,7 +55,7 @@ const wrappers: WrapperDataMap = {
   "body-wrap.html@1.0.0": ['<body style="margin: 0px">', "</body>"],
   "import-keys-wrap.js@1.0.0": [
     "const fks=[",
-    '];const iks=fks.filter((fk)=>!fk.includes("frame-utils"));',
+    '];const iks=fks.filter((fk)=>!fk.includes("' + fflate + '"));',
   ],
   "importmap-init-wrap.js@1.0.0": [
     "let idata=[];",
@@ -60,16 +70,6 @@ const wrappers: WrapperDataMap = {
     '"),(c)=>c.charCodeAt(0)))));',
   ],
 };
-
-export const importIds = {
-  fflate: "fflate.umd.js@0.7.3",
-  htmPreact: "htm-preact.module.js@3.1.1",
-  three: "three.module.js@0.144.0",
-  p5: "p5.module.js@1.4.2",
-  tone: "tone.module.js@14.7.77",
-};
-
-const { fflate, htmPreact, three, p5, tone } = importIds;
 
 export const imports: ImportDataMap = {
   [fflate]: {
@@ -323,6 +323,9 @@ export const deployDefaults = async () => {
     [
       [imports[fflate].wrapper, fflate],
       [imports[htmPreact].wrapper, htmPreact],
+      [imports[three].wrapper, three],
+      [imports[p5].wrapper, p5],
+      [imports[tone].wrapper, tone],
     ],
     [
       [
@@ -332,7 +335,14 @@ export const deployDefaults = async () => {
       ],
     ],
     constructRenderIndex(
-      [imports[fflate].pages, imports[htmPreact].pages, 1],
+      [
+        imports[fflate].pages,
+        imports[htmPreact].pages,
+        imports[three].pages,
+        imports[p5].pages,
+        imports[tone].pages,
+        1,
+      ],
       RENDER_PAGE_SIZE
     )
   );
