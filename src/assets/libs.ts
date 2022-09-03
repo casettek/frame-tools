@@ -6,13 +6,13 @@ export const importIds = {
   p5: "p5.module.js.gz.b64@1.4.2",
   tone: "tone.module.js.gz.b64@14.7.77",
   three: "three.module.js.gz.b64@0.144.0",
-  threeOrbitControls: "three-orbit-controls.module.js.gz.b64@0.144.0",
-  threeImprovedNoise: "three-improved-noise.module.js.gz.b64@0.144.0",
-  threeWebGL: "three-webgl.module.js.gz.b64@0.144.0",
-  threeStats: "three-stats.module.js.gz.b64@0.144.0",
-  threeTween: "three-tween.module.js.gz.b64@0.144.0",
-  threeTrackballControls: "three-trackball-controls.module.js.gz.b64@0.144.0",
-  threeCSS3DRenderer: "three-css-3d-renderer.module.js.gz.b64@0.144.0",
+  threeOrbitControls: "three-orbit-controls.module.js.gz.b64@1.0.0",
+  threeImprovedNoise: "three-improved-noise.module.js.gz.b64@1.0.0",
+  threeWebGL: "three-webgl.module.js.gz.b64@1.0.0",
+  threeStats: "three-stats.module.js.gz.b64@1.0.0",
+  threeTween: "three-tween.module.js.gz.b64@1.0.0",
+  threeTrackballControls: "three-trackball-controls.module.js.gz.b64@1.0.0",
+  threeCSS3DRenderer: "three-css-3d-renderer.module.js.gz.b64@1.0.0",
 };
 
 export const wrapperIds = {

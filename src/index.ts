@@ -1,7 +1,13 @@
 import { startServer } from "./app";
-import { deployDefaults, renderFrame, writeLogs, imports } from "./frame";
+import {
+  deployDefaults,
+  deployFrame,
+  renderFrame,
+  writeLogs,
+  imports,
+} from "./frame";
 import { getLibDataLogs, getWrapperDataLogs } from "./utils/web3";
-import { wrappers } from "./assets/libs";
+import { wrappers, importIds } from "./assets/libs";
 
 import connectDB from "./config/db";
 
@@ -16,7 +22,7 @@ async function main() {
     res.send(result);
   });
 
-  app.listen({ port }, (): void => {
+  app.listen({ port }, async (): Promise<void> => {
     console.log(
       `\n🚀GraphQL is now running on http://localhost:${port}/graphql `
     );
@@ -32,7 +38,29 @@ async function main() {
       );
     });
 
-    deployDefaults();
+    const {
+      fflate,
+      three,
+      threeOrbitControls,
+      threeStats,
+      threeTween,
+      threeTrackballControls,
+      threeCSS3DRenderer,
+    } = importIds;
+
+    await deployDefaults();
+    await deployFrame(
+      [
+        fflate,
+        three,
+        threeOrbitControls,
+        threeStats,
+        threeTween,
+        threeTrackballControls,
+        threeCSS3DRenderer,
+      ],
+      "/test/three-test-2.js"
+    );
   });
 }
 main();

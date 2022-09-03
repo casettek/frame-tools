@@ -326,6 +326,8 @@ export const deployDefaults = async () => {
       threeTrackballControls,
       threeCSS3DRenderer,
       p5,
+      tone,
+      htmPreact,
     ],
     // all the wrappers
     [
@@ -339,36 +341,20 @@ export const deployDefaults = async () => {
       b64GzImportmapWrap,
     ]
   );
+};
 
+export const deployFrame = async (keys: string[], sourcePath: string) => {
   await deployNewFrame(
-    [
-      [imports[fflate].wrapper, fflate],
-      [imports[three].wrapper, three],
-      [imports[threeOrbitControls].wrapper, threeOrbitControls],
-      [imports[threeStats].wrapper, threeStats],
-      [imports[threeTween].wrapper, threeTween],
-      [imports[threeTrackballControls].wrapper, threeTrackballControls],
-      [imports[threeCSS3DRenderer].wrapper, threeCSS3DRenderer],
-    ],
+    keys.map((k: string) => [imports[k].wrapper, k]),
     [
       [
         jsModuleWrap,
         "_source",
-        fs.readFileSync(__dirname + "/test/three-test-3.js").toString(),
+        fs.readFileSync(__dirname + sourcePath).toString(),
       ],
     ],
     constructRenderIndex(
-      [
-        imports[fflate].pages,
-        imports[three].pages,
-        imports[threeOrbitControls].pages,
-        imports[threeStats].pages,
-        imports[threeTween].pages,
-        imports[threeTrackballControls].pages,
-        imports[threeCSS3DRenderer].pages,
-
-        1,
-      ],
+      keys.map((k: string) => imports[k].pages).concat([1]),
       RENDER_PAGE_SIZE
     )
   );
@@ -376,6 +362,7 @@ export const deployDefaults = async () => {
 
 export default {
   deployDefaults,
+  deployFrame,
   renderFrame,
   renderTemplate,
   getImportScripts,
