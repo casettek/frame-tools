@@ -32,6 +32,7 @@ async function main() {
     });
 
     Object.keys(imports).map((ik) => {
+      console.log(ik, imports[ik].pages);
       writeLogs(
         getLibDataLogs(ik, imports[ik].data, imports[ik].pages),
         ik + ".json"
@@ -46,6 +47,8 @@ async function main() {
       threeTween,
       threeTrackballControls,
       threeCSS3DRenderer,
+      threeImprovedNoise,
+      threeWebGL,
     } = importIds;
 
     await deployDefaults();
@@ -58,8 +61,10 @@ async function main() {
         threeTween,
         threeTrackballControls,
         threeCSS3DRenderer,
+        threeImprovedNoise,
+        threeWebGL,
       ],
-      "/test/three-test-2.js"
+      "/test/three-test-3.js"
     );
   });
 }
