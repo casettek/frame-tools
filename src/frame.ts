@@ -34,7 +34,20 @@ type ImportDataMap = {
   [key: string]: ImportData;
 };
 
-const { fflate, htmPreact, three, p5, tone } = importIds;
+const {
+  fflate,
+  htmPreact,
+  p5,
+  tone,
+  three,
+  threeOrbitControls,
+  threeImprovedNoise,
+  threeWebGL,
+  threeStats,
+  threeTween,
+  threeTrackballControls,
+  threeCSS3DRenderer,
+} = importIds;
 const {
   htmlWrap,
   headWrap,
@@ -62,15 +75,50 @@ export const imports: ImportDataMap = {
     wrapper: b64GzImportmapWrap,
     pages: calcStoragePages(importData[tone]),
   },
+  [p5]: {
+    data: importData[p5],
+    wrapper: b64GzImportmapWrap,
+    pages: calcStoragePages(importData[p5]),
+  },
   [three]: {
     data: importData[three],
     wrapper: b64GzImportmapWrap,
     pages: calcStoragePages(importData[three]),
   },
-  [p5]: {
-    data: importData[p5],
+  [threeOrbitControls]: {
+    data: importData[threeOrbitControls],
     wrapper: b64GzImportmapWrap,
-    pages: calcStoragePages(importData[p5]),
+    pages: calcStoragePages(importData[threeOrbitControls]),
+  },
+  [threeWebGL]: {
+    data: importData[threeWebGL],
+    wrapper: b64GzImportmapWrap,
+    pages: calcStoragePages(importData[threeWebGL]),
+  },
+  [threeImprovedNoise]: {
+    data: importData[threeImprovedNoise],
+    wrapper: b64GzImportmapWrap,
+    pages: calcStoragePages(importData[threeImprovedNoise]),
+  },
+  [threeStats]: {
+    data: importData[threeStats],
+    wrapper: b64GzImportmapWrap,
+    pages: calcStoragePages(importData[threeStats]),
+  },
+  [threeTween]: {
+    data: importData[threeTween],
+    wrapper: b64GzImportmapWrap,
+    pages: calcStoragePages(importData[threeTween]),
+  },
+  [threeTrackballControls]: {
+    data: importData[threeTrackballControls],
+    wrapper: b64GzImportmapWrap,
+    pages: calcStoragePages(importData[threeTrackballControls]),
+  },
+  [threeCSS3DRenderer]: {
+    data: importData[threeCSS3DRenderer],
+    wrapper: b64GzImportmapWrap,
+    pages: calcStoragePages(importData[threeCSS3DRenderer]),
   },
 };
 
@@ -267,7 +315,18 @@ export const deployDefaults = async () => {
   await deployFrameSetup();
   await deployCoreDeps(
     // all the libs
-    [fflate, htmPreact, tone, three, p5],
+    [
+      fflate,
+      three,
+      threeOrbitControls,
+      threeImprovedNoise,
+      threeWebGL,
+      threeStats,
+      threeTween,
+      threeTrackballControls,
+      threeCSS3DRenderer,
+      p5,
+    ],
     // all the wrappers
     [
       htmlWrap,
@@ -284,25 +343,30 @@ export const deployDefaults = async () => {
   await deployNewFrame(
     [
       [imports[fflate].wrapper, fflate],
-      // [imports[htmPreact].wrapper, htmPreact],
-      // [imports[three].wrapper, three],
-      [imports[p5].wrapper, p5],
-      // [imports[tone].wrapper, tone],
+      [imports[three].wrapper, three],
+      [imports[threeOrbitControls].wrapper, threeOrbitControls],
+      [imports[threeStats].wrapper, threeStats],
+      [imports[threeTween].wrapper, threeTween],
+      [imports[threeTrackballControls].wrapper, threeTrackballControls],
+      [imports[threeCSS3DRenderer].wrapper, threeCSS3DRenderer],
     ],
     [
       [
         jsModuleWrap,
         "_source",
-        fs.readFileSync(__dirname + "/test/p5-test.js").toString(),
+        fs.readFileSync(__dirname + "/test/three-test-3.js").toString(),
       ],
     ],
     constructRenderIndex(
       [
         imports[fflate].pages,
-        // imports[htmPreact].pages,
-        // imports[three].pages,
-        imports[p5].pages,
-        // imports[tone].pages,
+        imports[three].pages,
+        imports[threeOrbitControls].pages,
+        imports[threeStats].pages,
+        imports[threeTween].pages,
+        imports[threeTrackballControls].pages,
+        imports[threeCSS3DRenderer].pages,
+
         1,
       ],
       RENDER_PAGE_SIZE

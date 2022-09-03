@@ -26,7 +26,7 @@ export const staggerStore = async (
 
   for (let i = 0; i < stringChunks.length; i++) {
     await contract.saveData(key, i, toBytes(stringChunks[i]));
-    console.log(`Stored ${key} page ${i}`);
+    // console.log(`Stored ${key} page ${i}`);
   }
 };
 
