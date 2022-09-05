@@ -115,8 +115,8 @@
       ]
     },
     "C:\\Users\\Andrew\\Development\\frame-backend\\src\\contracts\\Frame.sol": {
-      "lastModificationDate": 1662351596724,
-      "contentHash": "1800233a7bcf90d423b98fdc8fe455b2",
+      "lastModificationDate": 1662352513157,
+      "contentHash": "75c25ba2572a9716b0d219f4ea3e2ae9",
       "sourceName": "src/contracts/Frame.sol",
       "solcConfig": {
         "version": "0.8.12",

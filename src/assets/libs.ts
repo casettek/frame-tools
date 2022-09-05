@@ -2,7 +2,7 @@ import { AssetDataMap } from "../schema/types/common";
 
 export const importIds = {
   fflate: "fflate.umd.js.b64@0.7.3",
-  inlineModule: "inline-module@0.6.1",
+  inlineModule: "inline-module.js@0.6.1",
   htmPreact: "htm-preact.module.js.gz.b64@3.1.1",
   p5: "p5.module.js.gz.b64@1.4.2",
   tone: "tone.module.js.gz.b64@14.7.77",
@@ -67,7 +67,14 @@ export const wrappers = {
     "</script></head>",
   ],
   [bodyWrap]: ['<body style="margin: 0px">', "</body>"],
-  [importKeysWrap]: ["const iks=[", "];"],
+  [importKeysWrap]: [
+    "const fks=[",
+    '];const iks=fks.filter((fk)=>!fk.includes("' +
+      fflate +
+      '")&&!fk.includes("' +
+      inlineModule +
+      '"));',
+  ],
   [importmapInitWrap]: [
     "let idata=[];",
     'for(ki in iks){const s=document.createElement("script");s.type="inline-module";s.id=iks[ki].split(".")[0];s.innerHTML=idata[ki];document.head.appendChild(s);}',

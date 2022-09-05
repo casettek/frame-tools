@@ -223,7 +223,7 @@ contract Frame {
                         ),
                         string(
                             abi.encodePacked(
-                                coreDepStorage.getData("importmap-init-wrap.js@1.0.0", 0, 0)
+                                coreDepStorage.getData("importmap-init-wrap.js@2.0.0", 0, 0)
                             )
                         )
                     );
@@ -239,7 +239,7 @@ contract Frame {
                         result, 
                         string(
                             abi.encodePacked(
-                                coreDepStorage.getData("importmap-init-wrap.js@1.0.0", 1, 1),
+                                coreDepStorage.getData("importmap-init-wrap.js@2.0.0", 1, 1),
                                 coreDepStorage.getData("head-wrap.html@1.0.0", 1, 1),
                                 coreDepStorage.getData("body-wrap.html@1.0.0", 0, 0)
                             )
