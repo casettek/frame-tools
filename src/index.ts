@@ -41,30 +41,35 @@ async function main() {
 
     const {
       fflate,
-      three,
-      threeOrbitControls,
-      threeStats,
-      threeTween,
-      threeTrackballControls,
-      threeCSS3DRenderer,
-      threeImprovedNoise,
-      threeWebGL,
+      esModuleShims,
+      // three,
+      // threeOrbitControls,
+      // threeStats,
+      // threeTween,
+      // threeTrackballControls,
+      // threeCSS3DRenderer,
+      // threeImprovedNoise,
+      // threeWebGL,
+      htmPreact,
     } = importIds;
 
     await deployDefaults();
     await deployFrame(
       [
         fflate,
-        three,
-        threeOrbitControls,
-        threeStats,
-        threeTween,
-        threeTrackballControls,
-        threeCSS3DRenderer,
-        threeImprovedNoise,
-        threeWebGL,
+        // esModuleShims,
+        htmPreact,
+        // esModuleShims,
+        // three,
+        // threeOrbitControls,
+        // threeStats,
+        // threeTween,
+        // threeTrackballControls,
+        // threeCSS3DRenderer,
+        // threeImprovedNoise,
+        // threeWebGL,
       ],
-      "/test/three-test-3.js"
+      "/test/test.js"
     );
   });
 }

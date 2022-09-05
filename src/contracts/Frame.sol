@@ -177,8 +177,9 @@ contract Frame {
             // Finishing gz-utils, with an import map asset next
             bool isIdxLastDep = isIdxDep && idx == (depsCount - 1);
             bool hasCompletedAsset = endPage == idxStorage.getMaxPageNumber(idxAsset.key);
+            bool isNextAssetImportMap = _isImportmapWrapperString(depsList[idx + 1].wrapperKey);
 
-            if (_compareStrings("fflate.umd.js.b64@0.7.3", idxAsset.key) && hasCompletedAsset) {
+            if ((_compareStrings("b64-wrap.js@1.0.0", idxAsset.wrapperKey)) && hasCompletedAsset) {
               if (isIdxLastDep) {
                 result = string.concat(
                     result, 
@@ -189,45 +190,46 @@ contract Frame {
                         )
                     )
                 );
-              } else {
-                if (_isImportmapWrapperString(depsList[idx + 1].wrapperKey)) {
-                  string memory importKeysJsString = string(
-                      abi.encodePacked(
-                          coreDepStorage.getData("import-keys-wrap.js@1.0.0", 0, 0)
-                      )
-                  );
+              } 
+                if (isNextAssetImportMap) {
+                    string memory importKeysJsString = string(
+                        abi.encodePacked(
+                            coreDepStorage.getData("import-keys-wrap.js@1.0.0", 0, 0)
+                        )
+                    );
 
-                  // Inject a list of import key names to the page
-                  for (uint256 dx = 0; dx < depsCount; dx++) {
-                      importKeysJsString = string.concat(
-                          string.concat(importKeysJsString, '"'), 
-                          string.concat(depsList[dx].key, '"')
-                      );
+                    // Inject a list of import key names to the page
+                    for (uint256 dx = 0; dx < depsCount; dx++) {
+                        if(_isImportmapWrapperString(depsList[dx].wrapperKey)) {
+                            importKeysJsString = string.concat(
+                                string.concat(importKeysJsString, '"'), 
+                                string.concat(depsList[dx].key, '"')
+                            );
 
-                      if (dx != depsCount - 1) {
-                          importKeysJsString = string.concat(importKeysJsString, ',');
-                      }
-                  }
+                            if (dx != depsCount - 1) {
+                                importKeysJsString = string.concat(importKeysJsString, ',');
+                            }
+                        }
+                    }
 
-                  importKeysJsString = string.concat(
-                      string.concat(
-                          importKeysJsString, 
-                          string(
-                              abi.encodePacked(
-                                  coreDepStorage.getData("import-keys-wrap.js@1.0.0", 1, 1)
-                              )
-                          )
-                      ),
-                      string(
-                          abi.encodePacked(
-                              coreDepStorage.getData("importmap-init-wrap.js@1.0.0", 0, 0)
-                          )
-                      )
-                  );
+                    importKeysJsString = string.concat(
+                        string.concat(
+                            importKeysJsString, 
+                            string(
+                                abi.encodePacked(
+                                    coreDepStorage.getData("import-keys-wrap.js@1.0.0", 1, 1)
+                                )
+                            )
+                        ),
+                        string(
+                            abi.encodePacked(
+                                coreDepStorage.getData("importmap-init-wrap.js@1.0.0", 0, 0)
+                            )
+                        )
+                    );
 
-                  result = string.concat(result, importKeysJsString);
-                }
-              }
+                    result = string.concat(result, importKeysJsString);
+                } 
             }
             
             // Finishing deps

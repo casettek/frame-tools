@@ -3,8 +3,6 @@ import { OrbitControls } from "three-orbit-controls";
 import { ImprovedNoise } from "three-improved-noise";
 import WebGL from "three-webgl";
 
-console.log(THREE, OrbitControls, ImprovedNoise, WebGL);
-
 if (WebGL.isWebGL2Available() === false) {
   document.body.appendChild(WebGL.getWebGL2ErrorMessage());
 }
