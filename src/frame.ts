@@ -42,12 +42,12 @@ const {
   tone,
   three,
   threeOrbitControls,
-  threeImprovedNoise,
-  threeWebGL,
-  threeStats,
-  threeTween,
   threeTrackballControls,
   threeCSS3DRenderer,
+  webGL,
+  stats,
+  tween,
+  improvedNoise,
 } = importIds;
 const {
   htmlWrap,
@@ -97,25 +97,25 @@ export const imports: ImportDataMap = {
     wrapper: b64GzImportmapWrap,
     pages: calcStoragePages(importData[threeOrbitControls]),
   },
-  [threeWebGL]: {
-    data: importData[threeWebGL],
+  [webGL]: {
+    data: importData[webGL],
     wrapper: b64GzImportmapWrap,
-    pages: calcStoragePages(importData[threeWebGL]),
+    pages: calcStoragePages(importData[webGL]),
   },
-  [threeImprovedNoise]: {
-    data: importData[threeImprovedNoise],
+  [improvedNoise]: {
+    data: importData[improvedNoise],
     wrapper: b64GzImportmapWrap,
-    pages: calcStoragePages(importData[threeImprovedNoise]),
+    pages: calcStoragePages(importData[improvedNoise]),
   },
-  [threeStats]: {
-    data: importData[threeStats],
+  [stats]: {
+    data: importData[stats],
     wrapper: b64GzImportmapWrap,
-    pages: calcStoragePages(importData[threeStats]),
+    pages: calcStoragePages(importData[stats]),
   },
-  [threeTween]: {
-    data: importData[threeTween],
+  [tween]: {
+    data: importData[tween],
     wrapper: b64GzImportmapWrap,
-    pages: calcStoragePages(importData[threeTween]),
+    pages: calcStoragePages(importData[tween]),
   },
   [threeTrackballControls]: {
     data: importData[threeTrackballControls],
@@ -327,10 +327,10 @@ export const deployDefaults = async () => {
       inlineModule,
       three,
       threeOrbitControls,
-      threeImprovedNoise,
-      threeWebGL,
-      threeStats,
-      threeTween,
+      improvedNoise,
+      webGL,
+      stats,
+      tween,
       threeTrackballControls,
       threeCSS3DRenderer,
       p5,

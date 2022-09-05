@@ -1,8 +1,9 @@
-import * as THREE from "three";
-
-import { TWEEN } from "three-tween";
-import { TrackballControls } from "three-trackball-controls";
-import { CSS3DRenderer, CSS3DSprite } from "three-css-3d-renderer";
+const THREE = await inlineImport("#three");
+const { TWEEN } = await inlineImport("#tween");
+const { TrackballControls } = await inlineImport("#three-trackball-controls");
+const { CSS3DRenderer, CSS3DSprite } = await inlineImport(
+  "#three-css-3d-renderer"
+);
 
 const cont = document.createElement("div");
 cont.id = "container";

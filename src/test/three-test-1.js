@@ -1,7 +1,7 @@
-import * as THREE from "three";
-import { OrbitControls } from "three-orbit-controls";
-import { ImprovedNoise } from "three-improved-noise";
-import WebGL from "three-webgl";
+const THREE = await inlineImport("#three");
+const { OrbitControls } = await inlineImport("#three-orbit-controls");
+const { ImprovedNoise } = await inlineImport("#improved-noise");
+const WebGL = (await inlineImport("#webgl")).default;
 
 if (WebGL.isWebGL2Available() === false) {
   document.body.appendChild(WebGL.getWebGL2ErrorMessage());
@@ -210,28 +210,6 @@ function init() {
 
   mesh = new THREE.Mesh(geometry, material);
   scene.add(mesh);
-
-  //
-
-  // const parameters = {
-  //   threshold: 0.25,
-  //   opacity: 0.25,
-  //   range: 0.1,
-  //   steps: 100,
-  // };
-
-  // function update() {
-  //   material.uniforms.threshold.value = parameters.threshold;
-  //   material.uniforms.opacity.value = parameters.opacity;
-  //   material.uniforms.range.value = parameters.range;
-  //   material.uniforms.steps.value = parameters.steps;
-  // }
-
-  // const gui = new GUI();
-  // gui.add(parameters, "threshold", 0, 1, 0.01).onChange(update);
-  // gui.add(parameters, "opacity", 0, 1, 0.01).onChange(update);
-  // gui.add(parameters, "range", 0, 1, 0.01).onChange(update);
-  // gui.add(parameters, "steps", 0, 200, 1).onChange(update);
 
   window.addEventListener("resize", onWindowResize);
 }

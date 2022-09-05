@@ -44,13 +44,12 @@ async function main() {
       inlineModule,
       three,
       threeOrbitControls,
-      threeStats,
-      threeTween,
       threeTrackballControls,
       threeCSS3DRenderer,
-      threeImprovedNoise,
-      threeWebGL,
-      htmPreact,
+      improvedNoise,
+      stats,
+      tween,
+      webGL,
     } = importIds;
 
     await deployDefaults();
@@ -58,17 +57,16 @@ async function main() {
       [
         fflate,
         inlineModule,
-        htmPreact,
         three,
         threeOrbitControls,
-        threeStats,
-        threeTween,
         threeTrackballControls,
         threeCSS3DRenderer,
-        threeImprovedNoise,
-        threeWebGL,
+        improvedNoise,
+        stats,
+        tween,
+        webGL,
       ],
-      "/test/test.js"
+      "/test/three-test-3.js"
     );
   });
 }

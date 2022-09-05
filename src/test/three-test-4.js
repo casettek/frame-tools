@@ -1,4 +1,4 @@
-import * as THREE from "three";
+const THREE = await inlineImport("#three");
 
 let camera, scene, renderer;
 let uniforms;
