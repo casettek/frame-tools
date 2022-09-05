@@ -41,15 +41,15 @@ async function main() {
 
     const {
       fflate,
-      esModuleShims,
-      // three,
-      // threeOrbitControls,
-      // threeStats,
-      // threeTween,
-      // threeTrackballControls,
-      // threeCSS3DRenderer,
-      // threeImprovedNoise,
-      // threeWebGL,
+      inlineModule,
+      three,
+      threeOrbitControls,
+      threeStats,
+      threeTween,
+      threeTrackballControls,
+      threeCSS3DRenderer,
+      threeImprovedNoise,
+      threeWebGL,
       htmPreact,
     } = importIds;
 
@@ -57,17 +57,16 @@ async function main() {
     await deployFrame(
       [
         fflate,
-        // esModuleShims,
+        inlineModule,
         htmPreact,
-        // esModuleShims,
-        // three,
-        // threeOrbitControls,
-        // threeStats,
-        // threeTween,
-        // threeTrackballControls,
-        // threeCSS3DRenderer,
-        // threeImprovedNoise,
-        // threeWebGL,
+        three,
+        threeOrbitControls,
+        threeStats,
+        threeTween,
+        threeTrackballControls,
+        threeCSS3DRenderer,
+        threeImprovedNoise,
+        threeWebGL,
       ],
       "/test/test.js"
     );

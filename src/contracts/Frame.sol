@@ -179,7 +179,7 @@ contract Frame {
             bool hasCompletedAsset = endPage == idxStorage.getMaxPageNumber(idxAsset.key);
             bool isNextAssetImportMap = _isImportmapWrapperString(depsList[idx + 1].wrapperKey);
 
-            if ((_compareStrings("b64-wrap.js@1.0.0", idxAsset.wrapperKey)) && hasCompletedAsset) {
+            if ((_compareStrings("b64-wrap.js@1.0.0", idxAsset.wrapperKey) || _compareStrings("b64-gz-wrap.js@1.0.0", idxAsset.wrapperKey)) && hasCompletedAsset) {
               if (isIdxLastDep) {
                 result = string.concat(
                     result, 

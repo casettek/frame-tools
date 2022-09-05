@@ -36,7 +36,7 @@ type ImportDataMap = {
 
 const {
   fflate,
-  esModuleShims,
+  inlineModule,
   htmPreact,
   p5,
   tone,
@@ -58,8 +58,7 @@ const {
   jsModuleWrap,
   b64Wrap,
   b64GzImportmapWrap,
-  b64AppendScriptWrap,
-  b64AppendGzScriptWrap,
+  jsScriptEvalB64Wrap,
 } = wrapperIds;
 
 export const imports: ImportDataMap = {
@@ -68,10 +67,10 @@ export const imports: ImportDataMap = {
     wrapper: b64Wrap,
     pages: calcStoragePages(importData[fflate]),
   },
-  [esModuleShims]: {
-    data: importData[esModuleShims],
-    wrapper: b64AppendGzScriptWrap,
-    pages: calcStoragePages(importData[esModuleShims]),
+  [inlineModule]: {
+    data: importData[inlineModule],
+    wrapper: b64Wrap,
+    pages: calcStoragePages(importData[inlineModule]),
   },
   [htmPreact]: {
     data: importData[htmPreact],
@@ -325,7 +324,7 @@ export const deployDefaults = async () => {
     // all the libs
     [
       fflate,
-      esModuleShims,
+      inlineModule,
       three,
       threeOrbitControls,
       threeImprovedNoise,
@@ -348,7 +347,7 @@ export const deployDefaults = async () => {
       jsModuleWrap,
       b64Wrap,
       b64GzImportmapWrap,
-      b64AppendScriptWrap,
+      jsScriptEvalB64Wrap,
     ]
   );
 };

@@ -1,1 +1,2 @@
-console.log("test");
+const htmPreact = await inlineImport("#htm-preact");
+console.log(htmPreact);
