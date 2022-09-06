@@ -50,6 +50,7 @@ async function main() {
       stats,
       tween,
       webGL,
+      htmPreact,
     } = importIds;
 
     await deployDefaults();
@@ -65,8 +66,9 @@ async function main() {
         stats,
         tween,
         webGL,
+        htmPreact,
       ],
-      "/test/three-test-3.js"
+      "/test/three-test-2.js"
     );
   });
 }

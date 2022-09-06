@@ -181,11 +181,15 @@ export const deployDataStoreSetup = async () => {
 
 export const deployFrameSetup = async () => {
   // base frame libs
-  const Frame = await hre.ethers.getContractFactory("Frame");
+  // const Frame = await hre.ethers.getContractFactory("Frame");
+  const Frame = await hre.ethers.getContractFactory("FrameDynamic");
   frameLib = await Frame.deploy();
   console.log("frameLib deployed at ", frameLib.address);
 
-  const FrameFactory = await hre.ethers.getContractFactory("FrameFactory");
+  // const FrameFactory = await hre.ethers.getContractFactory("FrameFactory");
+  const FrameFactory = await hre.ethers.getContractFactory(
+    "FrameDynamicFactory"
+  );
   frameFactory = await FrameFactory.deploy();
   console.log("frameFactory deployed at ", frameFactory.address);
   await frameFactory.setLibraryAddress(frameLib.address);
@@ -272,27 +276,73 @@ export const deployCoreDeps = async (
   return;
 };
 
+type Asset = {
+  wrapperKey: string;
+  key: string;
+  wrapperStore: string;
+  store?: string;
+};
+
 export const deployNewFrame = async (
   deps: string[][],
   assets: string[][],
   renderIndex: number[][]
 ) => {
+  // console.log("deploy", deps, assets);
+  const _deps: Asset[] = deps
+    .map(
+      (d): Asset => ({
+        wrapperKey: d[0],
+        key: d[1],
+        wrapperStore: coreDepsDataStore.address,
+        store: coreDepsDataStore.address,
+      })
+    )
+    .concat(
+      assets.map(
+        (d): Asset => ({
+          wrapperKey: d[0],
+          key: d[1],
+          wrapperStore: coreDepsDataStore.address,
+          store: "0x0000000000000000000000000000000000000000",
+        })
+      )
+    );
+
   // Construct renderIndex
   const depsPages: number[] = deps.map((d) => imports[d[1]].pages);
   const assetsPages: number[] = assets.map((a) => calcStoragePages(a[2]));
   const assetsMinusData = assets.map((a) => [a[0], a[1]]);
   const assetsData = assets.map((a) => toBytes(a[2]));
 
-  console.log("deploying new frame", [deps, assetsMinusData], renderIndex);
+  console.log(
+    "deploying new frame",
+    frameDataStoreFactory.address,
+    _deps,
+    assetsData,
+    coreDepsDataStore.address,
+    renderIndex
+  );
 
   // Deploy new frame with single source
-  const Frame = await hre.ethers.getContractFactory("Frame");
+  // const Frame = await hre.ethers.getContractFactory("Frame");
+
+  // const createCall = await frameFactory.createFrameWithSource(
+  //   coreDepsDataStore.address,
+  //   frameDataStoreFactory.address,
+  //   [deps, assetsMinusData],
+  //   assetsData,
+  //   renderIndex,
+  //   "test frame"
+  // );
+
+  const Frame = await hre.ethers.getContractFactory("FrameDynamic");
 
   const createCall = await frameFactory.createFrameWithSource(
-    coreDepsDataStore.address,
     frameDataStoreFactory.address,
-    [deps, assetsMinusData],
+    _deps,
     assetsData,
+    coreDepsDataStore.address,
     renderIndex,
     "test frame"
   );
@@ -303,6 +353,15 @@ export const deployNewFrame = async (
     ""
   );
   frame = await Frame.attach(newFrameAddress);
+
+  const test1 = await frame.depsList(0);
+  const test2 = await frame.depsList(1);
+  const test3 = await frame.depsList(2);
+  const test4 = await frame.depsList(3);
+  const test5 = await frame.depsCount();
+  const test6 = await frame.sourceStore();
+
+  console.log(test1, test2, test3, test4, test5, test6);
 };
 
 export const renderFrame = async () => {

@@ -184,6 +184,82 @@
       "artifacts": [
         "FrameDataStore"
       ]
+    },
+    "/Users/andrewcassetti/Development/frame-backend/src/contracts/FrameFactoryDynamic.sol": {
+      "lastModificationDate": 1662492457636,
+      "contentHash": "b34c329fbf23204ef443716309c9a8eb",
+      "sourceName": "src/contracts/FrameFactoryDynamic.sol",
+      "solcConfig": {
+        "version": "0.8.12",
+        "settings": {
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "./CloneFactory.sol"
+      ],
+      "versionPragmas": [
+        "^0.8.12"
+      ],
+      "artifacts": [
+        "FrameDynamicFactory",
+        "IFrame",
+        "IFrameDataStore",
+        "IFrameDataStoreFactory"
+      ]
+    },
+    "/Users/andrewcassetti/Development/frame-backend/src/contracts/FrameDynamic.sol": {
+      "lastModificationDate": 1662493013948,
+      "contentHash": "f2dc2da77d10b7c58bc0a20ec780df6f",
+      "sourceName": "src/contracts/FrameDynamic.sol",
+      "solcConfig": {
+        "version": "0.8.12",
+        "settings": {
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "^0.8.12"
+      ],
+      "artifacts": [
+        "FrameDynamic",
+        "IFrameDataStore"
+      ]
     }
   }
 }
