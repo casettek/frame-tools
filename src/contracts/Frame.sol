@@ -23,40 +23,38 @@ contract Frame {
     struct Asset {
         string wrapperKey;
         string key;
+        address wrapperStore;
+        address store;
     }
 
     string public name = "";
     bool public initSuccess = false;
-
-    IFrameDataStore public coreDepStorage;
-    IFrameDataStore public assetStorage;
     
     mapping(uint256 => Asset) public depsList;
     uint256 public depsCount;
 
-    mapping(uint256 => Asset) public assetList;
-    uint256 public assetsCount;
+    IFrameDataStore public pageWrapStore;
+    IFrameDataStore public sourceStore;
 
     uint256 public renderPagesCount;
-    mapping(uint256 => uint256[4]) public renderIndex;
+    mapping(uint256 => uint256[4]) public renderMap;
 
     constructor() {}
 
     function init(
-        address _coreDepStorage,
-        address _assetStorage,
-        string[2][] calldata _deps,
-        string[2][] calldata _assets,
-        uint256[4][] calldata _renderIndex
+        Asset[] calldata _deps,
+        address _sourceStore,
+        address _pageWrapStore,
+        uint256[4][] calldata _renderMap
     ) public {
         require(!initSuccess, "Frame: Can't re-init contract");
 
-        _setCoreDepStorage(IFrameDataStore(_coreDepStorage));
-        _setAssetStorage(IFrameDataStore(_assetStorage));
         _setDeps(_deps);
-        _setAssets(_assets);
-        _setRenderIndex(_renderIndex);
+        _setRenderMap(_renderMap);
 
+        sourceStore = IFrameDataStore(_sourceStore);
+        pageWrapStore = IFrameDataStore(_pageWrapStore);
+        
         initSuccess = true;
     }
 
@@ -67,34 +65,19 @@ contract Frame {
 
     // Internal 
 
-    function _setDeps(string[2][] calldata _deps) internal {
+    function _setDeps(Asset[] calldata _deps) internal {
         for (uint256 dx; dx < _deps.length; dx++) {
-            depsList[dx] = Asset({ wrapperKey: _deps[dx][0], key: _deps[dx][1] });
-            depsCount++;
+            depsList[dx] = _deps[dx];
         }
+        depsCount = _deps.length;
     }
 
-    function _setAssets(string[2][] calldata _assets) internal {
-        for (uint256 ax; ax < _assets.length; ax++) {
-            assetList[ax] = Asset({ wrapperKey: _assets[ax][0], key: _assets[ax][1] });
-            assetsCount++;
-        }
-    }
-
-    function _setCoreDepStorage(IFrameDataStore _storage) internal {
-        coreDepStorage = _storage;
-    }
-
-    function _setAssetStorage(IFrameDataStore _storage) internal {
-        assetStorage = _storage;
-    }
-
-    function _setRenderIndex(uint256[4][] calldata _index) internal {
-        for (uint256 idx; idx < _index.length; idx++) {
+    function _setRenderMap(uint256[4][] calldata _map) internal {
+        for (uint256 idx; idx < _map.length; idx++) {
             renderPagesCount++;
-            renderIndex[idx] = _index[idx];
+            renderMap[idx] = _map[idx];
         }
-        renderPagesCount = _index.length;
+        renderPagesCount = _map.length;
     }
 
     function _compareStrings(string memory _a, string memory _b) internal pure returns (bool) {
@@ -102,7 +85,7 @@ contract Frame {
     }
 
     function _isImportmapWrapperString(string memory _a) internal pure returns (bool) {
-        return _compareStrings(_a, "b64-gz-importmap-wrap.js@1.0.0");
+        return _compareStrings("b64-gz-importmap-wrap.js@1.0.0", _a);
     }
 
     function _isAssetDep(uint256 _index) internal view returns (bool) {
@@ -149,7 +132,7 @@ contract Frame {
 
     function renderPage(uint256 _rpage) public view returns (string memory) {
         // Index item format: [startAsset, endAsset, startAssetPage, endAssetPage]
-        uint256[4] memory indexItem = renderIndex[_rpage];
+        uint256[4] memory indexItem = renderMap[_rpage];
         uint256 startAtAssetIndex = indexItem[0];
         uint256 endAtAssetIndex = indexItem[1];
         uint256 startAtPage = indexItem[2];
@@ -158,12 +141,9 @@ contract Frame {
 
         // Iterate over assets in the index item
         for (uint256 idx = startAtAssetIndex; idx < endAtAssetIndex + 1; idx++) {
-            bool isIdxDep = _isAssetDep(idx);
-
-            // Adjust local index backwards if moving on to asset storage 
-            uint256 adjustedIdx = isIdxDep ? idx : idx - depsCount;
-            IFrameDataStore idxStorage = isIdxDep ? coreDepStorage : assetStorage;
-            Asset memory idxAsset = isIdxDep ? depsList[idx] : assetList[adjustedIdx];
+            Asset memory idxAsset = depsList[idx];
+            IFrameDataStore idxStorage = IFrameDataStore(idxAsset.store);
+            IFrameDataStore idxWrapStorage = IFrameDataStore(idxAsset.wrapperStore);
 
             bool isIdxAtEndAssetIndex = idx == endAtAssetIndex;
             uint256 startPage = idx == startAtAssetIndex ? startAtPage : 0;
@@ -171,22 +151,22 @@ contract Frame {
                 ? endAtPage
                 : idxStorage.getMaxPageNumber(idxAsset.key);
 
-            string memory newStuff = _getAssetWithWrapperString(idxStorage, coreDepStorage, idxAsset, startPage, endPage);
+            string memory newStuff = _getAssetWithWrapperString(idxStorage, idxWrapStorage, idxAsset, startPage, endPage);
             result = string.concat(result, newStuff);
 
-            // Finishing gz-utils, with an import map asset next
-            bool isIdxLastDep = isIdxDep && idx == (depsCount - 1);
+            address sourceStoreAddr = address(sourceStore);
+            bool isIdxAssetLastDep = address(idxAsset.store) != sourceStoreAddr && address(depsList[idx + 1].store) == sourceStoreAddr;
             bool hasCompletedAsset = endPage == idxStorage.getMaxPageNumber(idxAsset.key);
             bool isNextAssetImportMap = _isImportmapWrapperString(depsList[idx + 1].wrapperKey);
 
             if (_compareStrings("b64-wrap.js@1.0.0", idxAsset.wrapperKey) && hasCompletedAsset) {
-              if (isIdxLastDep) {
+              if (isIdxAssetLastDep) {
                 result = string.concat(
                     result, 
                     string(
                         abi.encodePacked(
-                            coreDepStorage.getData("head-wrap.html@1.0.0", 1, 1),
-                            coreDepStorage.getData("body-wrap.html@1.0.0", 0, 0)
+                            pageWrapStore.getData("head-wrap.html@1.0.0", 1, 1),
+                            pageWrapStore.getData("body-wrap.html@1.0.0", 0, 0)
                         )
                     )
                 );
@@ -194,7 +174,7 @@ contract Frame {
               if (isNextAssetImportMap) {
                   string memory importKeysJsString = string(
                       abi.encodePacked(
-                          coreDepStorage.getData("import-keys-wrap.js@1.0.0", 0, 0)
+                          pageWrapStore.getData("import-keys-wrap.js@1.0.0", 0, 0)
                       )
                   );
 
@@ -217,13 +197,13 @@ contract Frame {
                           importKeysJsString, 
                           string(
                               abi.encodePacked(
-                                  coreDepStorage.getData("import-keys-wrap.js@1.0.0", 1, 1)
+                                  pageWrapStore.getData("import-keys-wrap.js@1.0.0", 1, 1)
                               )
                           )
                       ),
                       string(
                           abi.encodePacked(
-                              coreDepStorage.getData("importmap-init-wrap.js@2.0.0", 0, 0)
+                              pageWrapStore.getData("importmap-init-wrap.js@1.0.0", 0, 0)
                           )
                       )
                   );
@@ -233,15 +213,15 @@ contract Frame {
             }
             
             // Finishing deps
-            if (isIdxLastDep && hasCompletedAsset) {
+            if (isIdxAssetLastDep && hasCompletedAsset) {
                 if(_isImportmapWrapperString(idxAsset.wrapperKey)){
                     result = string.concat(
                         result, 
                         string(
                             abi.encodePacked(
-                                coreDepStorage.getData("importmap-init-wrap.js@2.0.0", 1, 1),
-                                coreDepStorage.getData("head-wrap.html@1.0.0", 1, 1),
-                                coreDepStorage.getData("body-wrap.html@1.0.0", 0, 0)
+                                pageWrapStore.getData("importmap-init-wrap.js@1.0.0", 1, 1),
+                                pageWrapStore.getData("head-wrap.html@1.0.0", 1, 1),
+                                pageWrapStore.getData("body-wrap.html@1.0.0", 0, 0)
                             )
                         )
                     );
@@ -250,8 +230,8 @@ contract Frame {
                         result, 
                         string(
                             abi.encodePacked(
-                                coreDepStorage.getData("head-wrap.html@1.0.0", 1, 1),
-                                coreDepStorage.getData("body-wrap.html@1.0.0", 0, 0)
+                                pageWrapStore.getData("head-wrap.html@1.0.0", 1, 1),
+                                pageWrapStore.getData("body-wrap.html@1.0.0", 0, 0)
                             )
                         )
                     );
@@ -265,8 +245,8 @@ contract Frame {
             result = string.concat(
                 string(
                     abi.encodePacked(
-                        coreDepStorage.getData("html-wrap.html@1.0.0", 0, 0),
-                        coreDepStorage.getData("head-wrap.html@1.0.0", 0, 0)
+                        pageWrapStore.getData("html-wrap.html@1.0.0", 0, 0),
+                        pageWrapStore.getData("head-wrap.html@1.0.0", 0, 0)
                     )
                 ),
             result);
@@ -277,8 +257,8 @@ contract Frame {
                 result,
                 string(
                     abi.encodePacked(
-                        coreDepStorage.getData("body-wrap.html@1.0.0", 1, 1), 
-                        coreDepStorage.getData("html-wrap.html@1.0.0", 1, 1)
+                        pageWrapStore.getData("body-wrap.html@1.0.0", 1, 1), 
+                        pageWrapStore.getData("html-wrap.html@1.0.0", 1, 1)
                     )
                 )
             );

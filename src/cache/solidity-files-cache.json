@@ -37,8 +37,8 @@
       ]
     },
     "/Users/andrewcassetti/Development/frame-backend/src/contracts/FrameFactory.sol": {
-      "lastModificationDate": 1662139701743,
-      "contentHash": "ec56eb8f66f803afd7de7144f5644810",
+      "lastModificationDate": 1662494142183,
+      "contentHash": "6328c2495bab99b81ae9b4be70202bd3",
       "sourceName": "src/contracts/FrameFactory.sol",
       "solcConfig": {
         "version": "0.8.12",
@@ -115,8 +115,8 @@
       ]
     },
     "/Users/andrewcassetti/Development/frame-backend/src/contracts/Frame.sol": {
-      "lastModificationDate": 1662405172452,
-      "contentHash": "de84e9806950c12cbdc0077292fea42c",
+      "lastModificationDate": 1662495414581,
+      "contentHash": "54951ec8545fbb988bb58a89484d3131",
       "sourceName": "src/contracts/Frame.sol",
       "solcConfig": {
         "version": "0.8.12",
@@ -183,82 +183,6 @@
       ],
       "artifacts": [
         "FrameDataStore"
-      ]
-    },
-    "/Users/andrewcassetti/Development/frame-backend/src/contracts/FrameFactoryDynamic.sol": {
-      "lastModificationDate": 1662492457636,
-      "contentHash": "b34c329fbf23204ef443716309c9a8eb",
-      "sourceName": "src/contracts/FrameFactoryDynamic.sol",
-      "solcConfig": {
-        "version": "0.8.12",
-        "settings": {
-          "optimizer": {
-            "enabled": false,
-            "runs": 200
-          },
-          "outputSelection": {
-            "*": {
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata"
-              ],
-              "": [
-                "ast"
-              ]
-            }
-          }
-        }
-      },
-      "imports": [
-        "./CloneFactory.sol"
-      ],
-      "versionPragmas": [
-        "^0.8.12"
-      ],
-      "artifacts": [
-        "FrameDynamicFactory",
-        "IFrame",
-        "IFrameDataStore",
-        "IFrameDataStoreFactory"
-      ]
-    },
-    "/Users/andrewcassetti/Development/frame-backend/src/contracts/FrameDynamic.sol": {
-      "lastModificationDate": 1662493013948,
-      "contentHash": "f2dc2da77d10b7c58bc0a20ec780df6f",
-      "sourceName": "src/contracts/FrameDynamic.sol",
-      "solcConfig": {
-        "version": "0.8.12",
-        "settings": {
-          "optimizer": {
-            "enabled": false,
-            "runs": 200
-          },
-          "outputSelection": {
-            "*": {
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata"
-              ],
-              "": [
-                "ast"
-              ]
-            }
-          }
-        }
-      },
-      "imports": [],
-      "versionPragmas": [
-        "^0.8.12"
-      ],
-      "artifacts": [
-        "FrameDynamic",
-        "IFrameDataStore"
       ]
     }
   }

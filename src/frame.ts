@@ -181,15 +181,11 @@ export const deployDataStoreSetup = async () => {
 
 export const deployFrameSetup = async () => {
   // base frame libs
-  // const Frame = await hre.ethers.getContractFactory("Frame");
-  const Frame = await hre.ethers.getContractFactory("FrameDynamic");
+  const Frame = await hre.ethers.getContractFactory("Frame");
   frameLib = await Frame.deploy();
   console.log("frameLib deployed at ", frameLib.address);
 
-  // const FrameFactory = await hre.ethers.getContractFactory("FrameFactory");
-  const FrameFactory = await hre.ethers.getContractFactory(
-    "FrameDynamicFactory"
-  );
+  const FrameFactory = await hre.ethers.getContractFactory("FrameFactory");
   frameFactory = await FrameFactory.deploy();
   console.log("frameFactory deployed at ", frameFactory.address);
   await frameFactory.setLibraryAddress(frameLib.address);
@@ -324,19 +320,7 @@ export const deployNewFrame = async (
     renderIndex
   );
 
-  // Deploy new frame with single source
-  // const Frame = await hre.ethers.getContractFactory("Frame");
-
-  // const createCall = await frameFactory.createFrameWithSource(
-  //   coreDepsDataStore.address,
-  //   frameDataStoreFactory.address,
-  //   [deps, assetsMinusData],
-  //   assetsData,
-  //   renderIndex,
-  //   "test frame"
-  // );
-
-  const Frame = await hre.ethers.getContractFactory("FrameDynamic");
+  const Frame = await hre.ethers.getContractFactory("Frame");
 
   const createCall = await frameFactory.createFrameWithSource(
     frameDataStoreFactory.address,
