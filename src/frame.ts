@@ -4,7 +4,6 @@ import {
   constructRenderIndex,
   calcStoragePages,
 } from "./utils/web3";
-import { iImport, iWrapper } from "./schema/types/frame";
 
 const hre = require("hardhat");
 const dot = require("dot");
@@ -129,7 +128,7 @@ export const imports: ImportDataMap = {
   },
 };
 
-export const getImportScripts = (importKeys: string[]): Array<iImport> =>
+export const getImportScripts = (importKeys: string[]) =>
   importKeys.map((ik) => {
     const imp = imports[ik];
     const { wrapper, data } = imp;
@@ -140,7 +139,7 @@ export const getImportScripts = (importKeys: string[]): Array<iImport> =>
     };
   });
 
-export const getWrapperScripts = (wrapperKeys: string[]): Array<iWrapper> =>
+export const getWrapperScripts = (wrapperKeys: string[]) =>
   wrapperKeys.map((wk) => {
     const wrapperArr: string[] = wrappers[wk];
     return {
@@ -305,10 +304,6 @@ export const deployNewFrame = async (
       )
     );
 
-  // Construct renderIndex
-  const depsPages: number[] = deps.map((d) => imports[d[1]].pages);
-  const assetsPages: number[] = assets.map((a) => calcStoragePages(a[2]));
-  const assetsMinusData = assets.map((a) => [a[0], a[1]]);
   const assetsData = assets.map((a) => toBytes(a[2]));
 
   console.log(
@@ -352,7 +347,8 @@ export const renderFrame = async () => {
   let renderString = "";
   const pages = await frame.renderPagesCount();
 
-  for (let i = 0; i < pages; i++) {
+  for (let i = 0; i < pages.toNumber(); i++) {
+    console.log("fetching page ", i, " of ", pages.toNumber());
     const result = await frame.renderPage(i);
     renderString = renderString + result;
   }

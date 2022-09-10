@@ -1,7 +1,9 @@
 //SPDX-License-Identifier: MIT
 pragma solidity ^0.8.12;
 
-contract FrameDataStore {
+import "./Ownable.sol";
+
+contract FrameDataStoreOwnable is Ownable {
     struct ContractData {
         address rawContract;
         uint128 size;
@@ -30,7 +32,7 @@ contract FrameDataStore {
         string memory _key,
         uint128 _pageNumber,
         bytes memory _b
-    ) public {
+    ) public onlyOwner {
         require(
             _b.length < 24576,
             "FrameDataStore: Exceeded 24,576 bytes max contract size"
@@ -192,7 +194,7 @@ contract FrameDataStore {
         return _contractDataPages[_key].exists;
     }
 
-    function lock() public {
+    function lock() public onlyOwner {
         require(!isLocked, "FrameDataStore: Contract already locked");
         isLocked = true;
     }

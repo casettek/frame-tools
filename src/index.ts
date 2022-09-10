@@ -8,14 +8,9 @@ import {
 } from "./frame";
 import { getLibDataLogs, getWrapperDataLogs } from "./utils/web3";
 import { wrappers, importIds } from "./assets/libs";
-
-import connectDB from "./config/db";
-
 async function main() {
-  await connectDB();
-
   const app = await startServer();
-  const port = process.env.PORT || 3002;
+  const port = process.env.PORT || 3000;
 
   app.get("/", async (req, res) => {
     const result = await renderFrame();
@@ -23,16 +18,13 @@ async function main() {
   });
 
   app.listen({ port }, async (): Promise<void> => {
-    console.log(
-      `\n🚀GraphQL is now running on http://localhost:${port}/graphql `
-    );
+    console.log(`\n🏂 Frame is now running on http://localhost:${port}/`);
 
     Object.keys(wrappers).map((wk) => {
       writeLogs(getWrapperDataLogs(wk, wrappers[wk]), wk + ".json");
     });
 
     Object.keys(imports).map((ik) => {
-      console.log(ik, imports[ik].pages);
       writeLogs(
         getLibDataLogs(ik, imports[ik].data, imports[ik].pages),
         ik + ".json"
@@ -68,7 +60,7 @@ async function main() {
         webGL,
         htmPreact,
       ],
-      "/test/three-test-2.js"
+      "/test/three-test-1.js"
     );
   });
 }

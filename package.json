@@ -1,7 +1,7 @@
 {
-  "name": "graphql-api-template",
+  "name": "frame",
   "version": "1.0.0",
-  "description": "Graphql simple API for user authentication",
+  "description": "Tool for publishing web pages to EVM blockspace.",
   "main": "index.js",
   "scripts": {
     "dev": "hardhat compile && nodemon --watch 'src/**/*.ts' --exec ts-node src/index.ts",

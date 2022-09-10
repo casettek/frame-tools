@@ -84,6 +84,10 @@ contract Frame {
         return (keccak256(abi.encodePacked((_a))) == keccak256(abi.encodePacked((_b))));
     }
 
+    function _isB64JsWrapperString(string memory _a) internal pure returns (bool) {
+        return _compareStrings("b64-wrap.js@1.0.0", _a);
+    }
+
     function _isImportmapWrapperString(string memory _a) internal pure returns (bool) {
         return _compareStrings("b64-gz-importmap-wrap.js@1.0.0", _a);
     }
@@ -159,7 +163,7 @@ contract Frame {
             bool hasCompletedAsset = endPage == idxStorage.getMaxPageNumber(idxAsset.key);
             bool isNextAssetImportMap = _isImportmapWrapperString(depsList[idx + 1].wrapperKey);
 
-            if (_compareStrings("b64-wrap.js@1.0.0", idxAsset.wrapperKey) && hasCompletedAsset) {
+            if (_isB64JsWrapperString(idxAsset.wrapperKey) && hasCompletedAsset) {
               if (isIdxAssetLastDep) {
                 result = string.concat(
                     result, 

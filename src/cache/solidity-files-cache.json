@@ -115,8 +115,8 @@
       ]
     },
     "/Users/andrewcassetti/Development/frame-backend/src/contracts/Frame.sol": {
-      "lastModificationDate": 1662495414581,
-      "contentHash": "54951ec8545fbb988bb58a89484d3131",
+      "lastModificationDate": 1662843736913,
+      "contentHash": "cff3571dc1ffd1b7903e9c2fb6422a1c",
       "sourceName": "src/contracts/Frame.sol",
       "solcConfig": {
         "version": "0.8.12",
@@ -151,8 +151,8 @@
       ]
     },
     "/Users/andrewcassetti/Development/frame-backend/src/contracts/FrameDataStore.sol": {
-      "lastModificationDate": 1662139701742,
-      "contentHash": "3286d2665803473bf08494f2d2cdd331",
+      "lastModificationDate": 1662844243526,
+      "contentHash": "e6e902c8941230bef51a92437295fd85",
       "sourceName": "src/contracts/FrameDataStore.sol",
       "solcConfig": {
         "version": "0.8.12",
@@ -183,6 +183,115 @@
       ],
       "artifacts": [
         "FrameDataStore"
+      ]
+    },
+    "/Users/andrewcassetti/Development/frame-backend/src/contracts/Context.sol": {
+      "lastModificationDate": 1662844395217,
+      "contentHash": "c4b296fb9a98a645ca52cc72c3fbae06",
+      "sourceName": "src/contracts/Context.sol",
+      "solcConfig": {
+        "version": "0.8.12",
+        "settings": {
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "^0.8.0"
+      ],
+      "artifacts": [
+        "Context"
+      ]
+    },
+    "/Users/andrewcassetti/Development/frame-backend/src/contracts/Ownable.sol": {
+      "lastModificationDate": 1662844411401,
+      "contentHash": "a5798bcd782391f6398252fc6d0585dd",
+      "sourceName": "src/contracts/Ownable.sol",
+      "solcConfig": {
+        "version": "0.8.12",
+        "settings": {
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "./Context.sol"
+      ],
+      "versionPragmas": [
+        "^0.8.0"
+      ],
+      "artifacts": [
+        "Ownable"
+      ]
+    },
+    "/Users/andrewcassetti/Development/frame-backend/src/contracts/FrameDataStoreOwnable.sol": {
+      "lastModificationDate": 1662844499625,
+      "contentHash": "ba95a7eb45457d467fa8ca63dc99d40a",
+      "sourceName": "src/contracts/FrameDataStoreOwnable.sol",
+      "solcConfig": {
+        "version": "0.8.12",
+        "settings": {
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "./Ownable.sol"
+      ],
+      "versionPragmas": [
+        "^0.8.12"
+      ],
+      "artifacts": [
+        "FrameDataStoreOwnable"
       ]
     }
   }
