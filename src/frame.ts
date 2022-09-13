@@ -43,10 +43,10 @@ const {
   threeOrbitControls,
   threeTrackballControls,
   threeCSS3DRenderer,
-  webGL,
-  stats,
-  tween,
-  improvedNoise,
+  threeWebGL,
+  threeStats,
+  threeTween,
+  threeImprovedNoise,
 } = importIds;
 const {
   htmlWrap,
@@ -57,7 +57,6 @@ const {
   jsModuleWrap,
   b64Wrap,
   b64GzImportmapWrap,
-  jsScriptEvalB64Wrap,
 } = wrapperIds;
 
 export const imports: ImportDataMap = {
@@ -96,25 +95,25 @@ export const imports: ImportDataMap = {
     wrapper: b64GzImportmapWrap,
     pages: calcStoragePages(importData[threeOrbitControls]),
   },
-  [webGL]: {
-    data: importData[webGL],
+  [threeWebGL]: {
+    data: importData[threeWebGL],
     wrapper: b64GzImportmapWrap,
-    pages: calcStoragePages(importData[webGL]),
+    pages: calcStoragePages(importData[threeWebGL]),
   },
-  [improvedNoise]: {
-    data: importData[improvedNoise],
+  [threeImprovedNoise]: {
+    data: importData[threeImprovedNoise],
     wrapper: b64GzImportmapWrap,
-    pages: calcStoragePages(importData[improvedNoise]),
+    pages: calcStoragePages(importData[threeImprovedNoise]),
   },
-  [stats]: {
-    data: importData[stats],
+  [threeStats]: {
+    data: importData[threeStats],
     wrapper: b64GzImportmapWrap,
-    pages: calcStoragePages(importData[stats]),
+    pages: calcStoragePages(importData[threeStats]),
   },
-  [tween]: {
-    data: importData[tween],
+  [threeTween]: {
+    data: importData[threeTween],
     wrapper: b64GzImportmapWrap,
-    pages: calcStoragePages(importData[tween]),
+    pages: calcStoragePages(importData[threeTween]),
   },
   [threeTrackballControls]: {
     data: importData[threeTrackballControls],
@@ -366,10 +365,10 @@ export const deployDefaults = async () => {
       inlineModule,
       three,
       threeOrbitControls,
-      improvedNoise,
-      webGL,
-      stats,
-      tween,
+      threeImprovedNoise,
+      threeWebGL,
+      threeStats,
+      threeTween,
       threeTrackballControls,
       threeCSS3DRenderer,
       p5,
@@ -386,7 +385,6 @@ export const deployDefaults = async () => {
       jsModuleWrap,
       b64Wrap,
       b64GzImportmapWrap,
-      jsScriptEvalB64Wrap,
     ]
   );
 };

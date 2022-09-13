@@ -45,7 +45,7 @@
     "express": "^4.17.1",
     "graphql-subscriptions": "^2.0.0",
     "graphql-ws": "^5.9.0",
-    "hardhat": "^2.9.9",
+    "hardhat": "^2.11.1",
     "hardhat-contract-sizer": "^2.5.1",
     "hardhat-gas-reporter": "^1.0.8",
     "jsonwebtoken": "^8.5.1",

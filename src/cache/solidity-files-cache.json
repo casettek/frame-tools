@@ -258,8 +258,8 @@
       ]
     },
     "/Users/andrewcassetti/Development/frame-backend/src/contracts/FrameDataStoreOwnable.sol": {
-      "lastModificationDate": 1662844499625,
-      "contentHash": "ba95a7eb45457d467fa8ca63dc99d40a",
+      "lastModificationDate": 1662942009004,
+      "contentHash": "ee37c92366e1faa754f63f36908721b5",
       "sourceName": "src/contracts/FrameDataStoreOwnable.sol",
       "solcConfig": {
         "version": "0.8.12",

@@ -21,13 +21,16 @@ async function main() {
     console.log(`\n🏂 Frame is now running on http://localhost:${port}/`);
 
     Object.keys(wrappers).map((wk) => {
-      writeLogs(getWrapperDataLogs(wk, wrappers[wk]), wk + ".json");
+      writeLogs(
+        getWrapperDataLogs(wk, wrappers[wk]),
+        "wrappers/" + wk + ".json"
+      );
     });
 
     Object.keys(imports).map((ik) => {
       writeLogs(
         getLibDataLogs(ik, imports[ik].data, imports[ik].pages),
-        ik + ".json"
+        "libs/" + ik + ".json"
       );
     });
 
@@ -38,10 +41,10 @@ async function main() {
       threeOrbitControls,
       threeTrackballControls,
       threeCSS3DRenderer,
-      improvedNoise,
-      stats,
-      tween,
-      webGL,
+      threeImprovedNoise,
+      threeStats,
+      threeTween,
+      threeWebGL,
       htmPreact,
     } = importIds;
 
@@ -54,13 +57,13 @@ async function main() {
         threeOrbitControls,
         threeTrackballControls,
         threeCSS3DRenderer,
-        improvedNoise,
-        stats,
-        tween,
-        webGL,
+        threeImprovedNoise,
+        threeStats,
+        threeTween,
+        threeWebGL,
         htmPreact,
       ],
-      "/test/three-test-1.js"
+      "/test/three-import-test.js"
     );
   });
 }

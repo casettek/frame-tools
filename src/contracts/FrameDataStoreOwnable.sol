@@ -39,7 +39,7 @@ contract FrameDataStoreOwnable is Ownable {
         );
 
         require(
-            !hasKey(_key) || getMaxPageNumber(_key) == _pageNumber - 1, 
+            (!hasKey(_key) && _pageNumber == 0) || (getMaxPageNumber(_key) == _pageNumber - 1), 
             "FrameDataStore: Cannot overwrite page or skip next page for key"
         );
 
@@ -106,12 +106,12 @@ contract FrameDataStoreOwnable is Ownable {
         );
     }
 
-    function setName(string memory _name) public {
+    function setName(string memory _name) public onlyOwner {
         require(bytes(name).length < 3, "FrameDataStore: Name already set");
         name = _name;
     }
 
-    function setVersion(string memory _version) public {
+    function setVersion(string memory _version) public onlyOwner {
         require(bytes(version).length < 3, "FrameDataStore: Version already set");
         version = _version;
     }
