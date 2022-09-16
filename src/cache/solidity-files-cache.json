@@ -1,8 +1,8 @@
 {
   "_format": "hh-sol-cache-2",
   "files": {
-    "/Users/andrewcassetti/Development/frame-backend/src/contracts/CloneFactory.sol": {
-      "lastModificationDate": 1662139701741,
+    "C:\\Users\\Andrew\\Development\\frame-backend\\src\\contracts\\CloneFactory.sol": {
+      "lastModificationDate": 1660065525103,
       "contentHash": "f20576f694f5c3375c67cc28722ab4cc",
       "sourceName": "src/contracts/CloneFactory.sol",
       "solcConfig": {
@@ -36,9 +36,9 @@
         "CloneFactory"
       ]
     },
-    "/Users/andrewcassetti/Development/frame-backend/src/contracts/FrameFactory.sol": {
-      "lastModificationDate": 1662494142183,
-      "contentHash": "6328c2495bab99b81ae9b4be70202bd3",
+    "C:\\Users\\Andrew\\Development\\frame-backend\\src\\contracts\\FrameFactory.sol": {
+      "lastModificationDate": 1662501080461,
+      "contentHash": "1df0663af0a1147e048bc77525912fc7",
       "sourceName": "src/contracts/FrameFactory.sol",
       "solcConfig": {
         "version": "0.8.12",
@@ -76,9 +76,9 @@
         "IFrameDataStoreFactory"
       ]
     },
-    "/Users/andrewcassetti/Development/frame-backend/src/contracts/FrameDataStoreFactory.sol": {
-      "lastModificationDate": 1662139701743,
-      "contentHash": "eadda93e0314b33370468d8ce78bb726",
+    "C:\\Users\\Andrew\\Development\\frame-backend\\src\\contracts\\FrameDataStoreFactory.sol": {
+      "lastModificationDate": 1661957866497,
+      "contentHash": "38caae0c706ef0ac70ced770c3d0fe7f",
       "sourceName": "src/contracts/FrameDataStoreFactory.sol",
       "solcConfig": {
         "version": "0.8.12",
@@ -114,80 +114,9 @@
         "IFrameDataStore"
       ]
     },
-    "/Users/andrewcassetti/Development/frame-backend/src/contracts/Frame.sol": {
-      "lastModificationDate": 1662843736913,
-      "contentHash": "cff3571dc1ffd1b7903e9c2fb6422a1c",
-      "sourceName": "src/contracts/Frame.sol",
-      "solcConfig": {
-        "version": "0.8.12",
-        "settings": {
-          "optimizer": {
-            "enabled": false,
-            "runs": 200
-          },
-          "outputSelection": {
-            "*": {
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata"
-              ],
-              "": [
-                "ast"
-              ]
-            }
-          }
-        }
-      },
-      "imports": [],
-      "versionPragmas": [
-        "^0.8.12"
-      ],
-      "artifacts": [
-        "Frame",
-        "IFrameDataStore"
-      ]
-    },
-    "/Users/andrewcassetti/Development/frame-backend/src/contracts/FrameDataStore.sol": {
-      "lastModificationDate": 1662844243526,
-      "contentHash": "e6e902c8941230bef51a92437295fd85",
-      "sourceName": "src/contracts/FrameDataStore.sol",
-      "solcConfig": {
-        "version": "0.8.12",
-        "settings": {
-          "optimizer": {
-            "enabled": false,
-            "runs": 200
-          },
-          "outputSelection": {
-            "*": {
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata"
-              ],
-              "": [
-                "ast"
-              ]
-            }
-          }
-        }
-      },
-      "imports": [],
-      "versionPragmas": [
-        "^0.8.12"
-      ],
-      "artifacts": [
-        "FrameDataStore"
-      ]
-    },
-    "/Users/andrewcassetti/Development/frame-backend/src/contracts/Context.sol": {
-      "lastModificationDate": 1662844395217,
-      "contentHash": "c4b296fb9a98a645ca52cc72c3fbae06",
+    "C:\\Users\\Andrew\\Development\\frame-backend\\src\\contracts\\Context.sol": {
+      "lastModificationDate": 1663256135508,
+      "contentHash": "7093b039d79750162610c51cd75dfce8",
       "sourceName": "src/contracts/Context.sol",
       "solcConfig": {
         "version": "0.8.12",
@@ -220,9 +149,9 @@
         "Context"
       ]
     },
-    "/Users/andrewcassetti/Development/frame-backend/src/contracts/Ownable.sol": {
-      "lastModificationDate": 1662844411401,
-      "contentHash": "a5798bcd782391f6398252fc6d0585dd",
+    "C:\\Users\\Andrew\\Development\\frame-backend\\src\\contracts\\Ownable.sol": {
+      "lastModificationDate": 1663256135527,
+      "contentHash": "cdde5ac3d95df035baf9d4526c942294",
       "sourceName": "src/contracts/Ownable.sol",
       "solcConfig": {
         "version": "0.8.12",
@@ -257,9 +186,9 @@
         "Ownable"
       ]
     },
-    "/Users/andrewcassetti/Development/frame-backend/src/contracts/FrameDataStoreOwnable.sol": {
-      "lastModificationDate": 1662942009004,
-      "contentHash": "ee37c92366e1faa754f63f36908721b5",
+    "C:\\Users\\Andrew\\Development\\frame-backend\\src\\contracts\\FrameDataStoreOwnable.sol": {
+      "lastModificationDate": 1663256135521,
+      "contentHash": "8934b1ed9dc8bd4ee2a6ec18a97d0b62",
       "sourceName": "src/contracts/FrameDataStoreOwnable.sol",
       "solcConfig": {
         "version": "0.8.12",
@@ -292,6 +221,77 @@
       ],
       "artifacts": [
         "FrameDataStoreOwnable"
+      ]
+    },
+    "C:\\Users\\Andrew\\Development\\frame-backend\\src\\contracts\\Frame.sol": {
+      "lastModificationDate": 1663256135514,
+      "contentHash": "81dd06ab19be6ec556e6f1c5a4d78d47",
+      "sourceName": "src/contracts/Frame.sol",
+      "solcConfig": {
+        "version": "0.8.12",
+        "settings": {
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "^0.8.12"
+      ],
+      "artifacts": [
+        "Frame",
+        "IFrameDataStore"
+      ]
+    },
+    "C:\\Users\\Andrew\\Development\\frame-backend\\src\\contracts\\FrameDataStore.sol": {
+      "lastModificationDate": 1663256135515,
+      "contentHash": "7e22decf6af69fcca4c1ed6455cb78bd",
+      "sourceName": "src/contracts/FrameDataStore.sol",
+      "solcConfig": {
+        "version": "0.8.12",
+        "settings": {
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "^0.8.12"
+      ],
+      "artifacts": [
+        "FrameDataStore"
       ]
     }
   }
