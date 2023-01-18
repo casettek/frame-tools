@@ -2,6 +2,7 @@ import { startServer } from "./app";
 import {
   deployDefaults,
   deployFrame,
+  deployWithScripty,
   renderFrame,
   writeLogs,
   imports,
@@ -48,23 +49,25 @@ async function main() {
       htmPreact,
     } = importIds;
 
-    await deployDefaults();
-    await deployFrame(
-      [
-        fflate,
-        inlineModule,
-        three,
-        threeOrbitControls,
-        threeTrackballControls,
-        threeCSS3DRenderer,
-        threeImprovedNoise,
-        threeStats,
-        threeTween,
-        threeWebGL,
-        htmPreact,
-      ],
-      "/test/three-import-test.js"
-    );
+    deployWithScripty([], "");
+
+    // await deployDefaults();
+    // await deployFrame(
+    //   [
+    //     fflate,
+    //     inlineModule,
+    //     three,
+    //     threeOrbitControls,
+    //     threeTrackballControls,
+    //     threeCSS3DRenderer,
+    //     threeImprovedNoise,
+    //     threeStats,
+    //     threeTween,
+    //     threeWebGL,
+    //     htmPreact,
+    //   ],
+    //   "/test/three-import-test.js"
+    // );
   });
 }
 main();

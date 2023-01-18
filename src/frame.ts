@@ -407,15 +407,14 @@ export const deployFrame = async (keys: string[], sourcePath: string) => {
 };
 
 export const deployWithScripty = async (keys: string[], sourcePath: string) => {
-  // DEPLOYMENT
-  const ethfsContentStore = (
+  const ethfsContentStore = await (
     await hre.ethers.getContractFactory("ContentStore")
   ).deploy();
   await ethfsContentStore.deployed();
 
-  const ethfsFileStore = (
-    await hre.ethers.getContractFactory("ContentStore")
-  ).deploy();
+  const ethfsFileStore = await (
+    await hre.ethers.getContractFactory("FileStore")
+  ).deploy(ethfsContentStore.address);
   await ethfsFileStore.deployed();
 
   const scriptyStorageContract = await (
@@ -439,6 +438,7 @@ export const deployWithScripty = async (keys: string[], sourcePath: string) => {
 
 export default {
   deployDefaults,
+  deployWithScripty,
   deployFrame,
   renderFrame,
   renderTemplate,
