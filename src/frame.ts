@@ -406,6 +406,37 @@ export const deployFrame = async (keys: string[], sourcePath: string) => {
   );
 };
 
+export const deployWithScripty = async (keys: string[], sourcePath: string) => {
+  // DEPLOYMENT
+  const ethfsContentStore = (
+    await hre.ethers.getContractFactory("ContentStore")
+  ).deploy();
+  await ethfsContentStore.deployed();
+
+  const ethfsFileStore = (
+    await hre.ethers.getContractFactory("ContentStore")
+  ).deploy();
+  await ethfsFileStore.deployed();
+
+  const scriptyStorageContract = await (
+    await hre.ethers.getContractFactory("ScriptyStorage")
+  ).deploy(ethfsContentStore.address);
+  await scriptyStorageContract.deployed();
+  console.log("ScriptyStorage deployed", scriptyStorageContract.address);
+
+  const scriptyBuilderContract = await (
+    await hre.ethers.getContractFactory("ScriptyBuilder")
+  ).deploy();
+  await scriptyBuilderContract.deployed();
+  console.log("ScriptyBuilder deployed", scriptyBuilderContract.address);
+
+  const ethfsFileStorageContract = await (
+    await hre.ethers.getContractFactory("ETHFSFileStorage")
+  ).deploy(ethfsFileStore.address);
+  await ethfsFileStorageContract.deployed();
+  console.log("ETHFSFileStorage deployed", ethfsFileStorageContract.address);
+};
+
 export default {
   deployDefaults,
   deployFrame,
