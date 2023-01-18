@@ -6,7 +6,7 @@ import "solady/src/utils/Base64.sol";
 
 import {IScriptyBuilder, WrappedScriptRequest} from "./scripty/IScriptyBuilder.sol";
 
-contract FrameHTML is ERC721 {
+contract ScriptyFrame is ERC721 {
     address public immutable scriptyStorageAddress;
     address public immutable scriptyBuilderAddress;
     uint256 public immutable bufferSize;
