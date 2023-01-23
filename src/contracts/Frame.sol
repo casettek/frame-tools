@@ -1,30 +1,32 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.17;
 
-import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+// import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+import "./libs/erc721-cloneable/ERC721Cloneable.sol";
 import "solady/src/utils/Base64.sol";
 
 import {IScriptyBuilder, WrappedScriptRequest} from "./libs/scripty/IScriptyBuilder.sol";
 
-contract ScriptyFrame is ERC721 {
-    address public immutable scriptyStorageAddress;
-    address public immutable scriptyBuilderAddress;
-    uint256 public immutable bufferSize;
+contract Frame is ERC721Cloneable {
+    address public scriptyStorageAddress;
+    address public scriptyBuilderAddress;
+    uint256 public bufferSize;
     WrappedScriptRequest[] public requests;
 
-    constructor(
+    constructor() ERC721Cloneable() {}
+
+    function setParams(
         address _scriptyStorageAddress,
         address _scriptyBuilderAddress,
         uint256 _bufferSize,
         WrappedScriptRequest[] memory _requests
-    ) ERC721("frame", "FRM") {
+    ) public {
         scriptyStorageAddress = _scriptyStorageAddress;
         scriptyBuilderAddress = _scriptyBuilderAddress;
         bufferSize = _bufferSize;
         for (uint256 i = 0; i < requests.length; i++) {
-          requests[i] = _requests[i];
+            requests[i] = _requests[i];
         }
-        mint();
     }
 
     function mint() internal {
@@ -51,11 +53,5 @@ contract ScriptyFrame is ERC721 {
                     "%22%7D"
                 )
             );
-    }
-
-    // Just for testing
-    // solc-ignore-next-line func-mutability
-    function tokenURI_ForGasTest() public {
-        tokenURI(0);
     }
 }
