@@ -8,16 +8,13 @@ contract ContentStoreFactory is CloneFactory {
 
   event ContentStoreFactoryCreated(address newAddress);
 
-  constructor() {}
-
   function setLibraryAddress(address _libraryAddress) public  {
     require(libraryAddress == address(0), "ContentStoreFactory: Library already set");
     libraryAddress = _libraryAddress;
   }
 
-  function createContentStore() public returns (address)  {
+  function create() public returns (address)  {
     address clone = createClone(libraryAddress);
-
     emit ContentStoreFactoryCreated(clone);
     return clone;
   }

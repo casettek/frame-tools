@@ -1,10 +1,49 @@
 {
   "_format": "hh-sol-cache-2",
   "files": {
-    "C:\\Users\\Andrew\\Development\\frame-backend\\src\\contracts\\Factories\\CloneFactory.sol": {
-      "lastModificationDate": 1674083024727,
-      "contentHash": "1e5f45740b670a6cec52f9568f14d8db",
-      "sourceName": "src/contracts/Factories/CloneFactory.sol",
+    "/Users/andrewcassetti/Development/frame-backend/src/contracts/Frame.sol": {
+      "lastModificationDate": 1674494692954,
+      "contentHash": "0dcd787c498737890797c546a16555c8",
+      "sourceName": "src/contracts/Frame.sol",
+      "solcConfig": {
+        "version": "0.8.17",
+        "settings": {
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "@openzeppelin/contracts/token/ERC721/ERC721.sol",
+        "solady/src/utils/Base64.sol",
+        "./libs/scripty/IScriptyBuilder.sol"
+      ],
+      "versionPragmas": [
+        "^0.8.17"
+      ],
+      "artifacts": [
+        "ScriptyFrame"
+      ]
+    },
+    "/Users/andrewcassetti/Development/frame-backend/src/contracts/libs/scripty/IScriptyBuilder.sol": {
+      "lastModificationDate": 1674068761732,
+      "contentHash": "9589d33b1d80dc9126a21ecbd49ff8f4",
+      "sourceName": "src/contracts/libs/scripty/IScriptyBuilder.sol",
       "solcConfig": {
         "version": "0.8.17",
         "settings": {
@@ -30,204 +69,16 @@
       },
       "imports": [],
       "versionPragmas": [
-        "^0.8.0"
+        "^0.8.17"
       ],
       "artifacts": [
-        "CloneFactory"
+        "IScriptyBuilder"
       ]
     },
-    "C:\\Users\\Andrew\\Development\\frame-backend\\src\\contracts\\Factories\\ScriptyStorageFactory.sol": {
-      "lastModificationDate": 1674083024729,
-      "contentHash": "06efe4eafe3de17b96d53c81ea1cb91a",
-      "sourceName": "src/contracts/Factories/ScriptyStorageFactory.sol",
-      "solcConfig": {
-        "version": "0.8.17",
-        "settings": {
-          "optimizer": {
-            "enabled": false,
-            "runs": 200
-          },
-          "outputSelection": {
-            "*": {
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata"
-              ],
-              "": [
-                "ast"
-              ]
-            }
-          }
-        }
-      },
-      "imports": [
-        "./CloneFactory.sol"
-      ],
-      "versionPragmas": [
-        "^0.8.12"
-      ],
-      "artifacts": [
-        "IScriptyStorageFactory",
-        "ScriptyStorageFactory"
-      ]
-    },
-    "C:\\Users\\Andrew\\Development\\frame-backend\\src\\contracts\\Factories\\ScriptyFrameFactory.sol": {
-      "lastModificationDate": 1674083024728,
-      "contentHash": "5260e220803652c5758a3da71421ab26",
-      "sourceName": "src/contracts/Factories/ScriptyFrameFactory.sol",
-      "solcConfig": {
-        "version": "0.8.17",
-        "settings": {
-          "optimizer": {
-            "enabled": false,
-            "runs": 200
-          },
-          "outputSelection": {
-            "*": {
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata"
-              ],
-              "": [
-                "ast"
-              ]
-            }
-          }
-        }
-      },
-      "imports": [
-        "./CloneFactory.sol"
-      ],
-      "versionPragmas": [
-        "^0.8.12"
-      ],
-      "artifacts": [
-        "IScriptyFrame",
-        "IScriptyStorageFactory",
-        "ScriptyFrameFactory"
-      ]
-    },
-    "C:\\Users\\Andrew\\Development\\frame-backend\\src\\contracts\\Factories\\ContentStoreFactory.sol": {
-      "lastModificationDate": 1674083024728,
-      "contentHash": "94d24531fc645fbbe84df6eaa2386f53",
-      "sourceName": "src/contracts/Factories/ContentStoreFactory.sol",
-      "solcConfig": {
-        "version": "0.8.17",
-        "settings": {
-          "optimizer": {
-            "enabled": false,
-            "runs": 200
-          },
-          "outputSelection": {
-            "*": {
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata"
-              ],
-              "": [
-                "ast"
-              ]
-            }
-          }
-        }
-      },
-      "imports": [
-        "./CloneFactory.sol"
-      ],
-      "versionPragmas": [
-        "^0.8.12"
-      ],
-      "artifacts": [
-        "ContentStoreFactory",
-        "IContentStoreFactory"
-      ]
-    },
-    "C:\\Users\\Andrew\\Development\\frame-backend\\src\\contracts\\scripty\\dependencies\\ethfs\\ContentStore.sol": {
-      "lastModificationDate": 1674083024766,
-      "contentHash": "d16efdc11209b63dd97a30b3d0f74a45",
-      "sourceName": "src/contracts/scripty/dependencies/ethfs/ContentStore.sol",
-      "solcConfig": {
-        "version": "0.8.17",
-        "settings": {
-          "optimizer": {
-            "enabled": false,
-            "runs": 200
-          },
-          "outputSelection": {
-            "*": {
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata"
-              ],
-              "": [
-                "ast"
-              ]
-            }
-          }
-        }
-      },
-      "imports": [
-        "solady/src/utils/SSTORE2.sol",
-        "./IContentStore.sol"
-      ],
-      "versionPragmas": [
-        "^0.8.0"
-      ],
-      "artifacts": [
-        "ContentStore"
-      ]
-    },
-    "C:\\Users\\Andrew\\Development\\frame-backend\\src\\contracts\\scripty\\dependencies\\ethfs\\IContentStore.sol": {
-      "lastModificationDate": 1674083024767,
-      "contentHash": "32093cdfee60e8f7e19d6bd28849bd1f",
-      "sourceName": "src/contracts/scripty/dependencies/ethfs/IContentStore.sol",
-      "solcConfig": {
-        "version": "0.8.17",
-        "settings": {
-          "optimizer": {
-            "enabled": false,
-            "runs": 200
-          },
-          "outputSelection": {
-            "*": {
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata"
-              ],
-              "": [
-                "ast"
-              ]
-            }
-          }
-        }
-      },
-      "imports": [],
-      "versionPragmas": [
-        "^0.8.0"
-      ],
-      "artifacts": [
-        "IContentStore"
-      ]
-    },
-    "C:\\Users\\Andrew\\Development\\frame-backend\\node_modules\\solady\\src\\utils\\SSTORE2.sol": {
-      "lastModificationDate": 1674083058048,
-      "contentHash": "b14c8910916644776acc1d0fd75f1691",
-      "sourceName": "solady/src/utils/SSTORE2.sol",
+    "/Users/andrewcassetti/Development/frame-backend/node_modules/solady/src/utils/Base64.sol": {
+      "lastModificationDate": 1674070953206,
+      "contentHash": "4f68fcedcc08705d6c7d7f8dc50eb2aa",
+      "sourceName": "solady/src/utils/Base64.sol",
       "solcConfig": {
         "version": "0.8.17",
         "settings": {
@@ -256,232 +107,11 @@
         "^0.8.4"
       ],
       "artifacts": [
-        "SSTORE2"
+        "Base64"
       ]
     },
-    "C:\\Users\\Andrew\\Development\\frame-backend\\src\\contracts\\scripty\\dependencies\\ethfs\\FileStore.sol": {
-      "lastModificationDate": 1674083024766,
-      "contentHash": "6f473025ba28356f442b3deb4f69d02c",
-      "sourceName": "src/contracts/scripty/dependencies/ethfs/FileStore.sol",
-      "solcConfig": {
-        "version": "0.8.17",
-        "settings": {
-          "optimizer": {
-            "enabled": false,
-            "runs": 200
-          },
-          "outputSelection": {
-            "*": {
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata"
-              ],
-              "": [
-                "ast"
-              ]
-            }
-          }
-        }
-      },
-      "imports": [
-        "solady/src/utils/SSTORE2.sol",
-        "./IFileStore.sol",
-        "@openzeppelin/contracts/access/Ownable2Step.sol",
-        "./File.sol",
-        "./IContentStore.sol"
-      ],
-      "versionPragmas": [
-        "^0.8.13"
-      ],
-      "artifacts": [
-        "FileStore"
-      ]
-    },
-    "C:\\Users\\Andrew\\Development\\frame-backend\\src\\contracts\\scripty\\dependencies\\ethfs\\IFileStore.sol": {
-      "lastModificationDate": 1674083024768,
-      "contentHash": "b5a4ba6b273a8991d556a3672bae02b2",
-      "sourceName": "src/contracts/scripty/dependencies/ethfs/IFileStore.sol",
-      "solcConfig": {
-        "version": "0.8.17",
-        "settings": {
-          "optimizer": {
-            "enabled": false,
-            "runs": 200
-          },
-          "outputSelection": {
-            "*": {
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata"
-              ],
-              "": [
-                "ast"
-              ]
-            }
-          }
-        }
-      },
-      "imports": [
-        "./File.sol",
-        "./IContentStore.sol"
-      ],
-      "versionPragmas": [
-        "^0.8.13"
-      ],
-      "artifacts": [
-        "IFileStore"
-      ]
-    },
-    "C:\\Users\\Andrew\\Development\\frame-backend\\src\\contracts\\scripty\\dependencies\\ethfs\\File.sol": {
-      "lastModificationDate": 1674083024766,
-      "contentHash": "88d350526afd0dabf483021785094517",
-      "sourceName": "src/contracts/scripty/dependencies/ethfs/File.sol",
-      "solcConfig": {
-        "version": "0.8.17",
-        "settings": {
-          "optimizer": {
-            "enabled": false,
-            "runs": 200
-          },
-          "outputSelection": {
-            "*": {
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata"
-              ],
-              "": [
-                "ast"
-              ]
-            }
-          }
-        }
-      },
-      "imports": [],
-      "versionPragmas": [
-        "^0.8.13"
-      ],
-      "artifacts": []
-    },
-    "C:\\Users\\Andrew\\Development\\frame-backend\\node_modules\\@openzeppelin\\contracts\\access\\Ownable2Step.sol": {
-      "lastModificationDate": 1674083059372,
-      "contentHash": "9a66ec5f916493cff9d9ef23b16e28d7",
-      "sourceName": "@openzeppelin/contracts/access/Ownable2Step.sol",
-      "solcConfig": {
-        "version": "0.8.17",
-        "settings": {
-          "optimizer": {
-            "enabled": false,
-            "runs": 200
-          },
-          "outputSelection": {
-            "*": {
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata"
-              ],
-              "": [
-                "ast"
-              ]
-            }
-          }
-        }
-      },
-      "imports": [
-        "./Ownable.sol"
-      ],
-      "versionPragmas": [
-        "^0.8.0"
-      ],
-      "artifacts": [
-        "Ownable2Step"
-      ]
-    },
-    "C:\\Users\\Andrew\\Development\\frame-backend\\node_modules\\@openzeppelin\\contracts\\access\\Ownable.sol": {
-      "lastModificationDate": 1674083059367,
-      "contentHash": "e436cea06129be2c73cda4b1acc848b5",
-      "sourceName": "@openzeppelin/contracts/access/Ownable.sol",
-      "solcConfig": {
-        "version": "0.8.17",
-        "settings": {
-          "optimizer": {
-            "enabled": false,
-            "runs": 200
-          },
-          "outputSelection": {
-            "*": {
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata"
-              ],
-              "": [
-                "ast"
-              ]
-            }
-          }
-        }
-      },
-      "imports": [
-        "../utils/Context.sol"
-      ],
-      "versionPragmas": [
-        "^0.8.0"
-      ],
-      "artifacts": [
-        "Ownable"
-      ]
-    },
-    "C:\\Users\\Andrew\\Development\\frame-backend\\node_modules\\@openzeppelin\\contracts\\utils\\Context.sol": {
-      "lastModificationDate": 1674083058787,
-      "contentHash": "5f2c5c4b6af2dd4551027144797bc8be",
-      "sourceName": "@openzeppelin/contracts/utils/Context.sol",
-      "solcConfig": {
-        "version": "0.8.17",
-        "settings": {
-          "optimizer": {
-            "enabled": false,
-            "runs": 200
-          },
-          "outputSelection": {
-            "*": {
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata"
-              ],
-              "": [
-                "ast"
-              ]
-            }
-          }
-        }
-      },
-      "imports": [],
-      "versionPragmas": [
-        "^0.8.0"
-      ],
-      "artifacts": [
-        "Context"
-      ]
-    },
-    "C:\\Users\\Andrew\\Development\\frame-backend\\node_modules\\@openzeppelin\\contracts\\token\\ERC721\\ERC721.sol": {
-      "lastModificationDate": 1674083058989,
+    "/Users/andrewcassetti/Development/frame-backend/node_modules/@openzeppelin/contracts/token/ERC721/ERC721.sol": {
+      "lastModificationDate": 1674069117379,
       "contentHash": "190f627b9302b9602d3a313e28205cc5",
       "sourceName": "@openzeppelin/contracts/token/ERC721/ERC721.sol",
       "solcConfig": {
@@ -523,8 +153,78 @@
         "ERC721"
       ]
     },
-    "C:\\Users\\Andrew\\Development\\frame-backend\\node_modules\\@openzeppelin\\contracts\\token\\ERC721\\IERC721.sol": {
-      "lastModificationDate": 1674083059226,
+    "/Users/andrewcassetti/Development/frame-backend/node_modules/@openzeppelin/contracts/utils/Context.sol": {
+      "lastModificationDate": 1674069117341,
+      "contentHash": "5f2c5c4b6af2dd4551027144797bc8be",
+      "sourceName": "@openzeppelin/contracts/utils/Context.sol",
+      "solcConfig": {
+        "version": "0.8.17",
+        "settings": {
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "^0.8.0"
+      ],
+      "artifacts": [
+        "Context"
+      ]
+    },
+    "/Users/andrewcassetti/Development/frame-backend/node_modules/@openzeppelin/contracts/utils/Address.sol": {
+      "lastModificationDate": 1674069117337,
+      "contentHash": "f31ad6fc4bbf9c06203987220156a6ba",
+      "sourceName": "@openzeppelin/contracts/utils/Address.sol",
+      "solcConfig": {
+        "version": "0.8.17",
+        "settings": {
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "^0.8.1"
+      ],
+      "artifacts": [
+        "Address"
+      ]
+    },
+    "/Users/andrewcassetti/Development/frame-backend/node_modules/@openzeppelin/contracts/token/ERC721/IERC721.sol": {
+      "lastModificationDate": 1674069117405,
       "contentHash": "eb7e61db29f31d88b3c1cef1b063d338",
       "sourceName": "@openzeppelin/contracts/token/ERC721/IERC721.sol",
       "solcConfig": {
@@ -560,10 +260,10 @@
         "IERC721"
       ]
     },
-    "C:\\Users\\Andrew\\Development\\frame-backend\\node_modules\\@openzeppelin\\contracts\\utils\\Address.sol": {
-      "lastModificationDate": 1674083058745,
-      "contentHash": "f31ad6fc4bbf9c06203987220156a6ba",
-      "sourceName": "@openzeppelin/contracts/utils/Address.sol",
+    "/Users/andrewcassetti/Development/frame-backend/node_modules/@openzeppelin/contracts/token/ERC721/IERC721Receiver.sol": {
+      "lastModificationDate": 1674069117407,
+      "contentHash": "c22d4395e33763de693fd440c6fd10e1",
+      "sourceName": "@openzeppelin/contracts/token/ERC721/IERC721Receiver.sol",
       "solcConfig": {
         "version": "0.8.17",
         "settings": {
@@ -589,14 +289,14 @@
       },
       "imports": [],
       "versionPragmas": [
-        "^0.8.1"
+        "^0.8.0"
       ],
       "artifacts": [
-        "Address"
+        "IERC721Receiver"
       ]
     },
-    "C:\\Users\\Andrew\\Development\\frame-backend\\node_modules\\@openzeppelin\\contracts\\utils\\Strings.sol": {
-      "lastModificationDate": 1674083059441,
+    "/Users/andrewcassetti/Development/frame-backend/node_modules/@openzeppelin/contracts/utils/Strings.sol": {
+      "lastModificationDate": 1674069117429,
       "contentHash": "396031251978f8febfd90cb62cb240ec",
       "sourceName": "@openzeppelin/contracts/utils/Strings.sol",
       "solcConfig": {
@@ -632,80 +332,8 @@
         "Strings"
       ]
     },
-    "C:\\Users\\Andrew\\Development\\frame-backend\\node_modules\\@openzeppelin\\contracts\\token\\ERC721\\IERC721Receiver.sol": {
-      "lastModificationDate": 1674083059251,
-      "contentHash": "c22d4395e33763de693fd440c6fd10e1",
-      "sourceName": "@openzeppelin/contracts/token/ERC721/IERC721Receiver.sol",
-      "solcConfig": {
-        "version": "0.8.17",
-        "settings": {
-          "optimizer": {
-            "enabled": false,
-            "runs": 200
-          },
-          "outputSelection": {
-            "*": {
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata"
-              ],
-              "": [
-                "ast"
-              ]
-            }
-          }
-        }
-      },
-      "imports": [],
-      "versionPragmas": [
-        "^0.8.0"
-      ],
-      "artifacts": [
-        "IERC721Receiver"
-      ]
-    },
-    "C:\\Users\\Andrew\\Development\\frame-backend\\node_modules\\@openzeppelin\\contracts\\utils\\introspection\\ERC165.sol": {
-      "lastModificationDate": 1674083058915,
-      "contentHash": "0e7db055ce108f9da7bb6686a00287c0",
-      "sourceName": "@openzeppelin/contracts/utils/introspection/ERC165.sol",
-      "solcConfig": {
-        "version": "0.8.17",
-        "settings": {
-          "optimizer": {
-            "enabled": false,
-            "runs": 200
-          },
-          "outputSelection": {
-            "*": {
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata"
-              ],
-              "": [
-                "ast"
-              ]
-            }
-          }
-        }
-      },
-      "imports": [
-        "./IERC165.sol"
-      ],
-      "versionPragmas": [
-        "^0.8.0"
-      ],
-      "artifacts": [
-        "ERC165"
-      ]
-    },
-    "C:\\Users\\Andrew\\Development\\frame-backend\\node_modules\\@openzeppelin\\contracts\\token\\ERC721\\extensions\\IERC721Metadata.sol": {
-      "lastModificationDate": 1674083059242,
+    "/Users/andrewcassetti/Development/frame-backend/node_modules/@openzeppelin/contracts/token/ERC721/extensions/IERC721Metadata.sol": {
+      "lastModificationDate": 1674069117406,
       "contentHash": "efbc0d15b80a74e34dbe8da0f3e879bb",
       "sourceName": "@openzeppelin/contracts/token/ERC721/extensions/IERC721Metadata.sol",
       "solcConfig": {
@@ -741,8 +369,45 @@
         "IERC721Metadata"
       ]
     },
-    "C:\\Users\\Andrew\\Development\\frame-backend\\node_modules\\@openzeppelin\\contracts\\utils\\introspection\\IERC165.sol": {
-      "lastModificationDate": 1674083059158,
+    "/Users/andrewcassetti/Development/frame-backend/node_modules/@openzeppelin/contracts/utils/introspection/ERC165.sol": {
+      "lastModificationDate": 1674069117362,
+      "contentHash": "0e7db055ce108f9da7bb6686a00287c0",
+      "sourceName": "@openzeppelin/contracts/utils/introspection/ERC165.sol",
+      "solcConfig": {
+        "version": "0.8.17",
+        "settings": {
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "./IERC165.sol"
+      ],
+      "versionPragmas": [
+        "^0.8.0"
+      ],
+      "artifacts": [
+        "ERC165"
+      ]
+    },
+    "/Users/andrewcassetti/Development/frame-backend/node_modules/@openzeppelin/contracts/utils/introspection/IERC165.sol": {
+      "lastModificationDate": 1674069117402,
       "contentHash": "03e6768535ac4da0e9756f1d8a4a018a",
       "sourceName": "@openzeppelin/contracts/utils/introspection/IERC165.sol",
       "solcConfig": {
@@ -776,8 +441,8 @@
         "IERC165"
       ]
     },
-    "C:\\Users\\Andrew\\Development\\frame-backend\\node_modules\\@openzeppelin\\contracts\\utils\\math\\Math.sol": {
-      "lastModificationDate": 1674083059347,
+    "/Users/andrewcassetti/Development/frame-backend/node_modules/@openzeppelin/contracts/utils/math/Math.sol": {
+      "lastModificationDate": 1674069117414,
       "contentHash": "b9c58920ce74d6dc819161786112e7ee",
       "sourceName": "@openzeppelin/contracts/utils/math/Math.sol",
       "solcConfig": {
@@ -811,10 +476,10 @@
         "Math"
       ]
     },
-    "C:\\Users\\Andrew\\Development\\frame-backend\\src\\contracts\\ScriptyFrame.sol": {
-      "lastModificationDate": 1674083024762,
-      "contentHash": "25abb23dcc93e7267b23ce92586ba6f3",
-      "sourceName": "src/contracts/ScriptyFrame.sol",
+    "/Users/andrewcassetti/Development/frame-backend/node_modules/@openzeppelin/contracts/proxy/utils/Initializable.sol": {
+      "lastModificationDate": 1674069117412,
+      "contentHash": "19c4fbc3e825d25231b09f13aff9a2b2",
+      "sourceName": "@openzeppelin/contracts/proxy/utils/Initializable.sol",
       "solcConfig": {
         "version": "0.8.17",
         "settings": {
@@ -839,21 +504,96 @@
         }
       },
       "imports": [
-        "@openzeppelin/contracts/token/ERC721/ERC721.sol",
-        "solady/src/utils/Base64.sol",
-        "./scripty/IScriptyBuilder.sol"
+        "../../utils/Address.sol"
+      ],
+      "versionPragmas": [
+        "^0.8.2"
+      ],
+      "artifacts": [
+        "Initializable"
+      ]
+    },
+    "/Users/andrewcassetti/Development/frame-backend/src/contracts/libs/scripty/ScriptyStorageInitializable.sol": {
+      "lastModificationDate": 1674493667299,
+      "contentHash": "688c761660edbfdb917ea06a3d48a35e",
+      "sourceName": "src/contracts/libs/scripty/ScriptyStorageInitializable.sol",
+      "solcConfig": {
+        "version": "0.8.17",
+        "settings": {
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "@openzeppelin/contracts/access/Ownable.sol",
+        "@openzeppelin/contracts/proxy/utils/Initializable.sol",
+        "../ethfs/IContentStore.sol",
+        "./utils/AddressChunks.sol",
+        "./IScriptyStorage.sol",
+        "./IContractScript.sol"
       ],
       "versionPragmas": [
         "^0.8.17"
       ],
       "artifacts": [
-        "ScriptyFrame"
+        "ScriptyStorageInitializable"
       ]
     },
-    "C:\\Users\\Andrew\\Development\\frame-backend\\src\\contracts\\scripty\\IScriptyBuilder.sol": {
-      "lastModificationDate": 1674083024763,
-      "contentHash": "73770b7917ced69f1738be54e1d34df3",
-      "sourceName": "src/contracts/scripty/IScriptyBuilder.sol",
+    "/Users/andrewcassetti/Development/frame-backend/src/contracts/libs/ethfs/IContentStore.sol": {
+      "lastModificationDate": 1674070872833,
+      "contentHash": "dc9d159a5d908fdd80233e916adb48bd",
+      "sourceName": "src/contracts/libs/ethfs/IContentStore.sol",
+      "solcConfig": {
+        "version": "0.8.17",
+        "settings": {
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "^0.8.0"
+      ],
+      "artifacts": [
+        "IContentStore"
+      ]
+    },
+    "/Users/andrewcassetti/Development/frame-backend/src/contracts/libs/scripty/utils/AddressChunks.sol": {
+      "lastModificationDate": 1674068761740,
+      "contentHash": "559ece7078f70a95b084f0be64a081e1",
+      "sourceName": "src/contracts/libs/scripty/utils/AddressChunks.sol",
       "solcConfig": {
         "version": "0.8.17",
         "settings": {
@@ -882,13 +622,269 @@
         "^0.8.17"
       ],
       "artifacts": [
-        "IScriptyBuilder"
+        "AddressChunks"
       ]
     },
-    "C:\\Users\\Andrew\\Development\\frame-backend\\node_modules\\solady\\src\\utils\\Base64.sol": {
-      "lastModificationDate": 1674083057907,
-      "contentHash": "4f68fcedcc08705d6c7d7f8dc50eb2aa",
-      "sourceName": "solady/src/utils/Base64.sol",
+    "/Users/andrewcassetti/Development/frame-backend/src/contracts/libs/scripty/IScriptyStorage.sol": {
+      "lastModificationDate": 1674068761733,
+      "contentHash": "13779fefb03c4af0861bd3d4be8010b3",
+      "sourceName": "src/contracts/libs/scripty/IScriptyStorage.sol",
+      "solcConfig": {
+        "version": "0.8.17",
+        "settings": {
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "^0.8.17"
+      ],
+      "artifacts": [
+        "IScriptyStorage"
+      ]
+    },
+    "/Users/andrewcassetti/Development/frame-backend/src/contracts/libs/scripty/IContractScript.sol": {
+      "lastModificationDate": 1674068761731,
+      "contentHash": "c8add4c534b2b167c21cb04217fec4f8",
+      "sourceName": "src/contracts/libs/scripty/IContractScript.sol",
+      "solcConfig": {
+        "version": "0.8.17",
+        "settings": {
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "^0.8.17"
+      ],
+      "artifacts": [
+        "IContractScript"
+      ]
+    },
+    "/Users/andrewcassetti/Development/frame-backend/node_modules/@openzeppelin/contracts/access/Ownable.sol": {
+      "lastModificationDate": 1674069117416,
+      "contentHash": "e436cea06129be2c73cda4b1acc848b5",
+      "sourceName": "@openzeppelin/contracts/access/Ownable.sol",
+      "solcConfig": {
+        "version": "0.8.17",
+        "settings": {
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "../utils/Context.sol"
+      ],
+      "versionPragmas": [
+        "^0.8.0"
+      ],
+      "artifacts": [
+        "Ownable"
+      ]
+    },
+    "/Users/andrewcassetti/Development/frame-backend/node_modules/@openzeppelin/contracts/access/Ownable2Step.sol": {
+      "lastModificationDate": 1674069117416,
+      "contentHash": "9a66ec5f916493cff9d9ef23b16e28d7",
+      "sourceName": "@openzeppelin/contracts/access/Ownable2Step.sol",
+      "solcConfig": {
+        "version": "0.8.17",
+        "settings": {
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "./Ownable.sol"
+      ],
+      "versionPragmas": [
+        "^0.8.0"
+      ],
+      "artifacts": [
+        "Ownable2Step"
+      ]
+    },
+    "/Users/andrewcassetti/Development/frame-backend/src/contracts/libs/ethfs/FileStore.sol": {
+      "lastModificationDate": 1674071000811,
+      "contentHash": "77cfb0a0566dfdd1b16283596891f927",
+      "sourceName": "src/contracts/libs/ethfs/FileStore.sol",
+      "solcConfig": {
+        "version": "0.8.17",
+        "settings": {
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "solady/src/utils/SSTORE2.sol",
+        "./IFileStore.sol",
+        "@openzeppelin/contracts/access/Ownable2Step.sol",
+        "./File.sol",
+        "./IContentStore.sol"
+      ],
+      "versionPragmas": [
+        "^0.8.13"
+      ],
+      "artifacts": [
+        "FileStore"
+      ]
+    },
+    "/Users/andrewcassetti/Development/frame-backend/src/contracts/libs/ethfs/IFileStore.sol": {
+      "lastModificationDate": 1674068761738,
+      "contentHash": "14b7b06c97819755f0b5df178ff184a5",
+      "sourceName": "src/contracts/libs/ethfs/IFileStore.sol",
+      "solcConfig": {
+        "version": "0.8.17",
+        "settings": {
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "./File.sol",
+        "./IContentStore.sol"
+      ],
+      "versionPragmas": [
+        "^0.8.13"
+      ],
+      "artifacts": [
+        "IFileStore"
+      ]
+    },
+    "/Users/andrewcassetti/Development/frame-backend/src/contracts/libs/ethfs/File.sol": {
+      "lastModificationDate": 1674068761737,
+      "contentHash": "1b8ad539e03f79906ff31f1eb4c0da2b",
+      "sourceName": "src/contracts/libs/ethfs/File.sol",
+      "solcConfig": {
+        "version": "0.8.17",
+        "settings": {
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "^0.8.13"
+      ],
+      "artifacts": []
+    },
+    "/Users/andrewcassetti/Development/frame-backend/node_modules/solady/src/utils/SSTORE2.sol": {
+      "lastModificationDate": 1674070953222,
+      "contentHash": "b14c8910916644776acc1d0fd75f1691",
+      "sourceName": "solady/src/utils/SSTORE2.sol",
       "solcConfig": {
         "version": "0.8.17",
         "settings": {
@@ -917,13 +913,130 @@
         "^0.8.4"
       ],
       "artifacts": [
-        "Base64"
+        "SSTORE2"
       ]
     },
-    "C:\\Users\\Andrew\\Development\\frame-backend\\src\\contracts\\scripty\\ScriptyBuilder.sol": {
-      "lastModificationDate": 1674083024764,
-      "contentHash": "840f6c62bbdf4c1108f01cf32a35e358",
-      "sourceName": "src/contracts/scripty/ScriptyBuilder.sol",
+    "/Users/andrewcassetti/Development/frame-backend/src/contracts/libs/ethfs/ContentStore.sol": {
+      "lastModificationDate": 1674068761736,
+      "contentHash": "15e53f8bec6689232a6ddc167c636d3c",
+      "sourceName": "src/contracts/libs/ethfs/ContentStore.sol",
+      "solcConfig": {
+        "version": "0.8.17",
+        "settings": {
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "solady/src/utils/SSTORE2.sol",
+        "./IContentStore.sol"
+      ],
+      "versionPragmas": [
+        "^0.8.0"
+      ],
+      "artifacts": [
+        "ContentStore"
+      ]
+    },
+    "/Users/andrewcassetti/Development/frame-backend/src/contracts/libs/scripty/ScriptyStorage.sol": {
+      "lastModificationDate": 1674494724842,
+      "contentHash": "f1db48a8a46c8f09e2476e0d17ce40c9",
+      "sourceName": "src/contracts/libs/scripty/ScriptyStorage.sol",
+      "solcConfig": {
+        "version": "0.8.17",
+        "settings": {
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "@openzeppelin/contracts/access/Ownable.sol",
+        "../ethfs/IContentStore.sol",
+        "./utils/AddressChunks.sol",
+        "./IScriptyStorage.sol",
+        "./IContractScript.sol"
+      ],
+      "versionPragmas": [
+        "^0.8.17"
+      ],
+      "artifacts": [
+        "ScriptyStorage"
+      ]
+    },
+    "/Users/andrewcassetti/Development/frame-backend/src/contracts/libs/scripty/externalStorage/ethfs/ETHFSFileStorage.sol": {
+      "lastModificationDate": 1674494587028,
+      "contentHash": "39b1b59f3dedb00a89fe5d834184a3e5",
+      "sourceName": "src/contracts/libs/scripty/externalStorage/ethfs/ETHFSFileStorage.sol",
+      "solcConfig": {
+        "version": "0.8.17",
+        "settings": {
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "../../../ethfs/IFileStore.sol",
+        "./../../IContractScript.sol"
+      ],
+      "versionPragmas": [
+        "^0.8.17"
+      ],
+      "artifacts": [
+        "ETHFSFileStorage"
+      ]
+    },
+    "/Users/andrewcassetti/Development/frame-backend/src/contracts/libs/scripty/ScriptyBuilder.sol": {
+      "lastModificationDate": 1674068761734,
+      "contentHash": "60770cf5130941c310014d1460542fc1",
+      "sourceName": "src/contracts/libs/scripty/ScriptyBuilder.sol",
       "solcConfig": {
         "version": "0.8.17",
         "settings": {
@@ -961,10 +1074,10 @@
         "ScriptyBuilder"
       ]
     },
-    "C:\\Users\\Andrew\\Development\\frame-backend\\src\\contracts\\scripty\\utils\\DynamicBuffer.sol": {
-      "lastModificationDate": 1674083024770,
-      "contentHash": "d14c0a5e3ba3de9083b79bbaef9e725c",
-      "sourceName": "src/contracts/scripty/utils/DynamicBuffer.sol",
+    "/Users/andrewcassetti/Development/frame-backend/src/contracts/libs/scripty/utils/DynamicBuffer.sol": {
+      "lastModificationDate": 1674068761740,
+      "contentHash": "0747cb01fe138b511d0c3b63e6107cce",
+      "sourceName": "src/contracts/libs/scripty/utils/DynamicBuffer.sol",
       "solcConfig": {
         "version": "0.8.17",
         "settings": {
@@ -996,10 +1109,10 @@
         "DynamicBuffer"
       ]
     },
-    "C:\\Users\\Andrew\\Development\\frame-backend\\src\\contracts\\scripty\\utils\\AddressChunks.sol": {
-      "lastModificationDate": 1674083024769,
-      "contentHash": "20ad7dacb3ba54fd78b6768a97ca5df2",
-      "sourceName": "src/contracts/scripty/utils/AddressChunks.sol",
+    "/Users/andrewcassetti/Development/frame-backend/src/contracts/FrameDeployer.sol": {
+      "lastModificationDate": 1674494630970,
+      "contentHash": "9c1572e11e08190d7adf941d5a0c0fd6",
+      "sourceName": "src/contracts/FrameDeployer.sol",
       "solcConfig": {
         "version": "0.8.17",
         "settings": {
@@ -1025,51 +1138,20 @@
       },
       "imports": [],
       "versionPragmas": [
-        "^0.8.17"
+        "^0.8.12"
       ],
       "artifacts": [
-        "AddressChunks"
-      ]
-    },
-    "C:\\Users\\Andrew\\Development\\frame-backend\\src\\contracts\\scripty\\IScriptyStorage.sol": {
-      "lastModificationDate": 1674083024764,
-      "contentHash": "ed44a3c934cbb880bdd412d007641802",
-      "sourceName": "src/contracts/scripty/IScriptyStorage.sol",
-      "solcConfig": {
-        "version": "0.8.17",
-        "settings": {
-          "optimizer": {
-            "enabled": false,
-            "runs": 200
-          },
-          "outputSelection": {
-            "*": {
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata"
-              ],
-              "": [
-                "ast"
-              ]
-            }
-          }
-        }
-      },
-      "imports": [],
-      "versionPragmas": [
-        "^0.8.17"
-      ],
-      "artifacts": [
+        "FrameDeployer",
+        "IContentStore",
+        "IFactory",
+        "IFrame",
         "IScriptyStorage"
       ]
     },
-    "C:\\Users\\Andrew\\Development\\frame-backend\\src\\contracts\\scripty\\IContractScript.sol": {
-      "lastModificationDate": 1674083024762,
-      "contentHash": "8c2a80eee41d2c61aae74fd0aa6fcc6d",
-      "sourceName": "src/contracts/scripty/IContractScript.sol",
+    "/Users/andrewcassetti/Development/frame-backend/src/contracts/factories/CloneFactory.sol": {
+      "lastModificationDate": 1674494767389,
+      "contentHash": "26c507586f37a554897234d04a1c0780",
+      "sourceName": "src/contracts/factories/CloneFactory.sol",
       "solcConfig": {
         "version": "0.8.17",
         "settings": {
@@ -1095,16 +1177,16 @@
       },
       "imports": [],
       "versionPragmas": [
-        "^0.8.17"
+        "^0.8.12"
       ],
       "artifacts": [
-        "IContractScript"
+        "CloneFactory"
       ]
     },
-    "C:\\Users\\Andrew\\Development\\frame-backend\\src\\contracts\\scripty\\ScriptyStorage.sol": {
-      "lastModificationDate": 1674083024765,
-      "contentHash": "bc29abb77f8f0fe48ee6ece19af3ca22",
-      "sourceName": "src/contracts/scripty/ScriptyStorage.sol",
+    "/Users/andrewcassetti/Development/frame-backend/src/contracts/factories/ScriptyStorageFactory.sol": {
+      "lastModificationDate": 1674493926588,
+      "contentHash": "f1ac538426dd60271fc64d28b5bc642f",
+      "sourceName": "src/contracts/factories/ScriptyStorageFactory.sol",
       "solcConfig": {
         "version": "0.8.17",
         "settings": {
@@ -1129,23 +1211,19 @@
         }
       },
       "imports": [
-        "@openzeppelin/contracts/access/Ownable.sol",
-        "./dependencies/ethfs/IContentStore.sol",
-        "./utils/AddressChunks.sol",
-        "./IScriptyStorage.sol",
-        "./IContractScript.sol"
+        "./CloneFactory.sol"
       ],
       "versionPragmas": [
-        "^0.8.17"
+        "^0.8.12"
       ],
       "artifacts": [
-        "ScriptyStorage"
+        "ScriptyStorageFactory"
       ]
     },
-    "C:\\Users\\Andrew\\Development\\frame-backend\\src\\contracts\\scripty\\externalStorage\\ethfs\\ETHFSFileStorage.sol": {
-      "lastModificationDate": 1674083024769,
-      "contentHash": "978e1fc08294b8ac80f4aa11aea9271b",
-      "sourceName": "src/contracts/scripty/externalStorage/ethfs/ETHFSFileStorage.sol",
+    "/Users/andrewcassetti/Development/frame-backend/src/contracts/factories/FrameFactory.sol": {
+      "lastModificationDate": 1674493932383,
+      "contentHash": "e9f2f8de926f9cf56b31a3bb86df3dec",
+      "sourceName": "src/contracts/factories/FrameFactory.sol",
       "solcConfig": {
         "version": "0.8.17",
         "settings": {
@@ -1170,14 +1248,196 @@
         }
       },
       "imports": [
-        "./../../dependencies/ethfs/IFileStore.sol",
-        "./../../IContractScript.sol"
+        "./CloneFactory.sol"
       ],
       "versionPragmas": [
-        "^0.8.17"
+        "^0.8.12"
       ],
       "artifacts": [
-        "ETHFSFileStorage"
+        "FrameFactory"
+      ]
+    },
+    "/Users/andrewcassetti/Development/frame-backend/src/contracts/factories/ContentStoreFactory.sol": {
+      "lastModificationDate": 1674493934937,
+      "contentHash": "efdf04d78683bc75aad15ec75ad5efad",
+      "sourceName": "src/contracts/factories/ContentStoreFactory.sol",
+      "solcConfig": {
+        "version": "0.8.17",
+        "settings": {
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "./CloneFactory.sol"
+      ],
+      "versionPragmas": [
+        "^0.8.12"
+      ],
+      "artifacts": [
+        "ContentStoreFactory"
+      ]
+    },
+    "/Users/andrewcassetti/Development/frame-backend/src/contracts/Factories/CloneFactory.sol": {
+      "lastModificationDate": 1674494767389,
+      "contentHash": "26c507586f37a554897234d04a1c0780",
+      "sourceName": "src/contracts/Factories/CloneFactory.sol",
+      "solcConfig": {
+        "version": "0.8.17",
+        "settings": {
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "^0.8.12"
+      ],
+      "artifacts": [
+        "CloneFactory"
+      ]
+    },
+    "/Users/andrewcassetti/Development/frame-backend/src/contracts/Factories/ScriptyStorageFactory.sol": {
+      "lastModificationDate": 1674493926588,
+      "contentHash": "f1ac538426dd60271fc64d28b5bc642f",
+      "sourceName": "src/contracts/Factories/ScriptyStorageFactory.sol",
+      "solcConfig": {
+        "version": "0.8.17",
+        "settings": {
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "./CloneFactory.sol"
+      ],
+      "versionPragmas": [
+        "^0.8.12"
+      ],
+      "artifacts": [
+        "ScriptyStorageFactory"
+      ]
+    },
+    "/Users/andrewcassetti/Development/frame-backend/src/contracts/Factories/FrameFactory.sol": {
+      "lastModificationDate": 1674493932383,
+      "contentHash": "e9f2f8de926f9cf56b31a3bb86df3dec",
+      "sourceName": "src/contracts/Factories/FrameFactory.sol",
+      "solcConfig": {
+        "version": "0.8.17",
+        "settings": {
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "./CloneFactory.sol"
+      ],
+      "versionPragmas": [
+        "^0.8.12"
+      ],
+      "artifacts": [
+        "FrameFactory"
+      ]
+    },
+    "/Users/andrewcassetti/Development/frame-backend/src/contracts/Factories/ContentStoreFactory.sol": {
+      "lastModificationDate": 1674493934937,
+      "contentHash": "efdf04d78683bc75aad15ec75ad5efad",
+      "sourceName": "src/contracts/Factories/ContentStoreFactory.sol",
+      "solcConfig": {
+        "version": "0.8.17",
+        "settings": {
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "./CloneFactory.sol"
+      ],
+      "versionPragmas": [
+        "^0.8.12"
+      ],
+      "artifacts": [
+        "ContentStoreFactory"
       ]
     }
   }
