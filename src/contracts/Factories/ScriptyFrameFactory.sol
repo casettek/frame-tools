@@ -24,14 +24,7 @@ contract ScriptyFrameFactory is CloneFactory {
     libraryAddress = _libraryAddress;
   }
 
-  function createScriptyFrame(string memory _name, string memory _version) public returns (address)  {
-    // Create new content store
-
-    // Create new scripty storage for new code
-
-    // Add new code to scripty storage
-
-    // Create new Frame
+  function createClone() public returns (address)  {
     address clone = createClone(libraryAddress);
 
     emit ScriptyFrameFactoryCreated(clone);

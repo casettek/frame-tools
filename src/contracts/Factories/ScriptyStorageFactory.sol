@@ -20,7 +20,7 @@ contract ScriptyStorageFactory is CloneFactory {
     libraryAddress = _libraryAddress;
   }
 
-  function createScriptyStorage(string memory _name, string memory _version) public returns (address)  {
+  function createScriptyStorage(address _contentStorage) public returns (address)  {
     address clone = createClone(libraryAddress);
 
     emit ScriptyStorageFactoryCreated(clone);

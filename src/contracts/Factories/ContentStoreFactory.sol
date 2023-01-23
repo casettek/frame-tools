@@ -3,11 +3,6 @@ pragma solidity ^0.8.12;
 
 import "./CloneFactory.sol";
 
-interface IContentStoreFactory {
-  function setName(string memory _name) external;
-  function setVersion(string memory _version) external;
-}
-
 contract ContentStoreFactory is CloneFactory {
   address public libraryAddress;
 
@@ -20,11 +15,8 @@ contract ContentStoreFactory is CloneFactory {
     libraryAddress = _libraryAddress;
   }
 
-  function createContentStore(string memory _name, string memory _version) public returns (address)  {
+  function createContentStore() public returns (address)  {
     address clone = createClone(libraryAddress);
-
-    IContentStoreFactory(clone).setName(_name);
-    IContentStoreFactory(clone).setVersion(_version);
 
     emit ContentStoreFactoryCreated(clone);
     return clone;
