@@ -407,33 +407,78 @@ export const deployFrame = async (keys: string[], sourcePath: string) => {
 };
 
 export const deployWithScripty = async (keys: string[], sourcePath: string) => {
-  const ethfsContentStore = await (
-    await hre.ethers.getContractFactory("ContentStore")
-  ).deploy();
-  await ethfsContentStore.deployed();
+  // const ethfsFileStore = await (
+  //   await hre.ethers.getContractFactory("FileStore")
+  // ).deploy(ethfsContentStore.address);
+  // await ethfsFileStore.deployed();
 
-  const ethfsFileStore = await (
-    await hre.ethers.getContractFactory("FileStore")
-  ).deploy(ethfsContentStore.address);
-  await ethfsFileStore.deployed();
+  // const ethfsFileStorageContract = await (
+  //   await hre.ethers.getContractFactory("ETHFSFileStorage")
+  // ).deploy(ethfsFileStore.address);
+  // await ethfsFileStorageContract.deployed();
+  // console.log("ETHFSFileStorage deployed", ethfsFileStorageContract.address);
 
-  const scriptyStorageContract = await (
-    await hre.ethers.getContractFactory("ScriptyStorage")
-  ).deploy(ethfsContentStore.address);
-  await scriptyStorageContract.deployed();
-  console.log("ScriptyStorage deployed", scriptyStorageContract.address);
-
-  const scriptyBuilderContract = await (
+  // Deploy libs and factories
+  const scriptyBuilder = await (
     await hre.ethers.getContractFactory("ScriptyBuilder")
   ).deploy();
-  await scriptyBuilderContract.deployed();
-  console.log("ScriptyBuilder deployed", scriptyBuilderContract.address);
+  await scriptyBuilder.deployed();
+  console.log("ScriptyBuilder deployed", scriptyBuilder.address);
 
-  const ethfsFileStorageContract = await (
-    await hre.ethers.getContractFactory("ETHFSFileStorage")
-  ).deploy(ethfsFileStore.address);
-  await ethfsFileStorageContract.deployed();
-  console.log("ETHFSFileStorage deployed", ethfsFileStorageContract.address);
+  const frameLib = await (
+    await hre.ethers.getContractFactory("Frame")
+  ).deploy();
+  await frameLib.deployed();
+
+  const frameFactory = await (
+    await hre.ethers.getContractFactory("FrameFactory")
+  ).deploy();
+  await frameFactory.deployed();
+
+  const contentStoreLib = await (
+    await hre.ethers.getContractFactory("ContentStore")
+  ).deploy();
+  await contentStoreLib.deployed();
+
+  const contentStoreFactory = await (
+    await hre.ethers.getContractFactory("ContentStoreFactory")
+  ).deploy();
+  await contentStoreFactory.deployed();
+
+  const scriptyStorageLib = await (
+    await hre.ethers.getContractFactory("ScriptyStorageCloneable")
+  ).deploy();
+  await scriptyStorageLib.deployed();
+  console.log("ScriptyStorage deployed", scriptyStorageLib.address);
+
+  const scriptyStorageFactory = await (
+    await hre.ethers.getContractFactory("ScriptyStorageFactory")
+  ).deploy();
+  await scriptyStorageFactory.deployed();
+
+  const frameDeployer = await (
+    await hre.ethers.getContractFactory("FrameDeployer")
+  ).deploy(
+    contentStoreFactory.address,
+    scriptyStorageFactory.address,
+    frameFactory.address,
+    scriptyBuilder.address
+  );
+  await frameDeployer.deployed();
+
+  // Apply libs to factories
+  await contentStoreFactory.setLibraryAddress(contentStoreLib.address);
+  await scriptyStorageFactory.setLibraryAddress(scriptyStorageLib.address);
+  await frameFactory.setLibraryAddress(frameLib.address);
+
+  // Create a test frame
+  await frameDeployer.createFrame(
+    "TestFrame",
+    "TFRM",
+    "0x0000000000000000000000000000000000000000",
+    1000,
+    []
+  );
 };
 
 export default {

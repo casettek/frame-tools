@@ -40,12 +40,12 @@ contract ERC721Cloneable is Context, ERC165, IERC721Cloneable, IERC721CloneableM
     constructor() {}
 
     function setName(string memory nameString) public {
-        require(bytes(_name).length > 0, "ERC721Cloneable: name already set");
+        require(bytes(_name).length == 0, "ERC721Cloneable: name already set");
         _name = nameString;
     }
 
     function setSymbol(string memory symbolString) public {
-        require(bytes(_symbol).length > 0, "ERC721Cloneable: symbol already set");
+        require(bytes(_symbol).length == 0, "ERC721Cloneable: symbol already set");
         _symbol = symbolString;
     }
 

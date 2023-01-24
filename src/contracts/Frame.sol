@@ -15,6 +15,14 @@ contract Frame is ERC721Cloneable {
 
     constructor() ERC721Cloneable() {}
 
+    function mint() internal {
+        _safeMint(msg.sender, 0);
+    }
+
+    function mintIdForOwner(uint _id, address _owner) public {
+        _safeMint(_owner, _id);
+    }
+
     function setParams(
         address _scriptyStorageAddress,
         address _scriptyBuilderAddress,
@@ -27,10 +35,6 @@ contract Frame is ERC721Cloneable {
         for (uint256 i = 0; i < requests.length; i++) {
             requests[i] = _requests[i];
         }
-    }
-
-    function mint() internal {
-        _safeMint(msg.sender, 0);
     }
 
     function tokenURI(

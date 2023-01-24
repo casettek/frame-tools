@@ -17,20 +17,19 @@ pragma solidity ^0.8.17;
 */
 
 import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
-import {Initializable} from "@openzeppelin/contracts/proxy/utils/Initializable.sol";
 import {IContentStore} from "../ethfs/IContentStore.sol";
 import {AddressChunks} from "./utils/AddressChunks.sol";
 
 import {IScriptyStorage} from "./IScriptyStorage.sol";
 import {IContractScript} from "./IContractScript.sol";
 
-contract ScriptyStorageInitializable is Ownable, IScriptyStorage, IContractScript, Initializable {
+contract ScriptyStorageCloneable is Ownable, IScriptyStorage, IContractScript {
     IContentStore public contentStore;
     mapping(string => Script) public scripts;
 
     constructor() {}
 
-    function initialize(address _contentStoreAddress) public initializer {
+    function setContentStore(address _contentStoreAddress) public {
         require(address(contentStore) == address(0), "Already initialized");
         contentStore = IContentStore(_contentStoreAddress);
     }

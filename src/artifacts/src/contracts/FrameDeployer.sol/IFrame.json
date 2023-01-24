@@ -2,7 +2,117 @@
   "_format": "hh-sol-artifact-1",
   "contractName": "IFrame",
   "sourceName": "src/contracts/FrameDeployer.sol",
-  "abi": [],
+  "abi": [
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "_id",
+          "type": "uint256"
+        },
+        {
+          "internalType": "address",
+          "name": "_owner",
+          "type": "address"
+        }
+      ],
+      "name": "mintIdForOwner",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "string",
+          "name": "_name",
+          "type": "string"
+        }
+      ],
+      "name": "setName",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "_scriptyStorageAddress",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "_scriptyBuilderAddress",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "_bufferSize",
+          "type": "uint256"
+        },
+        {
+          "components": [
+            {
+              "internalType": "string",
+              "name": "name",
+              "type": "string"
+            },
+            {
+              "internalType": "address",
+              "name": "contractAddress",
+              "type": "address"
+            },
+            {
+              "internalType": "bytes",
+              "name": "contractData",
+              "type": "bytes"
+            },
+            {
+              "internalType": "uint8",
+              "name": "wrapType",
+              "type": "uint8"
+            },
+            {
+              "internalType": "bytes",
+              "name": "wrapPrefix",
+              "type": "bytes"
+            },
+            {
+              "internalType": "bytes",
+              "name": "wrapSuffix",
+              "type": "bytes"
+            },
+            {
+              "internalType": "bytes",
+              "name": "scriptContent",
+              "type": "bytes"
+            }
+          ],
+          "internalType": "struct WrappedScriptRequest[]",
+          "name": "_requests",
+          "type": "tuple[]"
+        }
+      ],
+      "name": "setParams",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "string",
+          "name": "_symbol",
+          "type": "string"
+        }
+      ],
+      "name": "setSymbol",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    }
+  ],
   "bytecode": "0x",
   "deployedBytecode": "0x",
   "linkReferences": {},
