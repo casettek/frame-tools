@@ -407,17 +407,6 @@ export const deployFrame = async (keys: string[], sourcePath: string) => {
 };
 
 export const deployWithScripty = async (keys: string[], sourcePath: string) => {
-  // const ethfsFileStore = await (
-  //   await hre.ethers.getContractFactory("FileStore")
-  // ).deploy(ethfsContentStore.address);
-  // await ethfsFileStore.deployed();
-
-  // const ethfsFileStorageContract = await (
-  //   await hre.ethers.getContractFactory("ETHFSFileStorage")
-  // ).deploy(ethfsFileStore.address);
-  // await ethfsFileStorageContract.deployed();
-  // console.log("ETHFSFileStorage deployed", ethfsFileStorageContract.address);
-
   // Deploy libs and factories
   const scriptyBuilder = await (
     await hre.ethers.getContractFactory("ScriptyBuilder")
@@ -472,13 +461,26 @@ export const deployWithScripty = async (keys: string[], sourcePath: string) => {
   await frameFactory.setLibraryAddress(frameLib.address);
 
   // Create a test frame
-  await frameDeployer.createFrame(
+  const createCall = await frameDeployer.createFrame(
     "TestFrame",
     "TFRM",
-    "0x0000000000000000000000000000000000000000",
+    "0x",
     1000,
     []
   );
+
+  const createResult = await createCall.wait();
+  const newFrameAddress = createResult.logs[
+    createResult.logs.length - 1
+  ]?.data.replace("000000000000000000000000", "");
+  const Frame = await hre.ethers.getContractFactory("Frame");
+  const frame = await Frame.attach(newFrameAddress);
+
+  console.log(createResult.logs);
+  console.log("new frame address", frame.address);
+
+  const uri = await frame.tokenURI(0);
+  console.log("token uri", uri);
 };
 
 export default {
