@@ -58,8 +58,19 @@ contract FrameDeployer {
     
     IFrame frame = IFrame(IFactory(frameFactory).create());
 
+	WrappedScriptRequest[] memory requests = new WrappedScriptRequest[](1);
+	requests[0] = WrappedScriptRequest({
+     	name: "source",
+     	contractAddress: address(scriptyStorage),
+		contractData: bytes("0x"),
+		wrapType: 0,
+		wrapPrefix: bytes("0x"),
+		wrapSuffix: bytes("0x"),
+		scriptContent: bytes("0x")
+	});
+
     // Apply frame references and scripts
-	frame.setParams(address(scriptyStorage), scriptyBuilder, _bufferSize, _requests);
+	frame.setParams(address(scriptyStorage), scriptyBuilder, _bufferSize, requests);
 	frame.setName(_name);
 	frame.setSymbol(_symbol);
 	frame.mintIdForOwner(0, msg.sender);

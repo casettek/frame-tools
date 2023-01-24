@@ -148,8 +148,8 @@
       ]
     },
     "C:\\Users\\Andrew\\Development\\frame-backend\\src\\contracts\\Frame.sol": {
-      "lastModificationDate": 1674575573484,
-      "contentHash": "a2e602273a2f1beee456ca75685152e1",
+      "lastModificationDate": 1674578661391,
+      "contentHash": "57b62cfd3e5f05fae4a67f15c1973bed",
       "sourceName": "src/contracts/Frame.sol",
       "solcConfig": {
         "version": "0.8.17",
@@ -1214,8 +1214,8 @@
       ]
     },
     "C:\\Users\\Andrew\\Development\\frame-backend\\src\\contracts\\FrameDeployer.sol": {
-      "lastModificationDate": 1674573165281,
-      "contentHash": "e0c33c9d1b640ba4d6149c8f2a3e1e00",
+      "lastModificationDate": 1674579790907,
+      "contentHash": "eac4446f2e31914fe6bda9f6cab2b7a0",
       "sourceName": "src/contracts/FrameDeployer.sol",
       "solcConfig": {
         "version": "0.8.17",

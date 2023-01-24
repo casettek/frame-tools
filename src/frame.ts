@@ -460,12 +460,21 @@ export const deployWithScripty = async (keys: string[], sourcePath: string) => {
   await scriptyStorageFactory.setLibraryAddress(scriptyStorageLib.address);
   await frameFactory.setLibraryAddress(frameLib.address);
 
+  //   const bufferSize = await scriptyBuilder.getBufferSizeForEncodedHTMLInline([
+  //     {
+  //       name: "source",
+  //       content: "0x",
+  //       wrapType: 0,
+  //     },
+  //   ]);
+  //   console.log("buffer size", bufferSize.toNumber());
+
   // Create a test frame
   const createCall = await frameDeployer.createFrame(
     "TestFrame",
     "TFRM",
     "0x",
-    1000,
+    1000000,
     []
   );
 
@@ -476,7 +485,6 @@ export const deployWithScripty = async (keys: string[], sourcePath: string) => {
   const Frame = await hre.ethers.getContractFactory("Frame");
   const frame = await Frame.attach(newFrameAddress);
 
-  console.log(createResult.logs);
   console.log("new frame address", frame.address);
 
   const uri = await frame.tokenURI(0);
