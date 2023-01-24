@@ -4,7 +4,7 @@ pragma solidity ^0.8.12;
 import {WrappedScriptRequest} from "./libs/scripty/IScriptyBuilder.sol";
 
 interface IFactory {
-  function create() external returns (address);
+    function create() external returns (address);
 }
 
 interface IScriptyStorage {

@@ -460,6 +460,55 @@ export const deployWithScripty = async (keys: string[], sourcePath: string) => {
   await scriptyStorageFactory.setLibraryAddress(scriptyStorageLib.address);
   await frameFactory.setLibraryAddress(frameLib.address);
 
+  console.log("applied libs to factories");
+
+  // Upload script to storage
+
+  const createContentStoreCall = await contentStoreFactory.create();
+  const createContentStoreResult = await createContentStoreCall.wait();
+  const newContentStoreAddress = createContentStoreResult.logs[
+    createContentStoreResult.logs.length - 1
+  ]?.data.replace("000000000000000000000000", "");
+  console.log("newContentStoreAddress", newContentStoreAddress);
+
+  const createStorageCall = await scriptyStorageFactory.create();
+  const createStorageResult = await createStorageCall.wait();
+  const newStorageAddress = createStorageResult.logs[
+    createStorageResult.logs.length - 1
+  ]?.data.replace("000000000000000000000000", "");
+  console.log("newStorageAddress", newStorageAddress);
+
+  const storage = await hre.ethers.getContractFactory(
+    "ScriptyStorageCloneable"
+  );
+  const newStorage = await storage.attach(newStorageAddress);
+
+  await newStorage.setContentStore(newContentStoreAddress);
+  await newStorage.createScript("source", toBytes(""));
+  await newStorage.addChunkToScript("source", toBytes('alert("hello world")'));
+
+  console.log("uploaded script to storage");
+
+  // Test query
+  const query = await scriptyBuilder.getEncodedHTMLWrappedString(
+    [
+      {
+        name: "source",
+        contractAddress: newStorageAddress,
+        contractData: toBytes(""),
+        wrapType: 0,
+        wrapPrefix: toBytes(""),
+        wrapSuffix: toBytes(""),
+        scriptContent: toBytes(""),
+      },
+    ],
+    100000
+  );
+
+  console.log("query", query);
+
+  return;
+
   //   const bufferSize = await scriptyBuilder.getBufferSizeForEncodedHTMLInline([
   //     {
   //       name: "source",
