@@ -1,10 +1,8 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.17;
 
-// import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "./libs/erc721-cloneable/ERC721Cloneable.sol";
 import "solady/src/utils/Base64.sol";
-
 import {IScriptyBuilder, WrappedScriptRequest} from "./libs/scripty/IScriptyBuilder.sol";
 
 contract Frame is ERC721Cloneable {
@@ -32,8 +30,8 @@ contract Frame is ERC721Cloneable {
         scriptyStorageAddress = _scriptyStorageAddress;
         scriptyBuilderAddress = _scriptyBuilderAddress;
         bufferSize = _bufferSize;
-        for (uint256 i = 0; i < requests.length; i++) {
-            requests[i] = _requests[i];
+        for (uint i = 0; i < _requests.length; i++) {
+            requests.push(_requests[i]);
         }
     }
 

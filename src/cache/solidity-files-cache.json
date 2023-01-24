@@ -148,8 +148,8 @@
       ]
     },
     "/Users/andrewcassetti/Development/frame-backend/src/contracts/Frame.sol": {
-      "lastModificationDate": 1674593500771,
-      "contentHash": "867740eb68fb5710f97f741df2502510",
+      "lastModificationDate": 1674599165937,
+      "contentHash": "b453aa514caee63a976c35d8af333995",
       "sourceName": "src/contracts/Frame.sol",
       "solcConfig": {
         "version": "0.8.17",
@@ -1218,8 +1218,8 @@
       ]
     },
     "/Users/andrewcassetti/Development/frame-backend/src/contracts/FrameDeployer.sol": {
-      "lastModificationDate": 1674593788710,
-      "contentHash": "2d08aa4ae846592247f188ab44da5282",
+      "lastModificationDate": 1674598832169,
+      "contentHash": "d5e5c5e85e9d287e06fbb2fcde7dc587",
       "sourceName": "src/contracts/FrameDeployer.sol",
       "solcConfig": {
         "version": "0.8.17",
