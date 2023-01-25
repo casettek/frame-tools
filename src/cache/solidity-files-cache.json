@@ -148,8 +148,8 @@
       ]
     },
     "/Users/andrewcassetti/Development/frame-backend/src/contracts/Frame.sol": {
-      "lastModificationDate": 1674599165937,
-      "contentHash": "b453aa514caee63a976c35d8af333995",
+      "lastModificationDate": 1674599224174,
+      "contentHash": "9abd54b31ac0f4b6ad8a445c778792e8",
       "sourceName": "src/contracts/Frame.sol",
       "solcConfig": {
         "version": "0.8.17",

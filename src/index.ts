@@ -7,6 +7,7 @@ import {
   writeLogs,
   imports,
 } from "./frame";
+import { deploy } from "./deploy";
 import { getLibDataLogs, getWrapperDataLogs } from "./utils/web3";
 import { wrappers, importIds } from "./assets/libs";
 async function main() {
@@ -49,7 +50,9 @@ async function main() {
       htmPreact,
     } = importIds;
 
-    deployWithScripty([], "");
+    deploy();
+
+    // deployWithScripty([], "");
 
     // await deployDefaults();
     // await deployFrame(
