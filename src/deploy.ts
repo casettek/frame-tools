@@ -1,9 +1,13 @@
 import { importIds, importData } from "./assets/libs";
 import { ImportDataMap } from "./types/types";
-import { calcStoragePages, staggerStore, toBytes } from "./utils/web3";
+import {
+  calcStoragePages,
+  storeChunks,
+  toBytes,
+  fromBytes,
+} from "./utils/web3";
 
 const hre = require("hardhat");
-const dot = require("dot");
 const fs = require("fs");
 
 // Base
@@ -29,7 +33,7 @@ const libs: ImportDataMap = {
   },
 };
 
-const createWrappedRequest = async (
+const createWrappedRequest = (
   name: string,
   contentStore: string,
   wrapType: number
@@ -115,25 +119,66 @@ const deployLibraries = async () => {
   for (const libId in libs) {
     const lib = libs[libId];
     await libsScriptyStorage.createScript(libId, toBytes(""));
-    await staggerStore(libsScriptyStorage, libId, lib.data, lib.pages);
+    await storeChunks(libsScriptyStorage, libId, lib.data, lib.pages);
   }
+};
+export const deployFrame = async (
+  name: string,
+  symbol: string,
+  libs: string[],
+  sourcePath: string
+) => {
+  // Deploy source
+  // TO-DO: make this factory based
+  const sourcContentStore = await (
+    await hre.ethers.getContractFactory("ContentStore")
+  ).deploy();
+  await sourcContentStore.deployed();
 
-  const p5Request = await createWrappedRequest(
-    p5,
-    libsScriptyStorage.address,
+  const sourceScriptyStorage = await (
+    await hre.ethers.getContractFactory("ScriptyStorageCloneable")
+  ).deploy();
+  await sourceScriptyStorage.deployed();
+
+  // Configure new scriptyStorage
+  const sourceId = name + "-source";
+  await sourceScriptyStorage.setContentStore(sourcContentStore.address);
+  await sourceScriptyStorage.createScript(sourceId, toBytes(""));
+  await storeChunks(
+    sourceScriptyStorage,
+    sourceId,
+    fs.readFileSync(__dirname + sourcePath).toString(),
+    1
+  );
+
+  const sourceRequest = createWrappedRequest(
+    sourceId,
+    sourceScriptyStorage.address,
     0
   );
-  console.log(p5Request);
-  const bufferSize = await scriptyBuilder.getBufferSizeForEncodedHTMLWrapped([
-    p5Request,
-  ]);
-  console.log(bufferSize);
+
+  // Create requests
+  const requests = libs
+    .map((lib) => createWrappedRequest(lib, libsScriptyStorage.address, 2))
+    .concat([sourceRequest]);
+
+  console.log(requests);
+
+  const bufferSize = await scriptyBuilder.getBufferSizeForEncodedHTMLWrapped(
+    requests
+  );
+  console.log("bufferSize", bufferSize);
 
   const query = await scriptyBuilder.getEncodedHTMLWrapped(
-    [p5Request],
+    requests,
     bufferSize
   );
   console.log("query", query.length);
+
+  fs.writeFileSync(__dirname + "/output/" + name, fromBytes(query), {
+    encoding: "utf8",
+    flag: "w",
+  });
 };
 
 export const deploy = async () => {
