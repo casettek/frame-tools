@@ -25,15 +25,13 @@ interface IFrame {
 }
 
 contract FrameDeployer {
-  address public contentStoreFactory;
   address public scriptyStorageFactory;
   address public frameFactory;
   address public scriptyBuilder;
 
   event FrameCreated(address newAddress);
 
-  constructor(address _contentStore, address _scriptyStorage, address _frame, address _scriptyBuilder) {
-    contentStoreFactory = _contentStore;
+  constructor(address _scriptyStorage, address _frame, address _scriptyBuilder) {
     scriptyStorageFactory = _scriptyStorage;
     frameFactory = _frame;
 		scriptyBuilder = _scriptyBuilder;

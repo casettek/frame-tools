@@ -1,5 +1,5 @@
 import { startServer } from "./app";
-import { deploy, deployRawHTML } from "./deploy";
+import { deploy, deployRawHTML, deployFrame } from "./deploy";
 import { importIds } from "./assets/libs";
 const fs = require("fs");
 
@@ -14,11 +14,10 @@ async function main() {
   app.listen({ port }, async (): Promise<void> => {
     const { p5 } = importIds;
 
-    console.log("Deploying base contracts...");
     await deploy();
 
-    console.log('Deploying frame "TestFame"...');
-    await deployRawHTML("TestFame", "TFRM", [p5], "/test/test.js");
+    // await deployRawHTML("TestHTML.html", [p5], "/test/test.js");
+    await deployFrame("TestHTML.html", "TFRM", [p5], "/test/test.js");
 
     console.log(`\n🏂 Frame is now running on http://localhost:${port}/`);
   });

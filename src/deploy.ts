@@ -61,6 +61,8 @@ const deployNewScriptyStorage = async () => {
 };
 
 const deployBaseContracts = async () => {
+  console.log("Deploying base contracts...");
+
   // Deploy libs and factories
   scriptyBuilder = await (
     await hre.ethers.getContractFactory("ScriptyBuilder")
@@ -104,7 +106,6 @@ const deployBaseContracts = async () => {
   frameDeployer = await (
     await hre.ethers.getContractFactory("FrameDeployer")
   ).deploy(
-    contentStoreFactory.address,
     scriptyStorageFactory.address,
     frameFactory.address,
     scriptyBuilder.address
@@ -123,12 +124,14 @@ const deployLibraries = async () => {
     await storeChunks(libsScriptyStorage, libId, lib.data, lib.pages);
   }
 };
+
 export const deployRawHTML = async (
   name: string,
-  symbol: string,
   libs: string[],
   sourcePath: string
 ) => {
+  console.log('Deploying "TestHTML.html"...');
+
   // Deploy source
   const sourceScriptyStorage = await deployNewScriptyStorage();
   const sourceId = name + "-source";
@@ -140,24 +143,16 @@ export const deployRawHTML = async (
     1
   );
 
-  const sourceRequest = createWrappedRequest(
-    sourceId,
-    sourceScriptyStorage.address,
-    0
-  );
-
   // Create requests
   const requests = libs
     .map((lib) => createWrappedRequest(lib, libsScriptyStorage.address, 2))
-    .concat([sourceRequest]);
-
-  console.log(requests);
+    .concat([createWrappedRequest(sourceId, sourceScriptyStorage.address, 0)]);
 
   const bufferSize = await scriptyBuilder.getBufferSizeForEncodedHTMLWrapped(
     requests
   );
-  console.log("bufferSize", bufferSize);
 
+  console.log("Fetching HTML from on-chain...");
   const query = await scriptyBuilder.getEncodedHTMLWrapped(
     requests,
     bufferSize
@@ -176,7 +171,55 @@ export const deployRawHTML = async (
   );
 };
 
-// Deploy
+// Deploy single frame across two transactions
+export const deployFrame = async (
+  name: string,
+  symbol: string,
+  libs: string[],
+  sourcePath: string
+) => {
+  console.log('Deploying frame "' + name + '"...');
+
+  // Deploy source
+  const sourceScriptyStorage = await deployNewScriptyStorage();
+  const sourceId = name + "-source";
+  await sourceScriptyStorage.createScript(sourceId, toBytes(""));
+  await storeChunks(
+    sourceScriptyStorage,
+    sourceId,
+    fs.readFileSync(__dirname + sourcePath).toString(),
+    1
+  );
+
+  // Create requests
+  const requests = libs
+    .map((lib) => createWrappedRequest(lib, libsScriptyStorage.address, 2))
+    .concat([createWrappedRequest(sourceId, sourceScriptyStorage.address, 0)]);
+
+  const bufferSize = await scriptyBuilder.getBufferSizeForEncodedHTMLWrapped(
+    requests
+  );
+
+  const Frame = await hre.ethers.getContractFactory("Frame");
+  const createCall = await frameDeployer.createFrame(
+    name,
+    symbol,
+    bufferSize,
+    requests
+  );
+  const createResult = await createCall.wait();
+  const newFrameAddress = createResult.logs[0]?.data.replace(
+    "000000000000000000000000",
+    ""
+  );
+
+  console.log("Fetching tokenURI from on-chain...");
+
+  const frame = await Frame.attach(newFrameAddress);
+  const tokenURI = await frame.tokenURI(0);
+
+  console.log(tokenURI);
+};
 
 export const deploy = async () => {
   await deployBaseContracts();

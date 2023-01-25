@@ -1220,8 +1220,8 @@
       ]
     },
     "C:\\Users\\Andrew\\Development\\frame-backend\\src\\contracts\\FrameDeployer.sol": {
-      "lastModificationDate": 1674677035460,
-      "contentHash": "07c3dc7a5db5a9c1895c0680e57a0402",
+      "lastModificationDate": 1674678701880,
+      "contentHash": "3b9ea7a7a1b94df1fd0cc1b6ec3ccfd6",
       "sourceName": "src/contracts/FrameDeployer.sol",
       "solcConfig": {
         "version": "0.8.17",
