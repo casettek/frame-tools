@@ -6,7 +6,6 @@ import "solady/src/utils/Base64.sol";
 import {IScriptyBuilder, WrappedScriptRequest} from "./libs/scripty/IScriptyBuilder.sol";
 
 contract Frame is ERC721Cloneable {
-    address public scriptyStorageAddress;
     address public scriptyBuilderAddress;
     uint256 public bufferSize;
     WrappedScriptRequest[] public requests;
@@ -22,12 +21,10 @@ contract Frame is ERC721Cloneable {
     }
 
     function setParams(
-        address _scriptyStorageAddress,
         address _scriptyBuilderAddress,
         uint256 _bufferSize,
         WrappedScriptRequest[] memory _requests
     ) public {
-        scriptyStorageAddress = _scriptyStorageAddress;
         scriptyBuilderAddress = _scriptyBuilderAddress;
         bufferSize = _bufferSize;
         for (uint i = 0; i < _requests.length; i++) {

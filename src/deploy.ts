@@ -47,6 +47,19 @@ const createWrappedRequest = (
   scriptContent: toBytes(""),
 });
 
+const deployNewScriptyStorage = async () => {
+  const ScriptyStorage = await hre.ethers.getContractFactory(
+    "ScriptyStorageCloneable"
+  );
+  const createStorageCall = await scriptyStorageFactory.create();
+  const createStorageResult = await createStorageCall.wait();
+  const newStorageAddress = createStorageResult.logs[1]?.data.replace(
+    "000000000000000000000000",
+    ""
+  );
+  return await ScriptyStorage.attach(newStorageAddress);
+};
+
 const deployBaseContracts = async () => {
   // Deploy libs and factories
   scriptyBuilder = await (
@@ -60,7 +73,7 @@ const deployBaseContracts = async () => {
 
   frameFactory = await (
     await hre.ethers.getContractFactory("FrameFactory")
-  ).deploy();
+  ).deploy(frameLib.address);
   await frameFactory.deployed();
   console.log("FrameFactory deployed", frameFactory.address);
 
@@ -72,7 +85,7 @@ const deployBaseContracts = async () => {
 
   contentStoreFactory = await (
     await hre.ethers.getContractFactory("ContentStoreFactory")
-  ).deploy();
+  ).deploy(contentStoreLib.address);
   await contentStoreFactory.deployed();
   console.log("ContentStoreFactory deployed", contentStoreFactory.address);
 
@@ -84,7 +97,7 @@ const deployBaseContracts = async () => {
 
   scriptyStorageFactory = await (
     await hre.ethers.getContractFactory("ScriptyStorageFactory")
-  ).deploy();
+  ).deploy(scriptyStorageLib.address, contentStoreFactory.address);
   await scriptyStorageFactory.deployed();
   console.log("ScriptyStorageFactory deployed", scriptyStorageFactory.address);
 
@@ -101,19 +114,7 @@ const deployBaseContracts = async () => {
 };
 
 const deployLibraries = async () => {
-  // TO-DO: make this factory based
-  libsContentStore = await (
-    await hre.ethers.getContractFactory("ContentStore")
-  ).deploy();
-  await libsContentStore.deployed();
-
-  libsScriptyStorage = await (
-    await hre.ethers.getContractFactory("ScriptyStorageCloneable")
-  ).deploy();
-  await libsScriptyStorage.deployed();
-
-  // Configure new scriptyStorage
-  await libsScriptyStorage.setContentStore(libsContentStore.address);
+  libsScriptyStorage = await deployNewScriptyStorage();
 
   // Deploy libraries
   for (const libId in libs) {
@@ -122,27 +123,15 @@ const deployLibraries = async () => {
     await storeChunks(libsScriptyStorage, libId, lib.data, lib.pages);
   }
 };
-export const deployFrame = async (
+export const deployRawHTML = async (
   name: string,
   symbol: string,
   libs: string[],
   sourcePath: string
 ) => {
   // Deploy source
-  // TO-DO: make this factory based
-  const sourcContentStore = await (
-    await hre.ethers.getContractFactory("ContentStore")
-  ).deploy();
-  await sourcContentStore.deployed();
-
-  const sourceScriptyStorage = await (
-    await hre.ethers.getContractFactory("ScriptyStorageCloneable")
-  ).deploy();
-  await sourceScriptyStorage.deployed();
-
-  // Configure new scriptyStorage
+  const sourceScriptyStorage = await deployNewScriptyStorage();
   const sourceId = name + "-source";
-  await sourceScriptyStorage.setContentStore(sourcContentStore.address);
   await sourceScriptyStorage.createScript(sourceId, toBytes(""));
   await storeChunks(
     sourceScriptyStorage,
@@ -173,13 +162,21 @@ export const deployFrame = async (
     requests,
     bufferSize
   );
-  console.log("query", query.length);
 
-  fs.writeFileSync(__dirname + "/output/" + name, fromBytes(query), {
-    encoding: "utf8",
-    flag: "w",
-  });
+  fs.writeFileSync(
+    __dirname + "/output/output.html",
+    Buffer.from(
+      fromBytes(query).replace("data:text/html;base64,", ""),
+      "base64"
+    ).toString("utf8"),
+    {
+      encoding: "utf8",
+      flag: "w",
+    }
+  );
 };
+
+// Deploy
 
 export const deploy = async () => {
   await deployBaseContracts();

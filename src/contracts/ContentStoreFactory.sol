@@ -4,12 +4,11 @@ pragma solidity ^0.8.12;
 import "./CloneFactory.sol";
 
 contract ContentStoreFactory is CloneFactory {
-  address public libraryAddress;
+  address public immutable libraryAddress;
 
   event ContentStoreFactoryCreated(address newAddress);
 
-  function setLibraryAddress(address _libraryAddress) public  {
-    require(libraryAddress == address(0), "ContentStoreFactory: Library already set");
+  constructor (address _libraryAddress) {
     libraryAddress = _libraryAddress;
   }
 

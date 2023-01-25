@@ -3,18 +3,31 @@ pragma solidity ^0.8.12;
 
 import "./CloneFactory.sol";
 
+interface IFactory {
+    function create() external returns (address);
+}
+
+interface IScriptyStorage {
+	function setContentStore(address _contentStoreAddress) external;
+}
+
 contract ScriptyStorageFactory is CloneFactory {
-  address public libraryAddress;
+  address public immutable scriptyStorageLibraryAddress;
+  address public immutable contentStoreFactoryAddress;
 
   event ScriptyStorageFactoryCreated(address newAddress);
 
-  function setLibraryAddress(address _libraryAddress) public  {
-    require(libraryAddress == address(0), "ScriptyStorageFactory: Library already set");
-    libraryAddress = _libraryAddress;
+  constructor (address _scriptyStorageLib, address _contentStoreFactory) {
+    scriptyStorageLibraryAddress = _scriptyStorageLib;
+    contentStoreFactoryAddress = _contentStoreFactory;
   }
 
   function create() public returns (address)  {
-    address clone = createClone(libraryAddress);
+    address contentStore = IFactory(contentStoreFactoryAddress).create(); 
+
+    address clone = createClone(scriptyStorageLibraryAddress);
+    IScriptyStorage(clone).setContentStore(contentStore);
+
     emit ScriptyStorageFactoryCreated(clone);
     return clone;
   }

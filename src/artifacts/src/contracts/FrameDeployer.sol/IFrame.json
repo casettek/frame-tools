@@ -38,11 +38,6 @@
       "inputs": [
         {
           "internalType": "address",
-          "name": "_scriptyStorageAddress",
-          "type": "address"
-        },
-        {
-          "internalType": "address",
           "name": "_scriptyBuilderAddress",
           "type": "address"
         },
