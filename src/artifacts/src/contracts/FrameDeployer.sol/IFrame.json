@@ -9,12 +9,17 @@
           "components": [
             {
               "internalType": "string",
-              "name": "encodedName",
+              "name": "name",
               "type": "string"
             },
             {
               "internalType": "string",
-              "name": "encodedDescription",
+              "name": "description",
+              "type": "string"
+            },
+            {
+              "internalType": "string",
+              "name": "symbol",
               "type": "string"
             }
           ],

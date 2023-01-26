@@ -12,12 +12,18 @@ async function main() {
   });
 
   app.listen({ port }, async (): Promise<void> => {
-    const { p5 } = importIds;
+    const { p5, fflate } = importIds;
 
     await deploy();
 
     // await deployRawHTML("TestHTML.html", [p5], "/test/test.js");
-    await deployFrame("TestHTML.html", "TFRM", [p5], "/test/test.js");
+    await deployFrame(
+      "TestHTML.html",
+      "TFRM",
+      "A test frame.",
+      [fflate],
+      "/test/test.js"
+    );
 
     console.log(`\n🏂 Frame is now running on http://localhost:${port}/`);
   });

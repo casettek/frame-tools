@@ -6,15 +6,16 @@ import "solady/src/utils/Base64.sol";
 import {IScriptyBuilder, WrappedScriptRequest} from "./libs/scripty/IScriptyBuilder.sol";
 
 struct FrameMetadata {
-    string encodedName;    
-    string encodedDescription;
+    string name;    
+    string description;
+    string symbol;
 }
 
 contract Frame is ERC721Cloneable {
     bool public initialized;
     bool public minted;
-    string public urlEncodedName;
-    string public urlEncodedDesc;
+
+    string public description;
     address public scriptyBuilderAddress;
     uint256 public bufferSize;
     WrappedScriptRequest[] public requests;
@@ -34,8 +35,10 @@ contract Frame is ERC721Cloneable {
       WrappedScriptRequest[] calldata _requests
     ) public {
       require(!initialized, "Frame: already initialized");
-      urlEncodedName = _metadata.encodedName;
-      urlEncodedDesc = _metadata.encodedDescription;
+      setName(_metadata.name);
+      setSymbol(_metadata.symbol);
+
+      description = _metadata.description;
       scriptyBuilderAddress = _scriptyBuilderAddress;
       bufferSize = _bufferSize;
       for (uint i = 0; i < _requests.length; i++) {
@@ -48,24 +51,23 @@ contract Frame is ERC721Cloneable {
       uint256 /*_tokenId*/
     ) public view virtual override returns (string memory) {
 
-      // bytes memory doubleURLEncodedHTMLDataURI = IScriptyBuilder(scriptyBuilderAddress)
-      //     .getHTMLWrappedURLSafe(requests, bufferSize);
+      bytes memory dataURI = IScriptyBuilder(scriptyBuilderAddress).getHTMLWrappedURLSafe(requests, bufferSize);
 
       bytes memory metadata = abi.encodePacked(
-          '{"name":"', // data:application/json,{name":"
-          urlEncodedName,
-          '", "description":"', // ,"description":"
-          urlEncodedDesc,
-          '","animation_url":', // ,"animation_url":"
-          // doubleURLEncodedHTMLDataURI,
-          '"}' // "}
+          '{"name":"',
+          name(),
+          '", "description":"',
+          description,
+          '","animation_url":"',
+          dataURI,
+          '"}'
       );
 
       return
           string(
               abi.encodePacked(
-                  "data:application/json;base64,",
-                  Base64.encode(metadata)
+                  "data:application/json,",
+                  metadata
               )
           );
     }

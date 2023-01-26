@@ -24,12 +24,17 @@ let frameDeployer: any;
 let libsContentStore: any;
 let libsScriptyStorage: any;
 
-const { p5 } = importIds;
+const { p5, fflate } = importIds;
 const libs: ImportDataMap = {
   [p5]: {
     data: importData[p5],
     wrapper: "",
     pages: calcStoragePages(importData[p5]),
+  },
+  [fflate]: {
+    data: importData[fflate],
+    wrapper: "",
+    pages: calcStoragePages(importData[fflate]),
   },
 };
 
@@ -40,6 +45,15 @@ const createWrappedRequest = (
 ) => ({
   name,
   contractAddress: contentStore,
+  contractData: toBytes(""),
+  wrapType,
+  wrapPrefix: toBytes(""),
+  wrapSuffix: toBytes(""),
+  scriptContent: toBytes(""),
+});
+
+const createEmptyWrappedRequest = (name: string, wrapType: number) => ({
+  name,
   contractData: toBytes(""),
   wrapType,
   wrapPrefix: toBytes(""),
@@ -174,6 +188,7 @@ export const deployRawHTML = async (
 // Deploy single frame across two transactions
 export const deployFrame = async (
   name: string,
+  description: string,
   symbol: string,
   libs: string[],
   sourcePath: string
@@ -200,19 +215,19 @@ export const deployFrame = async (
     requests
   );
 
+  console.log("bufferSize", bufferSize.toString(), "requests", requests.length);
+
   const Frame = await hre.ethers.getContractFactory("Frame");
   const createCall = await frameDeployer.createFrame(
     {
       name,
+      description,
       symbol,
-    },
-    {
-      encodedName: "",
-      encodedDescription: "",
     },
     bufferSize,
     requests
   );
+
   const createResult = await createCall.wait();
   const newFrameAddress = createResult.logs[0]?.data.replace(
     "000000000000000000000000",
@@ -224,21 +239,20 @@ export const deployFrame = async (
   const frame = await Frame.attach(newFrameAddress);
   const tokenURI = await frame.tokenURI(0);
 
-  console.log(tokenURI.replace("data:application/json;base64,", ""));
+  console.log(tokenURI);
 
-  // fs.writeFileSync(
-  //   __dirname + "/output/output.html",
-  //   Buffer.from(
-  //     fromBytes(tokenURI).replace("data:text/html;base64,", ""),
-  //     "base64"
-  //   ).toString("utf8"),
-  //   {
-  //     encoding: "utf8",
-  //     flag: "w",
-  //   }
-  // );
+  const html = decodeURIComponent(
+    decodeURIComponent(
+      JSON.parse(tokenURI.replace("data:application/json,", "")).animation_url
+    )
+  ).replace("data:text/html,", "");
 
-  // console.log(decoded);
+  fs.writeFileSync(__dirname + "/output/output.html", html, {
+    encoding: "utf8",
+    flag: "w",
+  });
+
+  console.log(html);
   console.log(createResult.gasUsed);
 };
 

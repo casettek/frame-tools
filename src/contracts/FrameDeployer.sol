@@ -12,14 +12,10 @@ struct EmptyWrappedScriptRequest {
     bytes scriptContent;
 }
 
-struct FrameTokenMetadata {
-    string name;
-    string symbol;
-}
-
 struct FrameMetadata {
-    string encodedName;    
-    string encodedDescription;
+    string name;    
+    string description;
+    string symbol;
 }
 
 interface IFactory {
@@ -57,7 +53,6 @@ contract FrameDeployer {
   }
 
   function createFrame(
-    FrameTokenMetadata calldata _tokenMetadata,
     FrameMetadata calldata _metadata,
 		uint256 _bufferSize,
     WrappedScriptRequest[] calldata _requests
@@ -65,8 +60,6 @@ contract FrameDeployer {
     IFrame frame = IFrame(IFactory(frameFactory).create());
 
     // Apply frame references and scripts
-		frame.setName(_tokenMetadata.name);
-		frame.setSymbol(_tokenMetadata.symbol);
     frame.init(_metadata, address(scriptyBuilder), _bufferSize, _requests);
 		frame.mintForOwner(msg.sender);
 
@@ -75,7 +68,6 @@ contract FrameDeployer {
   }
 
   function createFrameWithStorage(
-		FrameTokenMetadata calldata _tokenMetadata,
     FrameMetadata calldata _metadata,
 		uint256 _bufferSize,
     EmptyWrappedScriptRequest calldata _sourceRequest,
@@ -96,7 +88,7 @@ contract FrameDeployer {
       requests[i] = _requests[i];
     }
 
-    requests[requests.length] = WrappedScriptRequest({
+    requests[requests.length - 1] = WrappedScriptRequest({
      	name: _sourceRequest.name,
      	contractAddress: address(scriptyStorage),
 			contractData: _sourceRequest.contractData,
@@ -108,8 +100,6 @@ contract FrameDeployer {
 
     // Apply frame references and scripts
 		frame.init(_metadata, address(scriptyBuilder), _bufferSize, requests);
-		frame.setName(_tokenMetadata.name);
-		frame.setSymbol(_tokenMetadata.symbol);
 		frame.mintForOwner(msg.sender);
 
     emit FrameCreated(address(frame));
