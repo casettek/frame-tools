@@ -224,7 +224,22 @@ export const deployFrame = async (
   const frame = await Frame.attach(newFrameAddress);
   const tokenURI = await frame.tokenURI(0);
 
-  console.log(tokenURI);
+  console.log(tokenURI.replace("data:application/json;base64,", ""));
+
+  // fs.writeFileSync(
+  //   __dirname + "/output/output.html",
+  //   Buffer.from(
+  //     fromBytes(tokenURI).replace("data:text/html;base64,", ""),
+  //     "base64"
+  //   ).toString("utf8"),
+  //   {
+  //     encoding: "utf8",
+  //     flag: "w",
+  //   }
+  // );
+
+  // console.log(decoded);
+  console.log(createResult.gasUsed);
 };
 
 export const deploy = async () => {

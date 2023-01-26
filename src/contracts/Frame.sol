@@ -48,19 +48,24 @@ contract Frame is ERC721Cloneable {
       uint256 /*_tokenId*/
     ) public view virtual override returns (string memory) {
 
-      bytes memory doubleURLEncodedHTMLDataURI = IScriptyBuilder(scriptyBuilderAddress)
-          .getHTMLWrappedURLSafe(requests, bufferSize);
+      // bytes memory doubleURLEncodedHTMLDataURI = IScriptyBuilder(scriptyBuilderAddress)
+      //     .getHTMLWrappedURLSafe(requests, bufferSize);
+
+      bytes memory metadata = abi.encodePacked(
+          '{"name":"', // data:application/json,{name":"
+          urlEncodedName,
+          '", "description":"', // ,"description":"
+          urlEncodedDesc,
+          '","animation_url":', // ,"animation_url":"
+          // doubleURLEncodedHTMLDataURI,
+          '"}' // "}
+      );
 
       return
           string(
               abi.encodePacked(
-                  "data:application/json,%22name%22%3A%22", // data:application/json,{name":"
-                  urlEncodedName,
-                  "%2C%22description%22%3A%22", // ,"description":"
-                  urlEncodedDesc,
-                  "%2C%22animation_url%22%3A%22", // ,"animation_url":"
-                  doubleURLEncodedHTMLDataURI,
-                  "%22%7D" // "}
+                  "data:application/json;base64,",
+                  Base64.encode(metadata)
               )
           );
     }
