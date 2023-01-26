@@ -3,31 +3,50 @@ pragma solidity ^0.8.12;
 
 import {WrappedScriptRequest} from "./libs/scripty/IScriptyBuilder.sol";
 
+struct EmptyWrappedScriptRequest {
+    string name;
+    bytes contractData;
+    uint8 wrapType;
+    bytes wrapPrefix;
+    bytes wrapSuffix;
+    bytes scriptContent;
+}
+
+struct FrameTokenMetadata {
+    string name;
+    string symbol;
+}
+
+struct FrameMetadata {
+    string encodedName;    
+    string encodedDescription;
+}
+
 interface IFactory {
     function create() external returns (address);
 }
 
 interface IScriptyStorage {
-	function setContentStore(address _contentStoreAddress) external;
 	function createScript(string calldata name, bytes calldata) external;
 	function addChunkToScript(string calldata name, bytes calldata chunk) external;
 }
 
 interface IFrame {
-	function mintIdForOwner(uint _id, address _owner) external;
+	function mintForOwner(address _owner) external;
 	function setName(string calldata _name) external;
 	function setSymbol(string calldata _symbol) external;
-  	function setParams(
+  function init(
+    FrameMetadata calldata _metadata,
 		address _scriptyBuilderAddress, 
 		uint256 _bufferSize, 
-		WrappedScriptRequest[] memory _requests
+		WrappedScriptRequest[] calldata _requests
 	) external;
 }
 
 contract FrameDeployer {
-  address public scriptyStorageFactory;
-  address public frameFactory;
-  address public scriptyBuilder;
+  address public immutable scriptyStorageFactory;
+  address public immutable frameFactory;
+  address public immutable scriptyBuilder;
 
   event FrameCreated(address newAddress);
 
@@ -38,38 +57,60 @@ contract FrameDeployer {
   }
 
   function createFrame(
-		string memory _name,
-		string memory _symbol,
+    FrameTokenMetadata calldata _tokenMetadata,
+    FrameMetadata calldata _metadata,
 		uint256 _bufferSize,
-    WrappedScriptRequest[] memory _requests
+    WrappedScriptRequest[] calldata _requests
 	) public returns (address)  {
-
-    // address contentStore = IFactory(contentStoreFactory).create();
-    // IScriptyStorage scriptyStorage = IScriptyStorage(IFactory(scriptyStorageFactory).create());
-    
-    // // Add content store to scripty storage
-		// scriptyStorage.setContentStore(contentStore);
-		// scriptyStorage.createScript("source", bytes(""));
-		// scriptyStorage.addChunkToScript("source", _source);
-    
     IFrame frame = IFrame(IFactory(frameFactory).create());
 
-    // WrappedScriptRequest[] memory requests = new WrappedScriptRequest[](1);
-    // requests[0] = WrappedScriptRequest({
-    //  	name: "source",
-    //  	contractAddress: address(scriptyStorage),
-		// 	contractData: bytes(""),
-		// 	wrapType: 0,
-		// 	wrapPrefix: bytes(""),
-		// 	wrapSuffix: bytes(""),
-		// 	scriptContent: bytes("")
-		// });
+    // Apply frame references and scripts
+		frame.setName(_tokenMetadata.name);
+		frame.setSymbol(_tokenMetadata.symbol);
+    frame.init(_metadata, address(scriptyBuilder), _bufferSize, _requests);
+		frame.mintForOwner(msg.sender);
+
+    emit FrameCreated(address(frame));
+    return address(frame);
+  }
+
+  function createFrameWithStorage(
+		FrameTokenMetadata calldata _tokenMetadata,
+    FrameMetadata calldata _metadata,
+		uint256 _bufferSize,
+    EmptyWrappedScriptRequest calldata _sourceRequest,
+    WrappedScriptRequest[] calldata _requests
+	) public returns (address)  {
+
+    IScriptyStorage scriptyStorage = IScriptyStorage(IFactory(scriptyStorageFactory).create());
+
+    // Add content store to scripty storage
+    scriptyStorage.createScript(_sourceRequest.name, bytes(""));
+    scriptyStorage.addChunkToScript(_sourceRequest.name, _sourceRequest.scriptContent);
+    
+    IFrame frame = IFrame(IFactory(frameFactory).create());
+    uint totalRequestsCount = _requests.length + 1;
+    WrappedScriptRequest[] memory requests = new WrappedScriptRequest[](totalRequestsCount);
+
+    for (uint i = 0; i < _requests.length; i++) {
+      requests[i] = _requests[i];
+    }
+
+    requests[requests.length] = WrappedScriptRequest({
+     	name: _sourceRequest.name,
+     	contractAddress: address(scriptyStorage),
+			contractData: _sourceRequest.contractData,
+			wrapType: _sourceRequest.wrapType,
+			wrapPrefix: _sourceRequest.wrapPrefix,
+			wrapSuffix: _sourceRequest.wrapSuffix,
+			scriptContent: _sourceRequest.scriptContent
+		});
 
     // Apply frame references and scripts
-		frame.setParams(address(scriptyBuilder), _bufferSize, _requests);
-		frame.setName(_name);
-		frame.setSymbol(_symbol);
-		frame.mintIdForOwner(0, msg.sender);
+		frame.init(_metadata, address(scriptyBuilder), _bufferSize, requests);
+		frame.setName(_tokenMetadata.name);
+		frame.setSymbol(_tokenMetadata.symbol);
+		frame.mintForOwner(msg.sender);
 
     emit FrameCreated(address(frame));
     return address(frame);

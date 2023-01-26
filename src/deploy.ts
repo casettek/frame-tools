@@ -202,8 +202,14 @@ export const deployFrame = async (
 
   const Frame = await hre.ethers.getContractFactory("Frame");
   const createCall = await frameDeployer.createFrame(
-    name,
-    symbol,
+    {
+      name,
+      symbol,
+    },
+    {
+      encodedName: "",
+      encodedDescription: "",
+    },
     bufferSize,
     requests
   );

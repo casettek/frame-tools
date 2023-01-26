@@ -6,36 +6,22 @@
     {
       "inputs": [
         {
-          "internalType": "uint256",
-          "name": "_id",
-          "type": "uint256"
+          "components": [
+            {
+              "internalType": "string",
+              "name": "encodedName",
+              "type": "string"
+            },
+            {
+              "internalType": "string",
+              "name": "encodedDescription",
+              "type": "string"
+            }
+          ],
+          "internalType": "struct FrameMetadata",
+          "name": "_metadata",
+          "type": "tuple"
         },
-        {
-          "internalType": "address",
-          "name": "_owner",
-          "type": "address"
-        }
-      ],
-      "name": "mintIdForOwner",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "string",
-          "name": "_name",
-          "type": "string"
-        }
-      ],
-      "name": "setName",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [
         {
           "internalType": "address",
           "name": "_scriptyBuilderAddress",
@@ -89,7 +75,33 @@
           "type": "tuple[]"
         }
       ],
-      "name": "setParams",
+      "name": "init",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "_owner",
+          "type": "address"
+        }
+      ],
+      "name": "mintForOwner",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "string",
+          "name": "_name",
+          "type": "string"
+        }
+      ],
+      "name": "setName",
       "outputs": [],
       "stateMutability": "nonpayable",
       "type": "function"
