@@ -33,7 +33,7 @@ export const staggerStore = async (
   for (let i = 0; i < stringChunks.length; i++) {
     await contract.addChunkToScript(key, toBytes(stringChunks[i]));
     // await contract.saveData(key, i, toBytes(stringChunks[i]));
-    console.log(`Stored ${key} page ${i}`);
+    // console.log(`Stored ${key} page ${i}`);
   }
 };
 
@@ -45,6 +45,7 @@ export const storeChunks = async (
 ) => {
   if (chunks === 1) {
     await contract.addChunkToScript(key, toBytes(dataString));
+    console.log(`Stored ${key} in 1 page`);
     return;
   }
 
@@ -56,8 +57,9 @@ export const storeChunks = async (
   for (let i = 0; i < stringChunks.length; i++) {
     await contract.addChunkToScript(key, toBytes(stringChunks[i]));
     // await contract.saveData(key, i, toBytes(stringChunks[i]));
-    console.log(`Stored ${key} page ${i}`);
+    // console.log(`Stored ${key} page ${i}`);
   }
+  console.log(`Stored ${key} in ${stringChunks.length} pages`);
 };
 
 export const getWrapperDataLogs = (wrapperKey: string, wrapperData: any) => {

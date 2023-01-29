@@ -21,11 +21,20 @@ let scriptyStorageFactory: any;
 let frameDeployer: any;
 
 // Instance
-let libsContentStore: any;
 let libsScriptyStorage: any;
 
-const { p5, fflate } = importIds;
+const { p5, fflate, p5gz, gunzip } = importIds;
 const libs: ImportDataMap = {
+  [gunzip]: {
+    data: importData[gunzip],
+    wrapper: "",
+    pages: calcStoragePages(importData[gunzip]),
+  },
+  [p5gz]: {
+    data: importData[p5gz],
+    wrapper: "gzip",
+    pages: calcStoragePages(importData[p5gz]),
+  },
   [p5]: {
     data: importData[p5],
     wrapper: "",
@@ -130,6 +139,7 @@ const deployBaseContracts = async () => {
 
 const deployLibraries = async () => {
   libsScriptyStorage = await deployNewScriptyStorage();
+  console.log("libsScriptyStorage", libsScriptyStorage.address);
 
   // Deploy libraries
   for (const libId in libs) {
@@ -141,7 +151,7 @@ const deployLibraries = async () => {
 
 export const deployRawHTML = async (
   name: string,
-  libs: string[],
+  libNames: string[],
   sourcePath: string
 ) => {
   console.log('Deploying "TestHTML.html"...');
@@ -158,31 +168,37 @@ export const deployRawHTML = async (
   );
 
   // Create requests
-  const requests = libs
-    .map((lib) => createWrappedRequest(lib, libsScriptyStorage.address, 2))
+  const requests = libNames
+    .map((lib) =>
+      createWrappedRequest(
+        lib,
+        libsScriptyStorage.address,
+        libs[lib].wrapper === "gzip" ? 2 : 0
+      )
+    )
     .concat([createWrappedRequest(sourceId, sourceScriptyStorage.address, 0)]);
+
+  console.log(requests);
 
   const bufferSize = await scriptyBuilder.getBufferSizeForEncodedHTMLWrapped(
     requests
   );
 
   console.log("Fetching HTML from on-chain...");
-  const query = await scriptyBuilder.getEncodedHTMLWrapped(
+  const query = await scriptyBuilder.getHTMLWrappedURLSafe(
     requests,
     bufferSize
   );
 
-  fs.writeFileSync(
-    __dirname + "/output/output.html",
-    Buffer.from(
-      fromBytes(query).replace("data:text/html;base64,", ""),
-      "base64"
-    ).toString("utf8"),
-    {
-      encoding: "utf8",
-      flag: "w",
-    }
+  const html = decodeURIComponent(decodeURIComponent(fromBytes(query))).replace(
+    "data:text/html,",
+    ""
   );
+
+  fs.writeFileSync(__dirname + "/output/output.html", html, {
+    encoding: "utf8",
+    flag: "w",
+  });
 };
 
 // Deploy single frame across two transactions
@@ -256,7 +272,9 @@ export const deployFrame = async (
   console.log(createResult.gasUsed);
 };
 
-export const deploy = async () => {
+export const init = async () => {
   await deployBaseContracts();
   await deployLibraries();
 };
+
+// init();
