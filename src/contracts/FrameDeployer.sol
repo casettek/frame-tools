@@ -22,6 +22,11 @@ interface IFactory {
     function create() external returns (address);
 }
 
+interface IScriptyStorageFactory {
+    function create() external returns (address);
+    function createWithNewScript(string calldata name, bytes calldata chunk) external returns (address);
+}
+
 interface IScriptyStorage {
 	function createScript(string calldata name, bytes calldata) external;
 	function addChunkToScript(string calldata name, bytes calldata chunk) external;
@@ -67,18 +72,14 @@ contract FrameDeployer {
     return address(frame);
   }
 
-  function createFrameWithStorage(
+  function createFrameWithScript(
     FrameMetadata calldata _metadata,
-		uint256 _bufferSize,
-    EmptyWrappedScriptRequest calldata _sourceRequest,
-    WrappedScriptRequest[] calldata _requests
+    bytes calldata _script,
+    EmptyWrappedScriptRequest calldata _scriptRequest,
+    WrappedScriptRequest[] calldata _requests,
+    uint256 _requestsBufferSize
 	) public returns (address)  {
-
-    IScriptyStorage scriptyStorage = IScriptyStorage(IFactory(scriptyStorageFactory).create());
-
-    // Add content store to scripty storage
-    scriptyStorage.createScript(_sourceRequest.name, bytes(""));
-    scriptyStorage.addChunkToScript(_sourceRequest.name, _sourceRequest.scriptContent);
+    IScriptyStorage scriptyStorage = IScriptyStorage(IScriptyStorageFactory(scriptyStorageFactory).createWithNewScript(_scriptRequest.name, _script));
     
     IFrame frame = IFrame(IFactory(frameFactory).create());
     uint totalRequestsCount = _requests.length + 1;
@@ -89,17 +90,17 @@ contract FrameDeployer {
     }
 
     requests[requests.length - 1] = WrappedScriptRequest({
-     	name: _sourceRequest.name,
+     	name: _scriptRequest.name,
      	contractAddress: address(scriptyStorage),
-			contractData: _sourceRequest.contractData,
-			wrapType: _sourceRequest.wrapType,
-			wrapPrefix: _sourceRequest.wrapPrefix,
-			wrapSuffix: _sourceRequest.wrapSuffix,
-			scriptContent: _sourceRequest.scriptContent
+			contractData: _scriptRequest.contractData,
+			wrapType: _scriptRequest.wrapType,
+			wrapPrefix: _scriptRequest.wrapPrefix,
+			wrapSuffix: _scriptRequest.wrapSuffix,
+			scriptContent: _scriptRequest.scriptContent
 		});
 
     // Apply frame references and scripts
-		frame.init(_metadata, address(scriptyBuilder), _bufferSize, requests);
+		frame.init(_metadata, address(scriptyBuilder), _requestsBufferSize, requests);
 		frame.mintForOwner(msg.sender);
 
     emit FrameCreated(address(frame));

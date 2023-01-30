@@ -37,8 +37,8 @@
       ]
     },
     "C:\\Users\\Andrew\\Development\\frame-backend\\src\\contracts\\ScriptyStorageFactory.sol": {
-      "lastModificationDate": 1674764350607,
-      "contentHash": "57930af480b8399d3d9d658ed3a69ec8",
+      "lastModificationDate": 1675025587365,
+      "contentHash": "002a27213dfd22c1a71874cfe84003e4",
       "sourceName": "src/contracts/ScriptyStorageFactory.sol",
       "solcConfig": {
         "version": "0.8.17",
@@ -1220,8 +1220,8 @@
       ]
     },
     "C:\\Users\\Andrew\\Development\\frame-backend\\src\\contracts\\FrameDeployer.sol": {
-      "lastModificationDate": 1674769716006,
-      "contentHash": "92f223a1ca697069cd2f08fb88a04d8b",
+      "lastModificationDate": 1675096034423,
+      "contentHash": "de644f722f0b3abc8c80bc5e8fcc732f",
       "sourceName": "src/contracts/FrameDeployer.sol",
       "solcConfig": {
         "version": "0.8.17",
@@ -1256,7 +1256,8 @@
         "FrameDeployer",
         "IFactory",
         "IFrame",
-        "IScriptyStorage"
+        "IScriptyStorage",
+        "IScriptyStorageFactory"
       ]
     }
   }

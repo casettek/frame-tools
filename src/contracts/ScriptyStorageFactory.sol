@@ -9,6 +9,8 @@ interface IFactory {
 
 interface IScriptyStorage {
 	function setContentStore(address _contentStoreAddress) external;
+  function createScript(string calldata name, bytes calldata) external;
+	function addChunkToScript(string calldata name, bytes calldata chunk) external;
 }
 
 contract ScriptyStorageFactory is CloneFactory {
@@ -28,6 +30,18 @@ contract ScriptyStorageFactory is CloneFactory {
     address clone = createClone(scriptyStorageLibraryAddress);
     IScriptyStorage(clone).setContentStore(contentStore);
 
+    emit ScriptyStorageFactoryCreated(clone);
+    return clone;
+  }
+
+  function createWithNewScript(string calldata name, bytes calldata chunk) public returns (address)  {
+    address contentStore = IFactory(contentStoreFactoryAddress).create(); 
+
+    address clone = createClone(scriptyStorageLibraryAddress);
+    IScriptyStorage(clone).setContentStore(contentStore);
+    IScriptyStorage(clone).createScript(name, bytes(''));
+    IScriptyStorage(clone).addChunkToScript(name, chunk);
+    
     emit ScriptyStorageFactoryCreated(clone);
     return clone;
   }

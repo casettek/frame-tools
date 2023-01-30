@@ -23,7 +23,7 @@ let frameDeployer: any;
 // Instance
 let libsScriptyStorage: any;
 
-const { p5, fflate, p5gz, gunzip } = importIds;
+const { p5gz, gunzip } = importIds;
 const libs: ImportDataMap = {
   [gunzip]: {
     data: importData[gunzip],
@@ -34,16 +34,6 @@ const libs: ImportDataMap = {
     data: importData[p5gz],
     wrapper: "gzip",
     pages: calcStoragePages(importData[p5gz]),
-  },
-  [p5]: {
-    data: importData[p5],
-    wrapper: "",
-    pages: calcStoragePages(importData[p5]),
-  },
-  [fflate]: {
-    data: importData[fflate],
-    wrapper: "",
-    pages: calcStoragePages(importData[fflate]),
   },
 };
 
@@ -69,6 +59,29 @@ const createEmptyWrappedRequest = (name: string, wrapType: number) => ({
   wrapSuffix: toBytes(""),
   scriptContent: toBytes(""),
 });
+
+const getBufferSize = (data: string) => {
+  // if (wrapType <= 1) {
+  // <script src="data:text/javascript;base64,
+  // "></script>
+  const RAW_JS_WRAPPER = [
+    "%253Cscript%2520src%253D%2522data%253Atext%252Fjavascript%253Bbase64%252C",
+    "%2522%253E%253C%252Fscript%253E",
+  ];
+  // // <script type="text/javascript+gzip" src="data:text/javascript;base64,
+  // // "></script>
+  // const GZIP_WRAPPER = [
+  //   "%253Cscript%2520type%253D%2522text%252Fjavascript%252Bgzip%2522%2520src%253D%2522data%253Atext%252Fjavascript%253Bbase64%252C",
+  //   "%2522%253E%253C%252Fscript%253E",
+  // ];
+
+  let bufferSizeLocal = 0;
+  bufferSizeLocal += Buffer.byteLength(RAW_JS_WRAPPER[0] + RAW_JS_WRAPPER[1]);
+  bufferSizeLocal += Buffer.byteLength(data);
+
+  return bufferSizeLocal;
+  // }
+};
 
 const deployNewScriptyStorage = async () => {
   const ScriptyStorage = await hre.ethers.getContractFactory(
@@ -159,30 +172,40 @@ export const deployRawHTML = async (
   // Deploy source
   const sourceScriptyStorage = await deployNewScriptyStorage();
   const sourceId = name + "-source";
+  const sourceContent = Buffer.from(
+    fs.readFileSync(__dirname + sourcePath).toString()
+  ).toString("base64");
   await sourceScriptyStorage.createScript(sourceId, toBytes(""));
-  await storeChunks(
-    sourceScriptyStorage,
-    sourceId,
-    fs.readFileSync(__dirname + sourcePath).toString(),
-    1
-  );
+  await storeChunks(sourceScriptyStorage, sourceId, sourceContent, 1);
 
   // Create requests
-  const requests = libNames
-    .map((lib) =>
-      createWrappedRequest(
-        lib,
-        libsScriptyStorage.address,
-        libs[lib].wrapper === "gzip" ? 2 : 0
-      )
+  const libRequests = libNames.map((lib) =>
+    createWrappedRequest(
+      lib,
+      libsScriptyStorage.address,
+      libs[lib].wrapper === "gzip" ? 2 : 1
     )
-    .concat([createWrappedRequest(sourceId, sourceScriptyStorage.address, 0)]);
-
-  console.log(requests);
-
-  const bufferSize = await scriptyBuilder.getBufferSizeForEncodedHTMLWrapped(
+  );
+  const sourceRequest = createWrappedRequest(
+    sourceId,
+    sourceScriptyStorage.address,
+    1
+  );
+  const requests = libRequests.concat([sourceRequest]);
+  const bufferSize = await scriptyBuilder.getBufferSizeForURLSafeHTMLWrapped(
     requests
   );
+
+  // Test local accuracy
+  const libsBufferSize =
+    await scriptyBuilder.getBufferSizeForURLSafeHTMLWrapped(libRequests);
+  console.log(
+    "local buffersize",
+    libsBufferSize.toNumber(),
+    getBufferSize(sourceContent),
+    libsBufferSize.toNumber() + getBufferSize(sourceContent)
+  );
+  console.log("bufferSize", bufferSize.toString());
 
   console.log("Fetching HTML from on-chain...");
   const query = await scriptyBuilder.getHTMLWrappedURLSafe(
@@ -202,60 +225,59 @@ export const deployRawHTML = async (
 };
 
 // Deploy single frame across two transactions
-export const deployFrame = async (
+export const deployFrameWithScript = async (
   name: string,
   description: string,
   symbol: string,
-  libs: string[],
+  libNames: string[],
   sourcePath: string
 ) => {
   console.log('Deploying frame "' + name + '"...');
 
   // Deploy source
-  const sourceScriptyStorage = await deployNewScriptyStorage();
   const sourceId = name + "-source";
-  await sourceScriptyStorage.createScript(sourceId, toBytes(""));
-  await storeChunks(
-    sourceScriptyStorage,
-    sourceId,
-    fs.readFileSync(__dirname + sourcePath).toString(),
-    1
-  );
+  const sourceContent = Buffer.from(
+    fs.readFileSync(__dirname + sourcePath).toString()
+  ).toString("base64");
 
   // Create requests
-  const requests = libs
-    .map((lib) => createWrappedRequest(lib, libsScriptyStorage.address, 2))
-    .concat([createWrappedRequest(sourceId, sourceScriptyStorage.address, 0)]);
-
-  const bufferSize = await scriptyBuilder.getBufferSizeForEncodedHTMLWrapped(
-    requests
+  const libsRequests = libNames.map((lib) =>
+    createWrappedRequest(
+      lib,
+      libsScriptyStorage.address,
+      libs[lib].wrapper === "gzip" ? 2 : 1
+    )
   );
+  const sourceRequest = createEmptyWrappedRequest(sourceId, 1);
+  const libsBufferSize =
+    await scriptyBuilder.getBufferSizeForURLSafeHTMLWrapped(libsRequests);
+  const sourceBufferSize = getBufferSize(sourceContent);
+  const bufferSize = libsBufferSize.toNumber() + sourceBufferSize;
 
-  console.log("bufferSize", bufferSize.toString(), "requests", requests.length);
+  // console.log(libsBufferSize.toNumber(), sourceBufferSize, bufferSize);
 
   const Frame = await hre.ethers.getContractFactory("Frame");
-  const createCall = await frameDeployer.createFrame(
+  const createCall = await frameDeployer.createFrameWithScript(
     {
       name,
       description,
       symbol,
     },
-    bufferSize,
-    requests
+    toBytes(sourceContent),
+    sourceRequest,
+    libsRequests,
+    bufferSize
   );
 
   const createResult = await createCall.wait();
-  const newFrameAddress = createResult.logs[0]?.data.replace(
-    "000000000000000000000000",
-    ""
-  );
+  const newFrameAddress = createResult.logs[
+    createResult.logs.length - 1
+  ]?.data.replace("000000000000000000000000", "");
 
   console.log("Fetching tokenURI from on-chain...");
 
   const frame = await Frame.attach(newFrameAddress);
   const tokenURI = await frame.tokenURI(0);
-
-  console.log(tokenURI);
 
   const html = decodeURIComponent(
     decodeURIComponent(
@@ -268,8 +290,7 @@ export const deployFrame = async (
     flag: "w",
   });
 
-  console.log(html);
-  console.log(createResult.gasUsed);
+  console.log("gas used", createResult.gasUsed);
 };
 
 export const init = async () => {

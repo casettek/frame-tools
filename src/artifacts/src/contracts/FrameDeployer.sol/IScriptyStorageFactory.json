@@ -1,8 +1,21 @@
 {
   "_format": "hh-sol-artifact-1",
-  "contractName": "IScriptyStorage",
-  "sourceName": "src/contracts/ScriptyStorageFactory.sol",
+  "contractName": "IScriptyStorageFactory",
+  "sourceName": "src/contracts/FrameDeployer.sol",
   "abi": [
+    {
+      "inputs": [],
+      "name": "create",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
     {
       "inputs": [
         {
@@ -16,39 +29,14 @@
           "type": "bytes"
         }
       ],
-      "name": "addChunkToScript",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "string",
-          "name": "name",
-          "type": "string"
-        },
-        {
-          "internalType": "bytes",
-          "name": "",
-          "type": "bytes"
-        }
-      ],
-      "name": "createScript",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [
+      "name": "createWithNewScript",
+      "outputs": [
         {
           "internalType": "address",
-          "name": "_contentStoreAddress",
+          "name": "",
           "type": "address"
         }
       ],
-      "name": "setContentStore",
-      "outputs": [],
       "stateMutability": "nonpayable",
       "type": "function"
     }
