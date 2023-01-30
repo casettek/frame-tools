@@ -1,6 +1,11 @@
 //SPDX-License-Identifier: MIT
 pragma solidity ^0.8.12;
+/**
+  @title An contract for deploying scripty-based HTML NFTs.
+  @author @caszete
 
+  Special thanks to @0xthedude, @xtremetom, @frolic and @cxkoda
+*/
 import {WrappedScriptRequest} from "./libs/scripty/IScriptyBuilder.sol";
 
 struct EmptyWrappedScriptRequest {
@@ -51,20 +56,35 @@ contract FrameDeployer {
 
   event FrameCreated(address newAddress);
 
-  constructor(address _scriptyStorage, address _frame, address _scriptyBuilder) {
-    scriptyStorageFactory = _scriptyStorage;
-    frameFactory = _frame;
+  /**
+     * @notice Create the contract with required references.
+     * @param _scriptyStorageFactory - Contract that creates ScriptyStorage clones.
+     * @param _frameFactory - Contract that creates Frame clones.
+     * @param _scriptyBuilder - Contract that assembles HTML from script requests.
+     */
+  constructor(address _scriptyStorageFactory, address _frameFactory, address _scriptyBuilder) {
+    scriptyStorageFactory = _scriptyStorageFactory;
+    frameFactory = _frameFactory;
 		scriptyBuilder = _scriptyBuilder;
   }
 
+  /**
+     * @notice Create a new Frame NFT contract referencing data that already exists 
+     * in a ScriptyStorage contract somewhere.
+     * @param _metadata - Contract metadata.
+     * @param _requests - ScriptyBuilder requests for all HTML script elements.
+     * @param _bufferSize - Total buffer size of all requested scripts.
+     * @return Address for the newly created Frame NFT contract.
+     */
   function createFrame(
     FrameMetadata calldata _metadata,
-		uint256 _bufferSize,
-    WrappedScriptRequest[] calldata _requests
+    WrappedScriptRequest[] calldata _requests,
+    uint256 _bufferSize
 	) public returns (address)  {
+    // Create a new Frame contract
     IFrame frame = IFrame(IFactory(frameFactory).create());
 
-    // Apply frame references and scripts
+    // Apply ScriptyBuilder references and requests
     frame.init(_metadata, address(scriptyBuilder), _bufferSize, _requests);
 		frame.mintForOwner(msg.sender);
 
@@ -72,6 +92,17 @@ contract FrameDeployer {
     return address(frame);
   }
 
+  /**
+     * @notice Create a new Frame NFT contract referencing data that already exists 
+     * in a ScriptyStorage contract somewhere.
+     * @param _metadata - Contract metadata.
+     * @param _script - A single chunk of script data.
+     * @param _scriptRequest - A ScriptyBuilder request without a contractAddress.
+     * @param _requests - ScriptyBuilder requests for all HTML script elements.
+     * @param _requestsBufferSize - Total buffer size of all requested scripts, inlcuding 
+     * the new to-be-stored _script.
+     * @return Address for the newly created Frame NFT contract.
+     */
   function createFrameWithScript(
     FrameMetadata calldata _metadata,
     bytes calldata _script,
@@ -79,9 +110,15 @@ contract FrameDeployer {
     WrappedScriptRequest[] calldata _requests,
     uint256 _requestsBufferSize
 	) public returns (address)  {
-    IScriptyStorage scriptyStorage = IScriptyStorage(IScriptyStorageFactory(scriptyStorageFactory).createWithNewScript(_scriptRequest.name, _script));
+    // Create a new ScriptyStorage contract and save new script data
+    IScriptyStorage scriptyStorage = IScriptyStorage(
+      IScriptyStorageFactory(scriptyStorageFactory).createWithNewScript(_scriptRequest.name, _script)
+    );
     
+    // Create a new Frame contract
     IFrame frame = IFrame(IFactory(frameFactory).create());
+
+    // Append a request for the newly stored script to _requests
     uint totalRequestsCount = _requests.length + 1;
     WrappedScriptRequest[] memory requests = new WrappedScriptRequest[](totalRequestsCount);
 
@@ -99,7 +136,7 @@ contract FrameDeployer {
 			scriptContent: _scriptRequest.scriptContent
 		});
 
-    // Apply frame references and scripts
+    // Apply ScriptyBuilder references and requests
 		frame.init(_metadata, address(scriptyBuilder), _requestsBufferSize, requests);
 		frame.mintForOwner(msg.sender);
 

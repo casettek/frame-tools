@@ -37,8 +37,8 @@
       ]
     },
     "/Users/andrewcassetti/Development/frame-backend/src/contracts/ScriptyStorageFactory.sol": {
-      "lastModificationDate": 1675100555239,
-      "contentHash": "0ca3696a8bd640672f23c29be4070fa7",
+      "lastModificationDate": 1675113971084,
+      "contentHash": "dd9a7f941e2d16c746352f95a7a86325",
       "sourceName": "src/contracts/ScriptyStorageFactory.sol",
       "solcConfig": {
         "version": "0.8.17",
@@ -76,8 +76,8 @@
       ]
     },
     "/Users/andrewcassetti/Development/frame-backend/src/contracts/FrameFactory.sol": {
-      "lastModificationDate": 1674748703407,
-      "contentHash": "7400882d3961b1ebdb3b97ffa8be6d63",
+      "lastModificationDate": 1675113373349,
+      "contentHash": "a308af64ff0740a59d20e93c0008af0c",
       "sourceName": "src/contracts/FrameFactory.sol",
       "solcConfig": {
         "version": "0.8.17",
@@ -113,8 +113,8 @@
       ]
     },
     "/Users/andrewcassetti/Development/frame-backend/src/contracts/ContentStoreFactory.sol": {
-      "lastModificationDate": 1674748703406,
-      "contentHash": "191e4b8c81b20fbf59a262df9718befe",
+      "lastModificationDate": 1675113988006,
+      "contentHash": "687e9266807ea3d7e7ced3eb8e352904",
       "sourceName": "src/contracts/ContentStoreFactory.sol",
       "solcConfig": {
         "version": "0.8.17",
@@ -150,8 +150,8 @@
       ]
     },
     "/Users/andrewcassetti/Development/frame-backend/src/contracts/Frame.sol": {
-      "lastModificationDate": 1675100555237,
-      "contentHash": "832455bacff42cb6954f20cf8a471aaf",
+      "lastModificationDate": 1675113958349,
+      "contentHash": "dcae0543620c3dfb87c3f221101c069b",
       "sourceName": "src/contracts/Frame.sol",
       "solcConfig": {
         "version": "0.8.17",
@@ -189,8 +189,8 @@
       ]
     },
     "/Users/andrewcassetti/Development/frame-backend/src/contracts/libs/erc721-cloneable/ERC721Cloneable.sol": {
-      "lastModificationDate": 1674593500773,
-      "contentHash": "b31ed5022aa3f6e50db6e2101cb7a216",
+      "lastModificationDate": 1675113685111,
+      "contentHash": "ba0ab19d6b40ce0083ded28c2909402d",
       "sourceName": "src/contracts/libs/erc721-cloneable/ERC721Cloneable.sol",
       "solcConfig": {
         "version": "0.8.17",
@@ -225,7 +225,7 @@
         "./IERC721CloneableMetadata.sol"
       ],
       "versionPragmas": [
-        "^0.8.0"
+        "^0.8.12"
       ],
       "artifacts": [
         "ERC721Cloneable"
@@ -950,8 +950,8 @@
       ]
     },
     "/Users/andrewcassetti/Development/frame-backend/src/contracts/libs/scripty/ScriptyStorageCloneable.sol": {
-      "lastModificationDate": 1674593500774,
-      "contentHash": "16f82e4e97dd16337a2c99aa2905afa6",
+      "lastModificationDate": 1675114130848,
+      "contentHash": "fe889bdb046ea7283a5e288e5d1eb9bb",
       "sourceName": "src/contracts/libs/scripty/ScriptyStorageCloneable.sol",
       "solcConfig": {
         "version": "0.8.17",
@@ -1220,8 +1220,8 @@
       ]
     },
     "/Users/andrewcassetti/Development/frame-backend/src/contracts/FrameDeployer.sol": {
-      "lastModificationDate": 1675100555237,
-      "contentHash": "031edce375768a53770d5d183b44a5bc",
+      "lastModificationDate": 1675113953279,
+      "contentHash": "75ec41b42898f079e7c3003e01c23fc2",
       "sourceName": "src/contracts/FrameDeployer.sol",
       "solcConfig": {
         "version": "0.8.17",

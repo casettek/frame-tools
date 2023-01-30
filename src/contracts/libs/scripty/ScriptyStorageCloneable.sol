@@ -27,8 +27,16 @@ contract ScriptyStorageCloneable is Ownable, IScriptyStorage, IContractScript {
     IContentStore public contentStore;
     mapping(string => Script) public scripts;
 
+    /**
+     * @dev Empty contructor so we can create clones.
+     * @author @caszete
+     */
     constructor() {}
 
+    /**
+     * @dev Set the content store address.
+     * @param _contentStoreAddress - The address of the content store.
+     */
     function setContentStore(address _contentStoreAddress) public {
         require(address(contentStore) == address(0), "Already initialized");
         contentStore = IContentStore(_contentStoreAddress);
@@ -129,10 +137,9 @@ contract ScriptyStorageCloneable is Ownable, IScriptyStorage, IContractScript {
     /**
      * @notice Get the full script
      * @param name - Name given to the script. Eg: threejs.min.js_r148
-     * @param data - Arbitrary data. Not used by this contract.
      * @return script - Full script from merged chunks
      */
-    function getScript(string memory name, bytes memory data)
+    function getScript(string memory name, bytes memory)
         public
         view
         returns (bytes memory script)

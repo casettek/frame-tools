@@ -1,7 +1,10 @@
 // SPDX-License-Identifier: MIT
+pragma solidity ^0.8.12;
 
-pragma solidity ^0.8.0;
-
+/**
+  @title A fork for OpenZeppelin's ERC721 contract that is cloneable.
+  @author @caszete
+*/
 
 import "@openzeppelin/contracts/token/ERC721/IERC721Receiver.sol";
 import "@openzeppelin/contracts/utils/Address.sol";
@@ -39,11 +42,17 @@ contract ERC721Cloneable is Context, ERC165, IERC721Cloneable, IERC721CloneableM
      */
     constructor() {}
 
+    /**
+     * @dev Set the token name.
+     */
     function setName(string memory nameString) public {
         require(bytes(_name).length == 0, "ERC721Cloneable: name already set");
         _name = nameString;
     }
 
+    /**
+     * @dev Set the token symbol.
+     */
     function setSymbol(string memory symbolString) public {
         require(bytes(_symbol).length == 0, "ERC721Cloneable: symbol already set");
         _symbol = symbolString;
