@@ -3,6 +3,7 @@ import { ImportDataMap } from "./types/types";
 import {
   calcStoragePages,
   storeChunks,
+  getLibDataLogs,
   toBytes,
   fromBytes,
 } from "./utils/web3";
@@ -83,10 +84,13 @@ const getBufferSize = (data: string) => {
   // }
 };
 
-const deployNewScriptyStorage = async () => {
+const deployNewScriptyStorage = async (factory: string) => {
   const ScriptyStorage = await hre.ethers.getContractFactory(
     "ScriptyStorageCloneable"
   );
+  const scriptyStorageFactory = await (
+    await hre.ethers.getContractFactory("ScriptyStorageFactory")
+  ).attach(factory);
   const createStorageCall = await scriptyStorageFactory.create();
   const createStorageResult = await createStorageCall.wait();
   const newStorageAddress = createStorageResult.logs[1]?.data.replace(
@@ -99,66 +103,88 @@ const deployNewScriptyStorage = async () => {
 const deployBaseContracts = async () => {
   console.log("Deploying base contracts...");
 
-  // Deploy libs and factories
-  scriptyBuilder = await (
-    await hre.ethers.getContractFactory("ScriptyBuilder")
-  ).deploy();
-  await scriptyBuilder.deployed();
-  console.log("ScriptyBuilder deployed", scriptyBuilder.address);
+  // // Deploy libs and factories
+  // scriptyBuilder = await (
+  //   await hre.ethers.getContractFactory("ScriptyBuilder")
+  // ).deploy();
+  // await scriptyBuilder.deployed();
+  // console.log("ScriptyBuilder deployed", scriptyBuilder.address);
 
-  frameLib = await (await hre.ethers.getContractFactory("Frame")).deploy();
-  await frameLib.deployed();
+  // frameLib = await (await hre.ethers.getContractFactory("Frame")).deploy();
+  // await frameLib.deployed();
+  // console.log("Frame deployed", frameLib.address);
 
-  frameFactory = await (
-    await hre.ethers.getContractFactory("FrameFactory")
-  ).deploy(frameLib.address);
-  await frameFactory.deployed();
-  console.log("FrameFactory deployed", frameFactory.address);
+  // frameFactory = await (
+  //   await hre.ethers.getContractFactory("FrameFactory")
+  // ).deploy(frameLib.address);
+  // await frameFactory.deployed();
+  // console.log("FrameFactory deployed", frameFactory.address);
 
-  contentStoreLib = await (
-    await hre.ethers.getContractFactory("ContentStore")
-  ).deploy();
-  await contentStoreLib.deployed();
-  console.log("ContentStoreLib deployed", contentStoreLib.address);
+  // contentStoreLib = await (
+  //   await hre.ethers.getContractFactory("ContentStore")
+  // ).deploy();
+  // await contentStoreLib.deployed();
+  // console.log("ContentStoreLib deployed", contentStoreLib.address);
 
-  contentStoreFactory = await (
-    await hre.ethers.getContractFactory("ContentStoreFactory")
-  ).deploy(contentStoreLib.address);
-  await contentStoreFactory.deployed();
-  console.log("ContentStoreFactory deployed", contentStoreFactory.address);
+  // contentStoreFactory = await (
+  //   await hre.ethers.getContractFactory("ContentStoreFactory")
+  // ).deploy("0x2dDdc2BdDDCa8A202d9619610Ab9850A02384b7A");
+  // await contentStoreFactory.deployed();
+  // console.log("ContentStoreFactory deployed", contentStoreFactory.address);
 
-  scriptyStorageLib = await (
-    await hre.ethers.getContractFactory("ScriptyStorageCloneable")
-  ).deploy();
-  await scriptyStorageLib.deployed();
-  console.log("ScriptyStorage deployed", scriptyStorageLib.address);
+  // scriptyStorageLib = await (
+  //   await hre.ethers.getContractFactory("ScriptyStorageCloneable")
+  // ).deploy();
+  // await scriptyStorageLib.deployed();
+  // console.log("ScriptyStorage deployed", scriptyStorageLib.address);
 
-  scriptyStorageFactory = await (
-    await hre.ethers.getContractFactory("ScriptyStorageFactory")
-  ).deploy(scriptyStorageLib.address, contentStoreFactory.address);
-  await scriptyStorageFactory.deployed();
-  console.log("ScriptyStorageFactory deployed", scriptyStorageFactory.address);
+  // scriptyStorageFactory = await (
+  //   await hre.ethers.getContractFactory("ScriptyStorageFactory")
+  // ).deploy(
+  //   "0x81D314642974E44B9d54A24578F950ce35db1AF8",
+  //   "0xf00C5EC1b1ab1aA8BDCf6f5C86e43404dA26CF08"
+  // );
+  // await scriptyStorageFactory.deployed();
+  // console.log("ScriptyStorageFactory deployed", scriptyStorageFactory.address);
 
-  frameDeployer = await (
-    await hre.ethers.getContractFactory("FrameDeployer")
-  ).deploy(
-    scriptyStorageFactory.address,
-    frameFactory.address,
-    scriptyBuilder.address
-  );
-  await frameDeployer.deployed();
-  console.log("FrameDeployer deployed", frameDeployer.address);
+  // frameDeployer = await (
+  //   await hre.ethers.getContractFactory("FrameDeployer")
+  // ).deploy(
+  //   // scriptyStorageFactory.address,
+  //   "0xfC42C0c5F9a1B7228Bc97b3161a208D3d6D7EbaA",
+  //   "0x64698bdB11c8b6Bb56d6dB7c8183debB64d241E1",
+  //   "0xc9AB9815d4D5461F3b53Ebd857b6582E82A45C49"
+  //   // frameFactory.address,
+  //   // scriptyBuilder.address
+  // );
+  // await frameDeployer.deployed();
+  // console.log("FrameDeployer deployed", frameDeployer.address);
 };
 
 const deployLibraries = async () => {
-  libsScriptyStorage = await deployNewScriptyStorage();
-  console.log("libsScriptyStorage", libsScriptyStorage.address);
+  // // const storage = await deployNewScriptyStorage(
+  // //   "0x1e8f67511FDE1dB764249B9404Fb8ac0a288d46e"
+  // // );
+  // const storage = await (
+  //   await hre.ethers.getContractFactory("ScriptyStorage")
+  // ).attach("0xe787a724d4d4c87df04a484264eab953514e12a5");
+  // console.log("storage", storage.address);
 
   // Deploy libraries
   for (const libId in libs) {
     const lib = libs[libId];
-    await libsScriptyStorage.createScript(libId, toBytes(""));
-    await storeChunks(libsScriptyStorage, libId, lib.data, lib.pages);
+    console.log("Deploying library", lib);
+    // await storage.createScript(libId, toBytes(""));
+    // await storeChunks(storage, libId, lib.data, lib.pages);
+
+    fs.writeFileSync(
+      __dirname + "/output/" + libId + "-logs",
+      JSON.stringify(getLibDataLogs(libId, lib.data, lib.pages)),
+      {
+        encoding: "utf8",
+        flag: "w",
+      }
+    );
   }
 };
 
@@ -230,9 +256,35 @@ export const deployFrameWithScript = async (
   description: string,
   symbol: string,
   libNames: string[],
-  sourcePath: string
+  sourcePath: string,
+  network: "mainnet" | "goerli" | "localhost"
 ) => {
   console.log('Deploying frame "' + name + '"...');
+
+  const deployments = JSON.parse(
+    fs.readFileSync(__dirname + "/deployments/" + network + ".json").toString()
+  );
+
+  console.log(deployments);
+
+  // Init contracts
+  const libsScriptyStorage = await (
+    await hre.ethers.getContractFactory("ScriptyStorageCloneable")
+  ).attach(deployments.LibsScriptyStorage);
+
+  const scriptyBuilder = await (
+    await hre.ethers.getContractFactory("ScriptyBuilder")
+  ).attach(deployments.ScriptyBuilder);
+
+  const frameDeployer = await (
+    await hre.ethers.getContractFactory("FrameDeployer")
+  ).attach(deployments.FrameDeployer);
+
+  console.log(
+    libsScriptyStorage.address,
+    scriptyBuilder.address,
+    frameDeployer.address
+  );
 
   // Deploy source
   const sourceId = name + "-source";
@@ -248,13 +300,12 @@ export const deployFrameWithScript = async (
       libs[lib].wrapper === "gzip" ? 2 : 1
     )
   );
+  console.log(libsRequests);
   const sourceRequest = createEmptyWrappedRequest(sourceId, 1);
   const libsBufferSize =
     await scriptyBuilder.getBufferSizeForURLSafeHTMLWrapped(libsRequests);
   const sourceBufferSize = getBufferSize(sourceContent);
   const bufferSize = libsBufferSize.toNumber() + sourceBufferSize;
-
-  // console.log(libsBufferSize.toNumber(), sourceBufferSize, bufferSize);
 
   const Frame = await hre.ethers.getContractFactory("Frame");
   const createCall = await frameDeployer.createFrameWithScript(
@@ -293,9 +344,12 @@ export const deployFrameWithScript = async (
   console.log("gas used", createResult.gasUsed);
 };
 
-export const init = async () => {
+export const initLocal = async () => {
   await deployBaseContracts();
   await deployLibraries();
 };
 
-// init();
+export const initExternal = async () => {
+  await deployBaseContracts();
+  await deployLibraries();
+};

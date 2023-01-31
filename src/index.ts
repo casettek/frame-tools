@@ -1,5 +1,10 @@
 import { startServer } from "./app";
-import { init, deployRawHTML, deployFrameWithScript } from "./deploy";
+import {
+  initLocal,
+  initExternal,
+  deployRawHTML,
+  deployFrameWithScript,
+} from "./deploy";
 import { importIds } from "./assets/libs";
 const fs = require("fs");
 
@@ -14,14 +19,18 @@ async function main() {
   app.listen({ port }, async (): Promise<void> => {
     const { p5gz, gunzip } = importIds;
 
-    await init();
-    // await deployRawHTML("TestHTML.html", [p5gz, gunzip], "/test/test.js");
+    // await initExternal();
+
+    // await initLocal();
+    // // await deployRawHTML("TestHTML.html", [p5gz, gunzip], "/test/test.js");
+
     await deployFrameWithScript(
-      "TestHTML.html",
-      "TFRM",
-      "A test frame.",
+      "Matrix",
+      "MTX",
+      "The matrix thing",
       [p5gz, gunzip],
-      "/test/test.js"
+      "/test/test.js",
+      "goerli"
     );
 
     console.log(`\n🏂 Frame is now running on http://localhost:${port}/`);

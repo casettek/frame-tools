@@ -93,11 +93,10 @@ contract FrameDeployer {
   }
 
   /**
-     * @notice Create a new Frame NFT contract referencing data that already exists 
-     * in a ScriptyStorage contract somewhere.
+     * @notice Create a new Frame NFT contract with a newly deployed ScriptyStorage and script
      * @param _metadata - Contract metadata.
      * @param _script - A single chunk of script data.
-     * @param _scriptRequest - A ScriptyBuilder request without a contractAddress.
+     * @param _scriptRequest - A ScriptyBuilder request without contractAddress and contractData.
      * @param _requests - ScriptyBuilder requests for all HTML script elements.
      * @param _requestsBufferSize - Total buffer size of all requested scripts, inlcuding 
      * the new to-be-stored _script.

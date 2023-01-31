@@ -1,6 +1,6 @@
 const fs = require("fs");
 export const importIds = {
-  p5gz: "p5-v1.5.0.min.js.gz",
+  p5gz: "p5-v1.5.0.min.js",
   gunzip: "gunzipScripts-0.0.1.js",
 };
 

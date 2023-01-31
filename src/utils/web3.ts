@@ -43,6 +43,7 @@ export const storeChunks = async (
   dataString: string,
   chunks: number
 ) => {
+  console.log("Storing " + key);
   if (chunks === 1) {
     await contract.addChunkToScript(key, toBytes(dataString));
     console.log(`Stored ${key} in 1 page`);
@@ -56,8 +57,6 @@ export const storeChunks = async (
 
   for (let i = 0; i < stringChunks.length; i++) {
     await contract.addChunkToScript(key, toBytes(stringChunks[i]));
-    // await contract.saveData(key, i, toBytes(stringChunks[i]));
-    // console.log(`Stored ${key} page ${i}`);
   }
   console.log(`Stored ${key} in ${stringChunks.length} pages`);
 };
@@ -182,7 +181,7 @@ export const roughSizeOfObject = (object: any) => {
 };
 
 export const calcStoragePages = (object: any) => {
-  return Math.ceil(roughSizeOfObject(object) / 23000);
+  return Math.ceil(roughSizeOfObject(object) / 22000);
 };
 
 export default {
