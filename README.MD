@@ -14,7 +14,7 @@ Frame is built on top of [scripty.sol](https://int-art.gitbook.io/scripty.sol/) 
 
 The user will be limited in the size of the script when calling `createFrameWithScript`. If a larger source script is needed then users can first store it across multiple chunks in a `ScriptyStorage` contract and then use `FrameDeployer.createFrame`.
 
-`Frame` extends `ERC721Cloneable`, a slight fork of OpenZeppelin's `ERC721` that require `name` and `symbol` when deploying. For now, all tokens have a supply of 1 minted on creation to `msg.sender`.
+`Frame` extends `ERC721Cloneable`, a slight fork of OpenZeppelin's `ERC721` that removes requirement of `name` and `symbol` when deploying. For now, all tokens have a supply of 1 minted on creation to `msg.sender`.
 
 ### Ethereum Goerli contracts
 
