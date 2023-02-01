@@ -1,273 +1,96 @@
-//SPDX-License-Identifier: MIT
-pragma solidity ^0.8.12;
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.17;
 
-interface IFrameDataStore {
-    function getData(
-        string memory _key,
-        uint256 _startPage,
-        uint256 _endPage
-    ) external view returns (bytes memory);
+/**
+  @title A cloneable 1-of-1 ERC-721 for a scripty-based HTML NFT.
+  @author @caszete
 
-    function getMaxPageNumber(string memory _key)
-        external
-        view
-        returns (uint256);
+  Special thanks to @0xthedude, @xtremetom, @frolic and @cxkoda
+*/
 
-    function getAllDataFromPage(
-        string memory _key,
-        uint256 _startPage
-    ) external view returns (bytes memory);
+import "./libs/erc721-cloneable/ERC721Cloneable.sol";
+import "solady/src/utils/Base64.sol";
+import {IScriptyBuilder, WrappedScriptRequest} from "./libs/scripty/IScriptyBuilder.sol";
+
+struct FrameMetadata {
+    string name;    
+    string description;
+    string symbol;
 }
 
-contract Frame {
-    struct Asset {
-        string wrapperKey;
-        string key;
-        address wrapperStore;
-        address store;
-    }
+contract Frame is ERC721Cloneable {
+    bool public initialized;
+    bool public minted;
+    string public description;
+    address public scriptyBuilderAddress;
+    uint256 public bufferSize;
+    WrappedScriptRequest[] public requests;
 
-    string public name = "";
-    bool public initSuccess = false;
-    
-    mapping(uint256 => Asset) public depsList;
-    uint256 public depsCount;
+    /**
+     * @notice Cloneable contacts require an empty constructor.
+     */
+    constructor() ERC721Cloneable() {}
 
-    IFrameDataStore public pageWrapStore;
-    IFrameDataStore public sourceStore;
-
-    uint256 public renderPagesCount;
-    mapping(uint256 => uint256[4]) public renderMap;
-
-    constructor() {}
-
+    /**
+     * @notice Initialize the contract. Done once after creation because it's a clone.
+     * @param _metadata - Contract metadata.
+     * @param _scriptyBuilderAddress - ScriptyBuilder contract, used for HTML assembly.
+     * @param _bufferSize - Total buffer size of all requested scripts
+     */
     function init(
-        Asset[] calldata _deps,
-        address _sourceStore,
-        address _pageWrapStore,
-        uint256[4][] calldata _renderMap
+      FrameMetadata calldata _metadata,
+      address _scriptyBuilderAddress,
+      uint256 _bufferSize,
+      WrappedScriptRequest[] calldata _requests
     ) public {
-        require(!initSuccess, "Frame: Can't re-init contract");
+      require(!initialized, "Frame: already initialized");
+      setName(_metadata.name);
+      setSymbol(_metadata.symbol);
 
-        _setDeps(_deps);
-        _setRenderMap(_renderMap);
-
-        sourceStore = IFrameDataStore(_sourceStore);
-        pageWrapStore = IFrameDataStore(_pageWrapStore);
-        
-        initSuccess = true;
+      description = _metadata.description;
+      scriptyBuilderAddress = _scriptyBuilderAddress;
+      bufferSize = _bufferSize;
+      for (uint i = 0; i < _requests.length; i++) {
+          requests.push(_requests[i]);
+      }
+      initialized = true;
     }
 
-    function setName(string memory _name) public {
-        require(bytes(name).length < 3, "Frame: Name already set");
-        name = _name;
+    /**
+     * @notice Mint a single token, can only be called once.
+     * @param _owner - Contract metadata.
+     */
+    function mintForOwner(address _owner) public {
+      require(!minted, "Frame: Already minted");
+      _safeMint(_owner, 0);
+      minted = true;
     }
 
-    // Internal 
+    /**
+     * @notice Returns the token URI. The HTML file is double encoded, once as a base64 string, and once as a URI.
+     */
+    function tokenURI(
+      uint256 /*_tokenId*/
+    ) public view virtual override returns (string memory) {
 
-    function _setDeps(Asset[] calldata _deps) internal {
-        for (uint256 dx; dx < _deps.length; dx++) {
-            depsList[dx] = _deps[dx];
-        }
-        depsCount = _deps.length;
-    }
+      bytes memory dataURI = IScriptyBuilder(scriptyBuilderAddress).getHTMLWrappedURLSafe(requests, bufferSize);
 
-    function _setRenderMap(uint256[4][] calldata _map) internal {
-        for (uint256 idx; idx < _map.length; idx++) {
-            renderPagesCount++;
-            renderMap[idx] = _map[idx];
-        }
-        renderPagesCount = _map.length;
-    }
+      bytes memory metadata = abi.encodePacked(
+          '{"name":"',
+          name(),
+          '", "description":"',
+          description,
+          '","animation_url":"',
+          dataURI,
+          '"}'
+      );
 
-    function _compareStrings(string memory _a, string memory _b) internal pure returns (bool) {
-        return (keccak256(abi.encodePacked((_a))) == keccak256(abi.encodePacked((_b))));
-    }
-
-    function _isB64JsWrapperString(string memory _a) internal pure returns (bool) {
-        return _compareStrings("b64-wrap.js@1.0.0", _a);
-    }
-
-    function _isImportmapWrapperString(string memory _a) internal pure returns (bool) {
-        return _compareStrings("b64-gz-importmap-wrap.js@1.0.0", _a);
-    }
-
-    function _isAssetDep(uint256 _index) internal view returns (bool) {
-        return _index < depsCount;
-    }
-
-    function _getAssetWithWrapperString(
-        IFrameDataStore _assetStorage,
-        IFrameDataStore _wrapperStorage,
-        Asset memory _asset, 
-        uint256 _fromPage, 
-        uint256 _toPage
-    ) internal view returns (string memory) {
-        string memory result = "";
-        if (_fromPage == 0) {
-            result = string(
-                abi.encodePacked(
-                    _wrapperStorage.getData(_asset.wrapperKey, 0, 0)
-                )
-            );
-        }
-        result = string.concat(
-            result,
-            string(
-                abi.encodePacked(
-                    _assetStorage.getData(_asset.key, _fromPage, _toPage)
-                )
-            )
-        );
-        if (_toPage == _assetStorage.getMaxPageNumber(_asset.key)) {
-            result = string.concat(
-                result,
-                string(
-                    abi.encodePacked(
-                        _wrapperStorage.getData(_asset.wrapperKey, 1, 1)
-                    )
-                )
-            );
-        }
-        return result;
-    }
-
-    // Read-only
-
-    function renderPage(uint256 _rpage) public view returns (string memory) {
-        // Index item format: [startAsset, endAsset, startAssetPage, endAssetPage]
-        uint256[4] memory indexItem = renderMap[_rpage];
-        uint256 startAtAssetIndex = indexItem[0];
-        uint256 endAtAssetIndex = indexItem[1];
-        uint256 startAtPage = indexItem[2];
-        uint256 endAtPage = indexItem[3];
-        string memory result = "";
-
-        // Iterate over assets in the index item
-        for (uint256 idx = startAtAssetIndex; idx < endAtAssetIndex + 1; idx++) {
-            Asset memory idxAsset = depsList[idx];
-            IFrameDataStore idxStorage = IFrameDataStore(idxAsset.store);
-            IFrameDataStore idxWrapStorage = IFrameDataStore(idxAsset.wrapperStore);
-
-            bool isIdxAtEndAssetIndex = idx == endAtAssetIndex;
-            uint256 startPage = idx == startAtAssetIndex ? startAtPage : 0;
-            uint256 endPage = isIdxAtEndAssetIndex
-                ? endAtPage
-                : idxStorage.getMaxPageNumber(idxAsset.key);
-
-            string memory newStuff = _getAssetWithWrapperString(idxStorage, idxWrapStorage, idxAsset, startPage, endPage);
-            result = string.concat(result, newStuff);
-
-            address sourceStoreAddr = address(sourceStore);
-            bool isIdxAssetLastDep = address(idxAsset.store) != sourceStoreAddr && address(depsList[idx + 1].store) == sourceStoreAddr;
-            bool hasCompletedAsset = endPage == idxStorage.getMaxPageNumber(idxAsset.key);
-            bool isNextAssetImportMap = _isImportmapWrapperString(depsList[idx + 1].wrapperKey);
-
-            if (_isB64JsWrapperString(idxAsset.wrapperKey) && hasCompletedAsset) {
-              if (isIdxAssetLastDep) {
-                result = string.concat(
-                    result, 
-                    string(
-                        abi.encodePacked(
-                            pageWrapStore.getData("head-wrap.html@1.0.0", 1, 1),
-                            pageWrapStore.getData("body-wrap.html@1.0.0", 0, 0)
-                        )
-                    )
-                );
-              } 
-              if (isNextAssetImportMap) {
-                  string memory importKeysJsString = string(
-                      abi.encodePacked(
-                          pageWrapStore.getData("import-keys-wrap.js@1.0.0", 0, 0)
-                      )
-                  );
-
-                  // Inject a list of import key names to the page
-                  for (uint256 dx = 0; dx < depsCount; dx++) {
-                      if(_isImportmapWrapperString(depsList[dx].wrapperKey)) {
-                          importKeysJsString = string.concat(
-                              string.concat(importKeysJsString, '"'), 
-                              string.concat(depsList[dx].key, '"')
-                          );
-
-                          if (dx != depsCount - 1) {
-                              importKeysJsString = string.concat(importKeysJsString, ',');
-                          }
-                      }
-                  }
-
-                  importKeysJsString = string.concat(
-                      string.concat(
-                          importKeysJsString, 
-                          string(
-                              abi.encodePacked(
-                                  pageWrapStore.getData("import-keys-wrap.js@1.0.0", 1, 1)
-                              )
-                          )
-                      ),
-                      string(
-                          abi.encodePacked(
-                              pageWrapStore.getData("importmap-init-wrap.js@1.0.0", 0, 0)
-                          )
-                      )
-                  );
-
-                  result = string.concat(result, importKeysJsString);
-              } 
-            }
-            
-            // Finishing deps
-            if (isIdxAssetLastDep && hasCompletedAsset) {
-                if(_isImportmapWrapperString(idxAsset.wrapperKey)){
-                    result = string.concat(
-                        result, 
-                        string(
-                            abi.encodePacked(
-                                pageWrapStore.getData("importmap-init-wrap.js@1.0.0", 1, 1),
-                                pageWrapStore.getData("head-wrap.html@1.0.0", 1, 1),
-                                pageWrapStore.getData("body-wrap.html@1.0.0", 0, 0)
-                            )
-                        )
-                    );
-                } else {
-                    result = string.concat(
-                        result, 
-                        string(
-                            abi.encodePacked(
-                                pageWrapStore.getData("head-wrap.html@1.0.0", 1, 1),
-                                pageWrapStore.getData("body-wrap.html@1.0.0", 0, 0)
-                            )
-                        )
-                    );
-                }
-                
-            }
-
-        }
-
-        if (_rpage == 0) {
-            result = string.concat(
-                string(
-                    abi.encodePacked(
-                        pageWrapStore.getData("html-wrap.html@1.0.0", 0, 0),
-                        pageWrapStore.getData("head-wrap.html@1.0.0", 0, 0)
-                    )
-                ),
-            result);
-        }
-        
-        if (_rpage == (renderPagesCount - 1)) {
-            result = string.concat(
-                result,
-                string(
-                    abi.encodePacked(
-                        pageWrapStore.getData("body-wrap.html@1.0.0", 1, 1), 
-                        pageWrapStore.getData("html-wrap.html@1.0.0", 1, 1)
-                    )
-                )
-            );
-        }
-
-        return result;
+      return
+          string(
+              abi.encodePacked(
+                  "data:application/json,",
+                  metadata
+              )
+          );
     }
 }
