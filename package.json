@@ -1,10 +1,12 @@
 {
   "name": "frame",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "Tool for publishing web pages to EVM blockspace.",
   "main": "index.js",
   "scripts": {
     "dev": "hardhat compile && nodemon --watch 'src/**/*.ts' --exec ts-node src/index.ts",
+    "test-local": "npx hardhat run src/scripts/local.ts --network localhost",
+    "test-goerli": "npx hardhat run src/scripts/goerli.ts --network goerli",
     "build": "tsc",
     "start": "node dist/index.js"
   },
