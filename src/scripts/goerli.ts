@@ -6,8 +6,8 @@ async function start() {
 
   await deployFrameWithScript(
     "Matrix",
-    "MTX",
     "The matrix thing",
+    "MTX",
     [p5gz, gunzip],
     "/test/matrix.js",
     "goerli"

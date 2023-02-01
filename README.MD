@@ -2,7 +2,7 @@
 
 Frame is a framework for publishing [scripty.sol](https://int-art.gitbook.io/scripty.sol/) based HTML NFTs to EVM block space. `FrameDeployer` uses a [clone factory pattern](https://blog.logrocket.com/cloning-solidity-smart-contracts-factory-pattern/) to deploy new artwork/tokens with minimal gas cost in a single transaction.
 
-An example NFT can be found [here](https://testnets.opensea.io/assets/goerli/0x031b8dbbab4e7c358b1edcd52eae1cec9234dc7e/0).
+An example NFT can be found [here](https://testnets.opensea.io/assets/goerli/0x48fFce2Cfd8A132f9Ef3603aF6DDF75938490fBB/0).
 
 ## How it Works
 
