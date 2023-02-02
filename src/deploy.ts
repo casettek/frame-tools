@@ -39,15 +39,6 @@ const createWrappedRequest = (
   scriptContent: toBytes(""),
 });
 
-const createEmptyWrappedRequest = (name: string, wrapType: number) => ({
-  name,
-  contractData: toBytes(""),
-  wrapType,
-  wrapPrefix: toBytes(""),
-  wrapSuffix: toBytes(""),
-  scriptContent: toBytes(""),
-});
-
 const getBufferSize = (data: string) => {
   const RAW_JS_WRAPPER = [
     "%253Cscript%2520src%253D%2522data%253Atext%252Fjavascript%253Bbase64%252C",
@@ -136,11 +127,7 @@ const deployBaseContracts = async (network: string) => {
 
   const frameDeployer = await (
     await hre.ethers.getContractFactory("FrameDeployer")
-  ).deploy(
-    scriptyStorageFactory.address,
-    frameFactory.address,
-    scriptyBuilder.address
-  );
+  ).deploy(frameFactory.address, scriptyBuilder.address);
   await frameDeployer.deployed();
   output.FrameDeployer = frameDeployer.address;
   console.log("FrameDeployer deployed", frameDeployer.address);
@@ -196,83 +183,6 @@ const deployLibraries = async (network: string) => {
   }
 };
 
-export const deployRawHTML = async (
-  name: string,
-  libNames: string[],
-  sourcePath: string,
-  network: string
-) => {
-  console.log('Deploying "TestHTML.html"...');
-
-  const deployments = JSON.parse(
-    fs.readFileSync(__dirname + "/deployments/" + network + ".json").toString()
-  );
-
-  const libsScriptyStorage = await (
-    await hre.ethers.getContractFactory("ScriptyStorageCloneable")
-  ).attach(deployments.LibsScriptyStorage);
-
-  const scriptyBuilder = await (
-    await hre.ethers.getContractFactory("ScriptyBuilder")
-  ).attach(deployments.ScriptyBuilder);
-
-  // Deploy source
-  const sourceScriptyStorage = await deployNewScriptyStorage(
-    deployments.ScriptyStorageFactory
-  );
-  const sourceId = name + "-source";
-  const sourceContent = Buffer.from(
-    fs.readFileSync(__dirname + sourcePath).toString()
-  ).toString("base64");
-  await sourceScriptyStorage.createScript(sourceId, toBytes(""));
-  await storeChunks(sourceScriptyStorage, sourceId, sourceContent, 1);
-
-  // Create requests
-  const libRequests = libNames.map((lib) =>
-    createWrappedRequest(
-      lib,
-      libsScriptyStorage.address,
-      libs[lib].wrapper === "gzip" ? 2 : 1
-    )
-  );
-  const sourceRequest = createWrappedRequest(
-    sourceId,
-    sourceScriptyStorage.address,
-    1
-  );
-  const requests = libRequests.concat([sourceRequest]);
-  const bufferSize = await scriptyBuilder.getBufferSizeForURLSafeHTMLWrapped(
-    requests
-  );
-
-  // Test local accuracy
-  const libsBufferSize =
-    await scriptyBuilder.getBufferSizeForURLSafeHTMLWrapped(libRequests);
-  console.log(
-    "local buffersize",
-    libsBufferSize.toNumber(),
-    getBufferSize(sourceContent),
-    libsBufferSize.toNumber() + getBufferSize(sourceContent)
-  );
-  console.log("bufferSize", bufferSize.toString());
-
-  console.log("Fetching HTML from on-chain...");
-  const query = await scriptyBuilder.getHTMLWrappedURLSafe(
-    requests,
-    bufferSize
-  );
-
-  const html = decodeURIComponent(decodeURIComponent(fromBytes(query))).replace(
-    "data:text/html,",
-    ""
-  );
-
-  fs.writeFileSync(__dirname + "/output/output.html", html, {
-    encoding: "utf8",
-    flag: "w",
-  });
-};
-
 // Deploy single frame across two transactions
 export const deployFrameWithScript = async (
   name: string,
@@ -315,7 +225,13 @@ export const deployFrameWithScript = async (
       libs[lib].wrapper === "gzip" ? 2 : 1
     )
   );
-  const sourceRequest = createEmptyWrappedRequest(sourceId, 1);
+
+  const sourceRequest = createWrappedRequest(
+    sourceId,
+    libsScriptyStorage.address,
+    1
+  );
+  const requests = libsRequests.concat([sourceRequest]);
   const libsBufferSize =
     await scriptyBuilder.getBufferSizeForURLSafeHTMLWrapped(libsRequests);
   const sourceBufferSize = getBufferSize(sourceContent);
@@ -329,8 +245,7 @@ export const deployFrameWithScript = async (
       symbol,
     },
     toBytes(sourceContent),
-    sourceRequest,
-    libsRequests,
+    requests,
     bufferSize
   );
 

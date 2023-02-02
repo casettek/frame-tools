@@ -8,15 +8,6 @@ pragma solidity ^0.8.12;
 */
 import {WrappedScriptRequest} from "./libs/scripty/IScriptyBuilder.sol";
 
-struct EmptyWrappedScriptRequest {
-    string name;
-    bytes contractData;
-    uint8 wrapType;
-    bytes wrapPrefix;
-    bytes wrapSuffix;
-    bytes scriptContent;
-}
-
 struct FrameMetadata {
     string name;    
     string description;
@@ -25,11 +16,6 @@ struct FrameMetadata {
 
 interface IFactory {
     function create() external returns (address);
-}
-
-interface IScriptyStorageFactory {
-    function create() external returns (address);
-    function createWithNewScript(string calldata name, bytes calldata chunk) external returns (address);
 }
 
 interface IScriptyStorage {
@@ -50,7 +36,6 @@ interface IFrame {
 }
 
 contract FrameDeployer {
-  address public immutable scriptyStorageFactory;
   address public immutable frameFactory;
   address public immutable scriptyBuilder;
 
@@ -58,12 +43,10 @@ contract FrameDeployer {
 
   /**
      * @notice Create the contract with required references.
-     * @param _scriptyStorageFactory - Contract that creates ScriptyStorage clones.
      * @param _frameFactory - Contract that creates Frame clones.
      * @param _scriptyBuilder - Contract that assembles HTML from script requests.
      */
-  constructor(address _scriptyStorageFactory, address _frameFactory, address _scriptyBuilder) {
-    scriptyStorageFactory = _scriptyStorageFactory;
+  constructor(address _frameFactory, address _scriptyBuilder) {
     frameFactory = _frameFactory;
 		scriptyBuilder = _scriptyBuilder;
   }
@@ -93,10 +76,9 @@ contract FrameDeployer {
   }
 
   /**
-     * @notice Create a new Frame NFT contract with a newly deployed ScriptyStorage and script
+     * @notice Create a new Frame NFT contract and save a new script to ScriptyStorage.
      * @param _metadata - Contract metadata.
      * @param _script - A single chunk of script data.
-     * @param _scriptRequest - A ScriptyBuilder request without contractAddress and contractData.
      * @param _requests - ScriptyBuilder requests for all HTML script elements.
      * @param _requestsBufferSize - Total buffer size of all requested scripts, inlcuding 
      * the new to-be-stored _script.
@@ -105,38 +87,25 @@ contract FrameDeployer {
   function createFrameWithScript(
     FrameMetadata calldata _metadata,
     bytes calldata _script,
-    EmptyWrappedScriptRequest calldata _scriptRequest,
     WrappedScriptRequest[] calldata _requests,
     uint256 _requestsBufferSize
 	) public returns (address)  {
+    // Get the last request, which is the source of the new script
+    WrappedScriptRequest memory sourceScriptRequest = _requests[_requests.length - 1];
+
+    // Save new script data
+    string memory sourceScriptName = sourceScriptRequest.name;
+    IScriptyStorage sourceScriptStorage = IScriptyStorage(sourceScriptRequest.contractAddress);
+
     // Create a new ScriptyStorage contract and save new script data
-    IScriptyStorage scriptyStorage = IScriptyStorage(
-      IScriptyStorageFactory(scriptyStorageFactory).createWithNewScript(_scriptRequest.name, _script)
-    );
+    sourceScriptStorage.createScript(sourceScriptName, bytes(''));
+    sourceScriptStorage.addChunkToScript(sourceScriptName, _script);
     
     // Create a new Frame contract
     IFrame frame = IFrame(IFactory(frameFactory).create());
 
-    // Append a request for the newly stored script to _requests
-    uint totalRequestsCount = _requests.length + 1;
-    WrappedScriptRequest[] memory requests = new WrappedScriptRequest[](totalRequestsCount);
-
-    for (uint i = 0; i < _requests.length; i++) {
-      requests[i] = _requests[i];
-    }
-
-    requests[requests.length - 1] = WrappedScriptRequest({
-     	name: _scriptRequest.name,
-     	contractAddress: address(scriptyStorage),
-			contractData: _scriptRequest.contractData,
-			wrapType: _scriptRequest.wrapType,
-			wrapPrefix: _scriptRequest.wrapPrefix,
-			wrapSuffix: _scriptRequest.wrapSuffix,
-			scriptContent: _scriptRequest.scriptContent
-		});
-
     // Apply ScriptyBuilder references and requests
-		frame.init(_metadata, address(scriptyBuilder), _requestsBufferSize, requests);
+		frame.init(_metadata, address(scriptyBuilder), _requestsBufferSize, _requests);
 		frame.mintForOwner(msg.sender);
 
     emit FrameCreated(address(frame));
