@@ -1,4 +1,4 @@
-import { initLocal, deployFrameWithScript, deployRawHTML } from "../deploy";
+import { initLocal, deployFrameWithScript } from "../deploy";
 import { importIds } from "../assets/libs";
 
 async function start() {
@@ -13,8 +13,6 @@ async function start() {
     "/test/matrix.js",
     "localhost"
   );
-  // await deployRawHTML("Matrix", [p5gz, gunzip], "/test/matrix.js", "localhost");
-  console.log("Frame output now available");
 }
 
 start();

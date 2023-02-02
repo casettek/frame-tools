@@ -1220,8 +1220,8 @@
       ]
     },
     "C:\\Users\\Andrew\\Development\\frame-backend\\src\\contracts\\FrameDeployer.sol": {
-      "lastModificationDate": 1675371862998,
-      "contentHash": "9e8e0ee00649abecccbd7fee6d0a6512",
+      "lastModificationDate": 1675372052598,
+      "contentHash": "3534d2acf145f9a2bc6db35ff06134d5",
       "sourceName": "src/contracts/FrameDeployer.sol",
       "solcConfig": {
         "version": "0.8.17",
@@ -1256,8 +1256,7 @@
         "FrameDeployer",
         "IFactory",
         "IFrame",
-        "IScriptyStorage",
-        "IScriptyStorageFactory"
+        "IScriptyStorage"
       ]
     }
   }

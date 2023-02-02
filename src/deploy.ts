@@ -5,7 +5,6 @@ import {
   storeChunks,
   getLibDataLogs,
   toBytes,
-  fromBytes,
 } from "./utils/web3";
 
 const hre = require("hardhat");
@@ -52,26 +51,8 @@ const getBufferSize = (data: string) => {
   return bufferSizeLocal;
 };
 
-const deployNewScriptyStorage = async (factory: string) => {
-  console.log(factory);
-  const ScriptyStorageCloneable = await hre.ethers.getContractFactory(
-    "ScriptyStorageCloneable"
-  );
-  const ScriptyStorageFactory = await hre.ethers.getContractFactory(
-    "ScriptyStorageFactory"
-  );
-  const scriptyStorageFactory = await ScriptyStorageFactory.attach(factory);
-  const createStorageCall = await scriptyStorageFactory.create();
-  const createStorageResult = await createStorageCall.wait();
-  const newStorageAddress = createStorageResult.logs[1]?.data.replace(
-    "000000000000000000000000",
-    ""
-  );
-  return await ScriptyStorageCloneable.attach(newStorageAddress);
-};
-
 const deployBaseContracts = async (network: string) => {
-  console.log("Deploying base contracts...");
+  console.log("Deploying base contracts to " + network + "...");
 
   let output: any = {};
 
@@ -104,26 +85,12 @@ const deployBaseContracts = async (network: string) => {
   output.ContentStore = contentStoreLib.address;
   console.log("ContentStoreLib deployed", contentStoreLib.address);
 
-  const contentStoreFactory = await (
-    await hre.ethers.getContractFactory("ContentStoreFactory")
-  ).deploy(contentStoreLib.address);
-  await contentStoreFactory.deployed();
-  output.ContentStoreFactory = contentStoreFactory.address;
-  console.log("ContentStoreFactory deployed", contentStoreFactory.address);
-
   const scriptyStorageLib = await (
-    await hre.ethers.getContractFactory("ScriptyStorageCloneable")
-  ).deploy();
+    await hre.ethers.getContractFactory("ScriptyStorage")
+  ).deploy(contentStoreLib.address);
   await scriptyStorageLib.deployed();
   output.ScriptyStorage = scriptyStorageLib.address;
   console.log("ScriptyStorage deployed", scriptyStorageLib.address);
-
-  const scriptyStorageFactory = await (
-    await hre.ethers.getContractFactory("ScriptyStorageFactory")
-  ).deploy(scriptyStorageLib.address, contentStoreFactory.address);
-  await scriptyStorageFactory.deployed();
-  output.ScriptyStorageFactory = scriptyStorageFactory.address;
-  console.log("ScriptyStorageFactory deployed", scriptyStorageFactory.address);
 
   const frameDeployer = await (
     await hre.ethers.getContractFactory("FrameDeployer")
@@ -140,37 +107,22 @@ const deployBaseContracts = async (network: string) => {
       flag: "w",
     }
   );
+
+  console.log("Deployments now available at /deployments/" + network + ".json");
 };
 
 const deployLibraries = async (network: string) => {
   const dPath = __dirname + "/deployments/" + network + ".json";
-  const deployments = JSON.parse(
-    fs.readFileSync(__dirname + "/deployments/" + network + ".json").toString()
-  );
-  console.log(deployments);
-  const storage = await deployNewScriptyStorage(
-    deployments.ScriptyStorageFactory
-  );
-  console.log("New storage", storage.address);
-
-  fs.writeFileSync(
-    dPath,
-    JSON.stringify({ ...deployments, LibsScriptyStorage: storage.address }),
-    {
-      encoding: "utf8",
-      flag: "w",
-    }
-  );
+  const deployments = JSON.parse(fs.readFileSync(dPath).toString());
+  const ScriptyStorage = await hre.ethers.getContractFactory("ScriptyStorage");
+  const storage = await ScriptyStorage.attach(deployments.ScriptyStorage);
 
   // Deploy libraries
   for (const libId in libs) {
     const lib = libs[libId];
 
-    // Do this manually on other networks from logs
-    if (network === "localhost") {
-      await storage.createScript(libId, toBytes(""));
-      await storeChunks(storage, libId, lib.data, lib.pages);
-    }
+    await storage.createScript(libId, toBytes(""));
+    await storeChunks(storage, libId, lib.data, lib.pages);
 
     fs.writeFileSync(
       __dirname + "/output/" + libId + "-logs",
@@ -183,7 +135,6 @@ const deployLibraries = async (network: string) => {
   }
 };
 
-// Deploy single frame across two transactions
 export const deployFrameWithScript = async (
   name: string,
   description: string,
@@ -199,10 +150,6 @@ export const deployFrameWithScript = async (
   );
 
   // Init contracts
-  const libsScriptyStorage = await (
-    await hre.ethers.getContractFactory("ScriptyStorageCloneable")
-  ).attach(deployments.LibsScriptyStorage);
-
   const scriptyBuilder = await (
     await hre.ethers.getContractFactory("ScriptyBuilder")
   ).attach(deployments.ScriptyBuilder);
@@ -221,14 +168,14 @@ export const deployFrameWithScript = async (
   const libsRequests = libNames.map((lib) =>
     createWrappedRequest(
       lib,
-      libsScriptyStorage.address,
+      deployments.ScriptyStorage,
       libs[lib].wrapper === "gzip" ? 2 : 1
     )
   );
 
   const sourceRequest = createWrappedRequest(
     sourceId,
-    libsScriptyStorage.address,
+    deployments.ScriptyStorage,
     1
   );
   const requests = libsRequests.concat([sourceRequest]);
@@ -253,8 +200,9 @@ export const deployFrameWithScript = async (
   const newFrameAddress = createResult.logs[
     createResult.logs.length - 1
   ]?.data.replace("000000000000000000000000", "");
+  console.log("Frame deployed at", newFrameAddress);
 
-  console.log("Fetching tokenURI from on-chain...");
+  console.log("Fetching tokenURI...");
 
   const frame = await Frame.attach(newFrameAddress);
   const tokenURI = await frame.tokenURI(0);
@@ -270,8 +218,8 @@ export const deployFrameWithScript = async (
     flag: "w",
   });
 
-  console.log("Frame deployed at", newFrameAddress);
-  console.log("Gas used", createResult.gasUsed);
+  console.log("Frame output now available");
+  console.log("Gas used: ", createResult.gasUsed.toNumber());
 };
 
 export const initLocal = async () => {
