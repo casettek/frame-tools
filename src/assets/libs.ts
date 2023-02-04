@@ -12,11 +12,6 @@ export const importIds = {
   gunzip: "gunzipScripts-0.0.1.js",
 };
 
-export const INLINE_MOD_GZIP_WRAP = [
-  "%3Cscript%20type%3D%22text%2Finline-module%2Bgzip%22%20id%3D%22",
-  "%22%20%3E%3C%2Fscript%3E",
-];
-
 export const MOD_WRAP = [
   encodeURIComponent('<script type="module" src="data:text/javascript;base64,'),
   encodeURIComponent('"></script>'),
