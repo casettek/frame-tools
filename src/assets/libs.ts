@@ -5,9 +5,9 @@ const fs = require("fs");
 export const importIds = {
   p5: "p5-v1.5.0.min.js",
   three: "three.module.min.js",
-  threeStats: "threeStats.module.js",
-  threeOrbitControls: "threeOrbitControls.module.js",
-  inlineModule: "inlineModule.js",
+  threeStats: "threeStats.module.min.js",
+  threeOrbitControls: "threeOrbitControls.module.min.js",
+  inlineModule: "inlineModule.min.js",
   gunzipInlineModules: "gunzipInlineModules-0.0.1.js",
   gunzip: "gunzipScripts-0.0.1.js",
 };
@@ -44,13 +44,13 @@ export const importData = {
     .readFileSync(__dirname + "/three.module.min.js.gz")
     .toString("base64"),
   [threeStats]: fs
-    .readFileSync(__dirname + "/threeStats.module.js.gz")
+    .readFileSync(__dirname + "/threeStats.module.min.js.gz")
     .toString("base64"),
   [threeOrbitControls]: fs
-    .readFileSync(__dirname + "/threeOrbitControls.module.js.gz")
+    .readFileSync(__dirname + "/threeOrbitControls.module.min.js.gz")
     .toString("base64"),
   [inlineModule]: fs
-    .readFileSync(__dirname + "/inlineModule.js")
+    .readFileSync(__dirname + "/inlineModule.min.js")
     .toString("base64"),
   [gunzip]: fs
     .readFileSync(__dirname + "/gunzipScripts-0.0.1.js")
