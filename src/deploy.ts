@@ -175,16 +175,7 @@ export const deployFrameWithScript = async (
   );
 
   console.log("url", url.length);
-  console.log(
-    {
-      name,
-      description,
-      symbol,
-    },
-    toBytes(sourceContent),
-    [requests],
-    bufferSize
-  );
+
   // return;
 
   const Frame = await hre.ethers.getContractFactory("Frame");
