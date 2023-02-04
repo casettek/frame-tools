@@ -5,6 +5,8 @@ const fs = require("fs");
 export const importIds = {
   p5: "p5-v1.5.0.min.js",
   three: "three.module.min.js",
+  threeStats: "threeStats.module.js",
+  threeOrbitControls: "threeOrbitControls.module.js",
   inlineModule: "inlineModule.js",
   gunzipInlineModules: "gunzipInlineModules-0.0.1.js",
   gunzip: "gunzipScripts-0.0.1.js",
@@ -31,12 +33,26 @@ export const getInlineModGzWrap = (name: string) => {
   ];
 };
 
-const { p5, three, gunzip, gunzipInlineModules, inlineModule } = importIds;
+const {
+  p5,
+  three,
+  threeStats,
+  threeOrbitControls,
+  gunzip,
+  gunzipInlineModules,
+  inlineModule,
+} = importIds;
 
 export const importData = {
   [p5]: fs.readFileSync(__dirname + "/p5-v1.5.0.min.js.gz").toString("base64"),
   [three]: fs
     .readFileSync(__dirname + "/three.module.min.js.gz")
+    .toString("base64"),
+  [threeStats]: fs
+    .readFileSync(__dirname + "/threeStats.module.js.gz")
+    .toString("base64"),
+  [threeOrbitControls]: fs
+    .readFileSync(__dirname + "/threeOrbitControls.module.js.gz")
     .toString("base64"),
   [inlineModule]: fs
     .readFileSync(__dirname + "/inlineModule.js")
@@ -50,8 +66,8 @@ export const importData = {
 };
 
 const threeWrap = getInlineModGzWrap(three);
-
-console.log(importData.gunzipInlineModules);
+const threeStatsWrap = getInlineModGzWrap(threeStats);
+const threeOrbitControlsWrap = getInlineModGzWrap(threeOrbitControls);
 
 export const libs: ImportDataMap = {
   [gunzip]: {
@@ -85,6 +101,22 @@ export const libs: ImportDataMap = {
     wrapSuffix: threeWrap[1],
     wrapType: 4,
     pages: calcStoragePages(importData[three]),
+  },
+  [threeStats]: {
+    name: threeStats,
+    data: importData[threeStats],
+    wrapPrefix: threeStatsWrap[0],
+    wrapSuffix: threeStatsWrap[1],
+    wrapType: 4,
+    pages: calcStoragePages(importData[threeStats]),
+  },
+  [threeOrbitControls]: {
+    name: threeOrbitControls,
+    data: importData[threeOrbitControls],
+    wrapPrefix: threeOrbitControlsWrap[0],
+    wrapSuffix: threeOrbitControlsWrap[1],
+    wrapType: 4,
+    pages: calcStoragePages(importData[threeOrbitControls]),
   },
   [inlineModule]: {
     name: inlineModule,
