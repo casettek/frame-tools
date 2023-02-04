@@ -11,19 +11,23 @@ export const importIds = {
 };
 
 export const INLINE_MOD_GZIP_WRAP = [
-  encodeURIComponent(`<script type="text/inline-module+gzip" id="`),
-  encodeURIComponent(`"></script>`),
+  "%3Cscript%20type%3D%22text%2Finline-module%2Bgzip%22%20id%3D%22",
+  "%22%20%3E%3C%2Fscript%3E",
 ];
 
 export const MOD_WRAP = [
-  encodeURIComponent(`<script type="module">`),
-  encodeURIComponent(`</script>`),
+  encodeURIComponent('<script type="module" src="data:text/javascript;base64,'),
+  encodeURIComponent('"></script>'),
 ];
 
 export const getInlineModGzWrap = (name: string) => {
   return [
-    INLINE_MOD_GZIP_WRAP[0] + encodeURIComponent(name),
-    INLINE_MOD_GZIP_WRAP[1],
+    encodeURIComponent(
+      '<script type="text/inline-module+gzip" id="' +
+        name +
+        '" src="data:text/javascript;base64,'
+    ),
+    encodeURIComponent('"></script>'),
   ];
 };
 
@@ -35,7 +39,7 @@ export const importData = {
     .readFileSync(__dirname + "/three.module.min.js.gz")
     .toString("base64"),
   [inlineModule]: fs
-    .readFileSync(__dirname + "/inlineModule.js.gz")
+    .readFileSync(__dirname + "/inlineModule.js")
     .toString("base64"),
   [gunzip]: fs
     .readFileSync(__dirname + "/gunzipScripts-0.0.1.js")
@@ -87,7 +91,7 @@ export const libs: ImportDataMap = {
     data: importData[inlineModule],
     wrapPrefix: "",
     wrapSuffix: "",
-    wrapType: 2,
+    wrapType: 1,
     pages: calcStoragePages(importData[inlineModule]),
   },
 };

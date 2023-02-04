@@ -1,5 +1,5 @@
 import { ImportData } from "./types/types";
-import { libs } from "./assets/libs";
+import { libs, MOD_WRAP } from "./assets/libs";
 import { storeChunks, getLibDataLogs, toBytes } from "./utils/web3";
 
 const hre = require("hardhat");
@@ -153,15 +153,14 @@ export const deployFrameWithScript = async (
     {
       name: sourceId,
       data: "",
-      wrapPrefix: "",
-      wrapSuffix: "",
-      wrapType: 1,
+      wrapPrefix: MOD_WRAP[0],
+      wrapSuffix: MOD_WRAP[1],
+      wrapType: 4,
       pages: 1,
     },
     deployments.ScriptyStorage
   );
   const requests = libsRequests.concat([sourceRequest]);
-
   const libsBufferSize =
     await scriptyBuilder.getBufferSizeForURLSafeHTMLWrapped(libsRequests);
   const sourceBufferSize = getBufferSize(sourceContent);
@@ -169,23 +168,15 @@ export const deployFrameWithScript = async (
 
   console.log(requests, libsBufferSize.toNumber(), sourceBufferSize);
 
-  const url = await scriptyBuilder.getHTMLWrappedURLSafe(
-    libsRequests,
-    libsBufferSize
-  );
-
-  console.log("url", url.length);
-  // return;
-
   const Frame = await hre.ethers.getContractFactory("Frame");
   const createCall = await frameDeployer.createFrameWithScript(
     {
-      name: "test",
-      description: "test",
-      symbol: "test",
+      name,
+      description,
+      symbol,
     },
     toBytes(sourceContent),
-    [requests],
+    requests,
     bufferSize
   );
 

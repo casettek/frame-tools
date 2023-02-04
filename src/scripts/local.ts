@@ -2,14 +2,14 @@ import { initLocal, deployFrameWithScript } from "../deploy";
 import { importIds } from "../assets/libs";
 
 async function start() {
-  const { p5, three, inlineModule, gunzipInlineModules, gunzip } = importIds;
+  const { three, inlineModule, gunzipInlineModules, gunzip } = importIds;
 
   await initLocal();
   await deployFrameWithScript(
     "Blue",
     "BBB",
     "Blue test.",
-    [gunzip],
+    [three, gunzip, gunzipInlineModules, inlineModule],
     "/test/blue.js",
     "localhost"
   );
