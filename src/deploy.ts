@@ -1,40 +1,17 @@
-import { importIds, importData } from "./assets/libs";
-import { ImportDataMap } from "./types/types";
-import {
-  calcStoragePages,
-  storeChunks,
-  getLibDataLogs,
-  toBytes,
-} from "./utils/web3";
+import { ImportData } from "./types/types";
+import { libs } from "./assets/libs";
+import { storeChunks, getLibDataLogs, toBytes } from "./utils/web3";
 
 const hre = require("hardhat");
 const fs = require("fs");
 
-const { p5gz, gunzip } = importIds;
-const libs: ImportDataMap = {
-  [gunzip]: {
-    data: importData[gunzip],
-    wrapper: "",
-    pages: calcStoragePages(importData[gunzip]),
-  },
-  [p5gz]: {
-    data: importData[p5gz],
-    wrapper: "gzip",
-    pages: calcStoragePages(importData[p5gz]),
-  },
-};
-
-const createWrappedRequest = (
-  name: string,
-  contentStore: string,
-  wrapType: number
-) => ({
-  name,
+const createWrappedRequest = (lib: ImportData, contentStore: string) => ({
+  name: lib.name,
   contractAddress: contentStore,
   contractData: toBytes(""),
-  wrapType,
-  wrapPrefix: toBytes(""),
-  wrapSuffix: toBytes(""),
+  wrapType: lib.wrapType,
+  wrapPrefix: toBytes(lib.wrapPrefix),
+  wrapSuffix: toBytes(lib.wrapSuffix),
   scriptContent: toBytes(""),
 });
 
@@ -120,6 +97,7 @@ const deployLibraries = async (network: string) => {
   // Deploy libraries
   for (const libId in libs) {
     const lib = libs[libId];
+    console.log(libId, lib.data.length);
 
     await storage.createScript(libId, toBytes(""));
     await storeChunks(storage, libId, lib.data, lib.pages);
@@ -149,6 +127,8 @@ export const deployFrameWithScript = async (
     fs.readFileSync(__dirname + "/deployments/" + network + ".json").toString()
   );
 
+  console.log(deployments);
+
   // Init contracts
   const scriptyBuilder = await (
     await hre.ethers.getContractFactory("ScriptyBuilder")
@@ -166,33 +146,56 @@ export const deployFrameWithScript = async (
 
   // Create requests
   const libsRequests = libNames.map((lib) =>
-    createWrappedRequest(
-      lib,
-      deployments.ScriptyStorage,
-      libs[lib].wrapper === "gzip" ? 2 : 1
-    )
+    createWrappedRequest(libs[lib], deployments.ScriptyStorage)
   );
 
   const sourceRequest = createWrappedRequest(
-    sourceId,
-    deployments.ScriptyStorage,
-    1
+    {
+      name: sourceId,
+      data: "",
+      wrapPrefix: "",
+      wrapSuffix: "",
+      wrapType: 0,
+      pages: 1,
+    },
+    deployments.ScriptyStorage
   );
   const requests = libsRequests.concat([sourceRequest]);
+
   const libsBufferSize =
     await scriptyBuilder.getBufferSizeForURLSafeHTMLWrapped(libsRequests);
   const sourceBufferSize = getBufferSize(sourceContent);
   const bufferSize = libsBufferSize.toNumber() + sourceBufferSize;
 
-  const Frame = await hre.ethers.getContractFactory("Frame");
-  const createCall = await frameDeployer.createFrameWithScript(
+  console.log(requests, libsBufferSize.toNumber(), sourceBufferSize);
+
+  const url = await scriptyBuilder.getHTMLWrappedURLSafe(
+    libsRequests,
+    libsBufferSize
+  );
+
+  console.log("url", url.length);
+  console.log(
     {
       name,
       description,
       symbol,
     },
     toBytes(sourceContent),
-    requests,
+    [requests],
+    bufferSize
+  );
+  // return;
+
+  const Frame = await hre.ethers.getContractFactory("Frame");
+  const createCall = await frameDeployer.createFrameWithScript(
+    {
+      name: "test",
+      description: "test",
+      symbol: "test",
+    },
+    toBytes(sourceContent),
+    [requests],
     bufferSize
   );
 
@@ -201,7 +204,6 @@ export const deployFrameWithScript = async (
     createResult.logs.length - 1
   ]?.data.replace("000000000000000000000000", "");
   console.log("Frame deployed at", newFrameAddress);
-
   console.log("Fetching tokenURI...");
 
   const frame = await Frame.attach(newFrameAddress);
