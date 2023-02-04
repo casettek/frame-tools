@@ -55,7 +55,7 @@ export const libs: ImportDataMap = {
     data: importData[gunzip],
     wrapPrefix: "",
     wrapSuffix: "",
-    wrapType: 0,
+    wrapType: 1,
     pages: calcStoragePages(importData[gunzip]),
   },
   [gunzipInlineModules]: {
@@ -63,7 +63,7 @@ export const libs: ImportDataMap = {
     data: importData[gunzipInlineModules],
     wrapPrefix: "",
     wrapSuffix: "",
-    wrapType: 0,
+    wrapType: 1,
     pages: calcStoragePages(importData[gunzipInlineModules]),
   },
   [p5]: {

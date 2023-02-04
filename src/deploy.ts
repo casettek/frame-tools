@@ -155,7 +155,7 @@ export const deployFrameWithScript = async (
       data: "",
       wrapPrefix: "",
       wrapSuffix: "",
-      wrapType: 0,
+      wrapType: 1,
       pages: 1,
     },
     deployments.ScriptyStorage
@@ -175,7 +175,6 @@ export const deployFrameWithScript = async (
   );
 
   console.log("url", url.length);
-
   // return;
 
   const Frame = await hre.ethers.getContractFactory("Frame");
