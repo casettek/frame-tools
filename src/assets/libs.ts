@@ -7,7 +7,7 @@ export const importIds = {
   three: "three.module.min.js",
   threeStats: "threeStats.module.min.js",
   threeOrbitControls: "threeOrbitControls.module.min.js",
-  gunzipModules: "gunzipModules-0.0.1.js",
+  gunzipModules: "gunzipModules-0.0.1.min.js",
   gunzip: "gunzipScripts-0.0.1.js",
 };
 
