@@ -7,7 +7,7 @@ export const importIds = {
   three: "three.module.min.js",
   threeStats: "threeStats.module.min.js",
   threeOrbitControls: "threeOrbitControls.module.min.js",
-  gunzipModules: "gunzipModules-0.0.1.min.js",
+  gunzipModules: "gunzipModules-0.1.0.min.js",
   gunzip: "gunzipScripts-0.0.1.js",
 };
 
@@ -45,7 +45,7 @@ export const importData = {
     .readFileSync(__dirname + "/gunzipScripts-0.0.1.js")
     .toString("base64"),
   [gunzipModules]: fs
-    .readFileSync(__dirname + "/gunzipModules-0.0.1.min.js")
+    .readFileSync(__dirname + "/gunzipModules-0.1.0.min.js")
     .toString("base64"),
 };
 
