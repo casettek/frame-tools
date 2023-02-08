@@ -5,10 +5,9 @@ const fs = require("fs");
 export const importIds = {
   p5: "p5-v1.5.0.min.js",
   three: "three.module.min.js",
-  threeStats: "threeStats.module.js",
-  threeOrbitControls: "threeOrbitControls.module.js",
-  inlineModule: "inlineModule.js",
-  gunzipInlineModules: "gunzipInlineModules-0.0.1.js",
+  threeStats: "threeStats.module.min.js",
+  threeOrbitControls: "threeOrbitControls.module.min.js",
+  gunzipModules: "gunzipModules-0.1.0.min.js",
   gunzip: "gunzipScripts-0.0.1.js",
 };
 
@@ -28,15 +27,8 @@ export const getInlineModGzWrap = (name: string) => {
   ];
 };
 
-const {
-  p5,
-  three,
-  threeStats,
-  threeOrbitControls,
-  gunzip,
-  gunzipInlineModules,
-  inlineModule,
-} = importIds;
+const { p5, three, threeStats, threeOrbitControls, gunzip, gunzipModules } =
+  importIds;
 
 export const importData = {
   [p5]: fs.readFileSync(__dirname + "/p5-v1.5.0.min.js.gz").toString("base64"),
@@ -44,19 +36,16 @@ export const importData = {
     .readFileSync(__dirname + "/three.module.min.js.gz")
     .toString("base64"),
   [threeStats]: fs
-    .readFileSync(__dirname + "/threeStats.module.js.gz")
+    .readFileSync(__dirname + "/threeStats.module.min.js.gz")
     .toString("base64"),
   [threeOrbitControls]: fs
-    .readFileSync(__dirname + "/threeOrbitControls.module.js.gz")
-    .toString("base64"),
-  [inlineModule]: fs
-    .readFileSync(__dirname + "/inlineModule.js")
+    .readFileSync(__dirname + "/threeOrbitControls.module.min.js.gz")
     .toString("base64"),
   [gunzip]: fs
     .readFileSync(__dirname + "/gunzipScripts-0.0.1.js")
     .toString("base64"),
-  [gunzipInlineModules]: fs
-    .readFileSync(__dirname + "/gunzipInlineModules-0.0.1.js")
+  [gunzipModules]: fs
+    .readFileSync(__dirname + "/gunzipModules-0.1.0.min.js")
     .toString("base64"),
 };
 
@@ -72,14 +61,6 @@ export const libs: ImportDataMap = {
     wrapSuffix: "",
     wrapType: 1,
     pages: calcStoragePages(importData[gunzip]),
-  },
-  [gunzipInlineModules]: {
-    name: gunzipInlineModules,
-    data: importData[gunzipInlineModules],
-    wrapPrefix: "",
-    wrapSuffix: "",
-    wrapType: 1,
-    pages: calcStoragePages(importData[gunzipInlineModules]),
   },
   [p5]: {
     name: p5,
@@ -113,13 +94,14 @@ export const libs: ImportDataMap = {
     wrapType: 4,
     pages: calcStoragePages(importData[threeOrbitControls]),
   },
-  [inlineModule]: {
-    name: inlineModule,
-    data: importData[inlineModule],
+
+  [gunzipModules]: {
+    name: gunzipModules,
+    data: importData[gunzipModules],
     wrapPrefix: "",
     wrapSuffix: "",
     wrapType: 1,
-    pages: calcStoragePages(importData[inlineModule]),
+    pages: calcStoragePages(importData[gunzipModules]),
   },
 };
 

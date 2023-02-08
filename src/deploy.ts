@@ -97,8 +97,6 @@ const deployLibraries = async (network: string) => {
   // Deploy libraries
   for (const libId in libs) {
     const lib = libs[libId];
-    console.log(libId, lib.data.length);
-
     await storage.createScript(libId, toBytes(""));
     await storeChunks(storage, libId, lib.data, lib.pages);
 
@@ -126,8 +124,6 @@ export const deployFrameWithScript = async (
   const deployments = JSON.parse(
     fs.readFileSync(__dirname + "/deployments/" + network + ".json").toString()
   );
-
-  console.log(deployments);
 
   // Init contracts
   const scriptyBuilder = await (
@@ -165,9 +161,6 @@ export const deployFrameWithScript = async (
     await scriptyBuilder.getBufferSizeForURLSafeHTMLWrapped(libsRequests);
   const sourceBufferSize = getBufferSize(sourceContent);
   const bufferSize = libsBufferSize.toNumber() + sourceBufferSize;
-
-  console.log(requests, libsBufferSize.toNumber(), sourceBufferSize);
-
   const Frame = await hre.ethers.getContractFactory("Frame");
   const createCall = await frameDeployer.createFrameWithScript(
     {
