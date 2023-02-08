@@ -2,7 +2,7 @@ import { initGoerli, deployFrameWithScript } from "../deploy";
 import { importIds } from "../assets/libs";
 
 async function start() {
-  const { p5gz, gunzip } = importIds;
+  const { p5, gunzipModules } = importIds;
 
   await initGoerli();
 

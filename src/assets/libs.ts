@@ -2,13 +2,23 @@ import { ImportDataMap } from "../types/types";
 import { calcStoragePages } from "../utils/web3";
 
 const fs = require("fs");
+
 export const importIds = {
-  p5: "p5-v1.5.0.min.js",
-  three: "three.module.min.js",
-  threeStats: "threeStats.module.min.js",
-  threeOrbitControls: "threeOrbitControls.module.min.js",
-  gunzipModules: "gunzipModules-0.1.0.min.js",
-  gunzip: "gunzipScripts-0.0.1.js",
+  p5: "p5-v1.5.0.min.js.gz",
+  three: "three-v0.149.0.module.min.js.gz",
+  threeStats: "threeStats-v0.1.0.module.min.js.gz",
+  threeOrbitControls: "threeOrbitControls-v0.1.0.module.min.js.gz",
+  gunzipModules: "gunzipModules-v0.1.0.min.js",
+};
+
+const { p5, three, threeStats, threeOrbitControls, gunzipModules } = importIds;
+
+export const importNames = {
+  [p5]: "p5",
+  [three]: "three",
+  [threeStats]: "three-stats",
+  [threeOrbitControls]: "three-orbit-controls",
+  [gunzipModules]: "gunzip-modules",
 };
 
 export const MOD_WRAP = [
@@ -20,32 +30,24 @@ export const getInlineModGzWrap = (name: string) => {
   return [
     encodeURIComponent(
       '<script type="text/inline-module+gzip" id="' +
-        name +
+        importNames[name] +
         '" src="data:text/javascript;base64,'
     ),
     encodeURIComponent('"></script>'),
   ];
 };
 
-const { p5, three, threeStats, threeOrbitControls, gunzip, gunzipModules } =
-  importIds;
-
 export const importData = {
-  [p5]: fs.readFileSync(__dirname + "/p5-v1.5.0.min.js.gz").toString("base64"),
-  [three]: fs
-    .readFileSync(__dirname + "/three.module.min.js.gz")
-    .toString("base64"),
+  [p5]: fs.readFileSync(__dirname + `/${p5}`).toString("base64"),
+  [three]: fs.readFileSync(__dirname + `/${three}`).toString("base64"),
   [threeStats]: fs
-    .readFileSync(__dirname + "/threeStats.module.min.js.gz")
+    .readFileSync(__dirname + `/${threeStats}`)
     .toString("base64"),
   [threeOrbitControls]: fs
-    .readFileSync(__dirname + "/threeOrbitControls.module.min.js.gz")
-    .toString("base64"),
-  [gunzip]: fs
-    .readFileSync(__dirname + "/gunzipScripts-0.0.1.js")
+    .readFileSync(__dirname + `/${threeOrbitControls}`)
     .toString("base64"),
   [gunzipModules]: fs
-    .readFileSync(__dirname + "/gunzipModules-0.1.0.min.js")
+    .readFileSync(__dirname + `/${gunzipModules}`)
     .toString("base64"),
 };
 
@@ -54,14 +56,6 @@ const threeStatsWrap = getInlineModGzWrap(threeStats);
 const threeOrbitControlsWrap = getInlineModGzWrap(threeOrbitControls);
 
 export const libs: ImportDataMap = {
-  [gunzip]: {
-    name: gunzip,
-    data: importData[gunzip],
-    wrapPrefix: "",
-    wrapSuffix: "",
-    wrapType: 1,
-    pages: calcStoragePages(importData[gunzip]),
-  },
   [p5]: {
     name: p5,
     data: importData[p5],
