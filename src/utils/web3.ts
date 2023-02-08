@@ -14,28 +14,9 @@ export const chunkSubstr = (str: string, size: number) => {
   return chunks;
 };
 
-export const staggerStore = async (
-  contract: any,
-  key: string,
-  dataString: string,
-  chunks: number
-) => {
-  if (chunks === 1) {
-    await contract.addChunkToScript(key, toBytes(dataString));
-    return;
-  }
-
-  const stringChunks = chunkSubstr(
-    dataString,
-    Math.ceil(dataString.length / chunks)
-  );
-
-  for (let i = 0; i < stringChunks.length; i++) {
-    await contract.addChunkToScript(key, toBytes(stringChunks[i]));
-    // await contract.saveData(key, i, toBytes(stringChunks[i]));
-    // console.log(`Stored ${key} page ${i}`);
-  }
-};
+function getBinarySize(object: string) {
+  return Buffer.byteLength(object, "utf8");
+}
 
 export const storeChunks = async (
   contract: any,
@@ -181,13 +162,17 @@ export const roughSizeOfObject = (object: any) => {
 };
 
 export const calcStoragePages = (object: any) => {
-  return Math.ceil(roughSizeOfObject(object) / 22000);
+  // console.log(chunk(object, 24).length);
+  // console.log(getBinarySize(object));
+
+  return Math.ceil(getBinarySize(object) / 24000);
+
+  // return Math.ceil(roughSizeOfObject(object) / 22000);
 };
 
 export default {
   toBytes,
   chunkSubstr,
-  staggerStore,
   constructRenderIndex,
   roughSizeOfObject,
   calcStoragePages,
