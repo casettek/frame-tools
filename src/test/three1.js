@@ -1,6 +1,6 @@
-import * as THREE from "#three.module.min.js";
-import Stats from "#threeStats.module.min.js";
-import { OrbitControls } from "#threeOrbitControls.module.min.js";
+import * as THREE from "three";
+import Stats from "three-stats";
+import { OrbitControls } from "three-orbit-controls";
 
 const cont = document.createElement("div");
 cont.id = "container";
