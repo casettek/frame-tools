@@ -31,6 +31,13 @@ module.exports = {
           ? [process.env.GOERLI_PRIVATE_KEY]
           : [],
     },
+    anvil: {
+      url: process.env.ANVIL_URL || "",
+      accounts:
+        process.env.ANVIL_PRIVATE_KEY !== undefined
+          ? [process.env.ANVIL_PRIVATE_KEY]
+          : [],
+    },
   },
   gasReporter: {
     enabled: process.env.REPORT_GAS !== undefined,
