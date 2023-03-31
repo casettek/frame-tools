@@ -4,9 +4,10 @@
   "description": "Tool for publishing web pages to EVM blockspace.",
   "main": "index.js",
   "scripts": {
-    "dev": "hardhat compile && nodemon --watch 'src/**/*.ts' --exec ts-node src/index.ts",
-    "test-local": "hardhat compile && npx hardhat run src/scripts/local.ts --network localhost",
-    "test-goerli": "hardhat compile && npx hardhat run src/scripts/goerli.ts --network goerli",
+    "dev": "hardhat compile && hardhat run src/scripts/local.ts --network anvil && nodemon --watch 'src/**/*.ts' --exec ts-node src/index.ts",
+    "test-local": "hardhat compile && hardhat run src/scripts/local.ts --network localhost",
+    "test-goerli": "hardhat compile && hardhat run src/scripts/goerli.ts --network goerli",
+    "test-anvil": "hardhat compile && hardhat run src/scripts/local.ts --network anvil",
     "build": "tsc",
     "start": "node dist/index.js"
   },
