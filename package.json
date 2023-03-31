@@ -11,14 +11,9 @@
     "build": "tsc",
     "start": "node dist/index.js"
   },
-  "keywords": [
-    "typescript",
-    "apollo-server",
-    "mongoose",
-    "jsonwebtoken"
-  ],
+  "keywords": [],
   "author": "cncrde",
-  "license": "ISC",
+  "license": "MIT",
   "devDependencies": {
     "@openzeppelin/contracts": "^4.8.1",
     "@openzeppelin/hardhat-upgrades": "^1.22.0",
